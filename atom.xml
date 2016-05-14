@@ -1,0 +1,1005 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[I'm Root lee !]]></title>
+  
+  <link href="/atom.xml" rel="self"/>
+  <link href="http://rootlee.eu/"/>
+  <updated>2016-05-11T21:25:26.000Z</updated>
+  <id>http://rootlee.eu/</id>
+  
+  <author>
+    <name><![CDATA[Root lee]]></name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[MATLAB读取wav文件报错："Incorrect chunk size information in WAV file."解决办法]]></title>
+    <link href="http://rootlee.eu/matlab_wav_error/"/>
+    <id>http://rootlee.eu/matlab_wav_error/</id>
+    <published>2016-05-11T21:25:26.000Z</published>
+    <updated>2016-05-11T21:25:26.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="问题描述">问题描述</h1><p>在<a href="http://rootlee.eu/categories/%E6%AF%95%E4%B8%9A%E8%AE%BE%E8%AE%A1/">毕业设计</a>中，需要用软件<strong>WXtoimg</strong>记录的NOAA发出的APT信号(wav格式),然后用MATLAB读取该wav文件，从而解调出所需要的卫星图，但是在用MATLAB读取该文件时却出现了以下错误：<br><figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Error using ==&gt; wavread</span><br><span class="line">Incorrect chunk <span class="built_in">size</span> information <span class="type">in</span> WAV <span class="keyword">file</span>.</span><br></pre></td></tr></table></figure></p>
+<p>即文件大小信息不正确。</p>
+<h1 id="问题分析">问题分析</h1><p>根据错误信息可知：我们尝试读取的wav文件的结构不正确。<br>在wav文件的文件头信息里，有两个数值与wav文件的大小有关，如果这两个数值与文件的实际大小不相符的话，这个文件就会被认为是无效的文件。从网上找到wav文件的文件头各个字节所代表的意义，如下表：</p>
+<p><img src="wavhead.png" alt="wavhead"></p>
+<p>由表格可以看出：</p>
+<ol>
+<li>在文件头的04H~07H地址的数值代表：<em>从下个地址开始到文件尾的总字节数</em>，数值：filesize - 8 </li>
+<li>在文件头的28H~2BH地址的数值代表：<em>从下个地址开始到文件尾的总字节数</em>，数值：filesize - 44 </li>
+</ol>
+<h1 id="解决办法">解决办法</h1><p>我们已经知道了错误原因和wav文件正确的文件头，现在我们可以修改文件头信息里与文件大小相关的两个数值，使其与文件实际大小相符，即可改正wav文件。<br>新建matlab函数：wavchunksizefix.m<br>以下为修正wav文件的matlab函数：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">wavchunksizefix</span><span class="params">( filename )</span></span></span><br><span class="line">d = dir(filename);                <span class="comment">%取得wav文件信息</span></span><br><span class="line">fileSize = d.bytes;               <span class="comment">%从文件信息里提取出wav文件的实际大小</span></span><br><span class="line">fid=fopen(filename,<span class="string">'r+'</span>,<span class="string">'l'</span>);     <span class="comment">%以读写模式打开wav文件</span></span><br><span class="line">fseek(fid,<span class="number">4</span>,-<span class="number">1</span>);                  <span class="comment">%fseek函数调整位置指针使其指向第一个与文件大小相关的数字</span></span><br><span class="line">fwrite(fid,fileSize-<span class="number">8</span>,<span class="string">'uint32'</span>);  <span class="comment">%将该数字修改成正确的大小，即：fileSize-8</span></span><br><span class="line">fseek(fid,<span class="number">40</span>,-<span class="number">1</span>);                 <span class="comment">%fseek函数调整位置指针使其指向第二个与文件大小相关的数字</span></span><br><span class="line">fwrite(fid,fileSize-<span class="number">44</span>,<span class="string">'uint32'</span>); <span class="comment">%将该数字修改成正确的大小，即：fileSize-44</span></span><br><span class="line">fclose(fid);                      <span class="comment">%关闭文件</span></span><br></pre></td></tr></table></figure>
+<p>将这个wavchunksizefix.m文件放进matlab的执行目录里，然后在命令行里运行如下命令：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">wavchunksizefix</span><span class="params">( filename )</span></span></span><br></pre></td></tr></table></figure>
+<p>现在wav文件即得到修正，经测试，重新用wavread函数读取该文件不会再报错。</p>
+<h1 id="注意">注意</h1><p>该matlab函数会直接修改wav文件，建议修改wav文件之前先备份wav文件。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="问题描述">问题描述</h1><p>在<a href="http://rootlee.eu/categories/%E6%AF%95%E4%B8%9A%E8%AE%BE%E8%AE%A1/">毕业设计</a>中，需要用软件<strong>WXtoimg</stro]]>
+    </summary>
+    
+      <category term="matlab" scheme="http://rootlee.eu/tags/matlab/"/>
+    
+      <category term="matlab" scheme="http://rootlee.eu/categories/matlab/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[那些与小强战斗的日子]]></title>
+    <link href="http://rootlee.eu/xiaoqiang/"/>
+    <id>http://rootlee.eu/xiaoqiang/</id>
+    <published>2016-04-29T17:09:25.000Z</published>
+    <updated>2016-04-29T17:09:25.000Z</updated>
+    <content type="html"><![CDATA[<p>今天中午有几个毕业设计上的问题去办公室问一下我毕业设计的指导老师树精（Шульгін В.І.）老头，刚打开电脑，摆出草稿纸，树精刚准备给我讲解问题，突然发现草稿纸上爬着一个蟑螂，并且摆动着两根触须挑衅似的东张西望，老师一脸的震惊，拿着笔的手也停在了半空中，我很淡定地直接将最上面的那张草稿纸快速卷了起来，将这只“好学”的小强包在了草稿纸里，然后将这草稿纸揉成了一团，扔进了垃圾桶，这张A4草稿纸也就成了它的“裹尸布”。<br>看完我这行云流水的操作，树精好像刚从震惊中恢复过来（我想如果不是有老师的身份，他应该会给我鼓掌(^o^)!），如梦初醒的他弱弱地说了一句：“我们办公室没有蟑螂……”。<br>我：“…………，呃，老师，我们来讲题目……”</p>
+<p>很明显，这只“偷师学艺”的蟑螂来自我们宿舍。</p>
+<p>出国之前，就跟从乌克兰毕业回国的学长聊过这边的生活环境，学长说哈航宿舍环境比南航差多了，宿舍里会有小强。当时还不信，因为，我从小到大只是在电影里见过小强，生活中还从来没见过小强，也许见到了我也不认识。</p>
+<p>2014年冬天来到哈航，第一次到宿舍门口，发现宿舍楼真的是有些年头了，大约是苏联时期的建筑，宿舍里面倒是还行，墙是新粉刷的，房间里的墙纸也是新的，宿舍里空无一物，因此，传说中的小强现在是无缘相见的。</p>
+<p>两个月后的一天晚上，和室友一起在厨房做饭，突然看到一个什么东西快速地从桌子上爬了过去，我们面面相觑：这难道就是传说中的小强？为了一睹小强“芳容”，我蹲下，望向桌子底下，想要找到刚才的“不明爬行物”，但却什么也没发现，敲敲桌子，想要把它从某个隐藏角落里吓出来，但小强君似乎很耐得住寂寞，并没有被我们欺骗，依然稳稳潜伏着，最后不得不放弃了。</p>
+<p>第一次与梦寐以求的小强君见面的机会就这样消失了。</p>
+<p>后来，学长学姐们毕业了，我们去楼上帮忙收拾东西时候，发现地上成群结队的蟑螂，就像东非动物大迁徙一般壮观，让第一次见到蟑螂的我头皮直发麻，起了一身鸡皮疙瘩。</p>
+<p>小强君啊小强君，没想到第一次见面竟是你拖家带口大逃亡的时候……</p>
+<p>当时就暗暗发誓，一定要保持好宿舍的整洁，绝不让小强君有跟我亲密接触的机会。</p>
+<p>就像人不能控制自己头发的生长一样，小强的出现也不需要人的批准。</p>
+<p>开始一只，后来两只，再后来……</p>
+<p>小强就这样强行入驻宿舍了，对于这些狡猾的擅长利用地形（各种缝隙）打游击的外来分子，我们这些正规军实在是束手无策。偶尔碰到一两个迷路的小强，只能将满腔怒火发泄在这些倒霉蛋身上，它们会在我们强大的武器（拖鞋、作业本、矿泉水瓶等等）下有一千种死法，或被拍成肉饼，或被做成标本，或被放进矿泉水瓶活活饿死……</p>
+<p>通过几个月的相爱相杀，我发现小强其实很聪明、很敏捷，它有两根长长的触须，可以感受到周围风的速度，以此识别危险即将到临，采取措施果断撤离。如果一击不中，小强会以极快的速度躲进最近的小缝隙里，比如，路由器网线插口里、插座孔里、作业本堆里……躲在里面，任你百般恐吓，它自岿然不动，就是不出来，让人有时真恨不得自己也能缩小钻进也钻进路由器去把它抓出来（但后来一想，如果真的缩成蟑螂同等大小，就算钻进了路由器，我也打不过蟑螂，那还是算了吧。）</p>
+<p>在与蟑螂旷日持久的拉锯战中，我也总结出了对付蟑螂行之有效的战术，那就是三个字“快、准、狠！”：</p>
+<ol>
+<li><p><strong>快：</strong>小强君极其敏感，对危险的判断也极其准确，无论你的武器是拖鞋还是作业本，在你挥向它的时候，都会带动空气的流动，如果你动作不够快的话，你的“武器”尚未到达，小强君已经感受到了空气流动的不正常，早就逃之夭夭了。所以动作一定要快。</p>
+</li>
+<li><p><strong>准：</strong>拖鞋的面积并不大，因此你要瞄准敌人再打出你的武器，如果第一次打偏了，钻进缝隙里的小强绝不会给你第二次机会。当然，也不一定非要把小强君瞄准在拖鞋的正中心，因为，无论你打的多快，小强总是会逃跑一段距离，所以有时你要预判小强的可能“走位”，在它逃跑的路径上给予它致命一击。</p>
+</li>
+<li><p><strong>狠：</strong>人们常形容坚强的人是“打不死的小强”，这也侧面说明了小强生命里之顽强，曾经，有一只小强中了我温柔一击，我以为它已经瘫痪在地任我宰割了呢，没想到我拿开练习本，它竟然拖着残废的身躯逃跑了，我看着它留下的两根触须和一段残肢，敬佩不已。（当然，最终这个“丢盔弃甲”的逃兵还是牺牲在了我不留情面的第二击之下。）</p>
+</li>
+</ol>
+<p>小强君家族在我的无情“屠杀”之下损失惨重，虽然赶尽杀绝是不可能的，但现在至少不会有不知死活的小强君在我玩电脑的时候跑到我鼠标垫上耀武扬威了。由此看来，我的“剿杀”行动效果还是不错的。</p>
+<p>时间飞快，转眼我们也即将毕业，也要与这些“敌人”永远告别了，想想还有点舍不得呢，这些与小强战斗的日子，也会是我这一生的回忆。</p>
+<p>如果有幸哪位小强君在我回国时能够偷偷躲进我的行李箱，跟随我来到中国，我保证不会再杀你，我会敬你一杯酒，放你在这新世界去流浪……</p>
+<p>只是不知道，你能不能理解中国本地蟑螂的语言呢？</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>今天中午有几个毕业设计上的问题去办公室问一下我毕业设计的指导老师树精（Шульгін В.І.）老头，刚打开电脑，摆出草稿纸，树精刚准备给我讲解问题，突然发现草稿纸上爬着一个蟑螂，并且摆动着两根触须挑衅似的东张西望，老师一脸的震惊，拿着笔的手也停在了半空中，我很淡定地直接将]]>
+    </summary>
+    
+      <category term="随笔" scheme="http://rootlee.eu/categories/%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[用爱驱散人生路上的迷雾--读《雾都孤儿》有感]]></title>
+    <link href="http://rootlee.eu/review_fog_orphan/"/>
+    <id>http://rootlee.eu/review_fog_orphan/</id>
+    <published>2016-04-29T11:31:19.000Z</published>
+    <updated>2016-04-29T11:31:19.000Z</updated>
+    <content type="html"><![CDATA[<blockquote>
+<p>忧来无方，窗外下雨，坐沙发，吃巧克力，读狄更斯，心情又会好起来，和世界妥协。  ——托尔斯泰</p>
+</blockquote>
+<p>在一个窗外下雨的日子里把狄更斯的代表作之一《雾都孤儿》看完了，虽然没有沙发，也没有巧克力，手里只有狄更斯也足以让我与这世界妥协。在狄更斯的小说世界里，善良的人终究会有好的结局，而所有恶人最终都会得到应有的惩罚：或被送到绞刑架“荡秋千”、或家破人亡，死于非命。所谓善有善报，恶有恶报，这样的结局是读者们乐于看到的，也是每个人对现实社会实现公平正义的美丽幻想。</p>
+<p>我们都生活在社会中。<br>它经常把我们伤的体无完肤，尽管它让我们体会到它的残酷与冷漠，让我们目睹它的功利与残忍，使得生活在其中的我们每天不得不竭尽全力去对抗它，而狄更斯小说里构造的世界让我们看到了人善良的一面，看到了社会正义的一面，因此我们对我们所生活的世界希望会多一点，对这社会会温柔一点，对身边人的爱会多一点，这大概就是托尔斯泰所谓的“和世界妥协”吧。</p>
+<p>《雾都孤儿》小主人公奥利佛-退斯特是不幸的，母亲刚生下他就去世了，也不知道父亲是谁，在济贫院生活受到百般虐待，怯怯地想多要一碗粥却收到了无尽的奚落与嘲讽，去棺材铺当学徒受到其他学徒和老板娘的排挤，最终不堪忍受逃往了伦敦。在伦敦受到机灵鬼杰克·达金斯的欺骗，被老犹太费金收下训练当小偷，受到自私的哥哥恶意的陷害……</p>
+<p>奥利佛-退斯特又是幸运的，他遇到了好心的布朗罗先生，布朗罗先生将他收留并给他看病，管家贝德温太太无微不至的照顾让可怜的奥利佛-退斯特第一次有了家的温暖感觉，可惜好景不长，费金怕退思特告发他们，所以派了南希趁机将退思特又抓了回来，但南希虽然生活在一群肮脏的人之中，却有着自己的良知，在暗中帮助着退思特，还有后来的梅莱老太太和露丝小姐都待小退思特如家人。在这些美丽心灵的人的无私帮助下，奥利佛退思特才最终没有沦为小偷，并成功了解了自己的身世和继承了应得的遗产。</p>
+<p>一个孤儿，身无分文，孱弱瘦小，在满是雾霭的街道上踽踽独行，工业化的大城市伦敦，周围的人们也像机器一般冷漠。他的人生道路也是迷雾重重，看不到未来，甚至看不到脚下。</p>
+<p>我们又何尝不是那个迷失在“雾都”中的孤儿呢？</p>
+<p>从家乡来到大城市，我们才发现自己是那么的渺小、微不足道，而所谓的梦想，在这里也没有人想听，看着那无时无刻不在攀升的房价，还有越来越严峻的就业形势，我们也迷失了，迷失在了这个城市，迷失在了自己的道路之上。我们拼命往前奔跑，想要逃出这片雾霭，最后却发现，雾霭无处不在，我们想要逃出的尝试只能是徒劳。</p>
+<p>我们恐惧，因为我们孤单。</p>
+<p>但爱可以将我们连结在一起，雾霭中前行，虽然依然看不到远方的道路，但可以看到身边人鼓励的眼神，可以感受到握在一起的爱人的手的温度，可以认清我们一起选择并无怨无悔坚持走下去的路……<br>此时，<br>在我们周围，雾霭不复存在。</p>
+<p>在我们迷茫无助时，家庭是个避风港，父母的爱让我们安心；在我们迷惘不安，不知未来的路怎么走时，师长的爱让我们找到属于自己的道路；当我们失败低落时，朋友的爱能让我们重拾勇气，重新面对新的挑战；当我们自卑没勇气时，恋人的爱会成为我们的铠甲，给予我们无穷的力量去面对、去克服一切阻碍……</p>
+<blockquote>
+<p>如果没有强烈的爱，没有仁爱之心，如果对以慈悲为信条、以博爱一切生灵为最高标志的上帝不知感恩，是绝对得不到幸福的。   ————狄更斯 《雾都孤儿》</p>
+</blockquote>
+]]></content>
+    <summary type="html">
+    <![CDATA[<blockquote>
+<p>忧来无方，窗外下雨，坐沙发，吃巧克力，读狄更斯，心情又会好起来，和世界妥协。  ——托尔斯泰</p>
+</blockquote>
+<p>在一个窗外下雨的日子里把狄更斯的代表作之一《雾都孤儿》看完了，虽然没有沙发，也没有巧克力，手里只有狄更斯也足以让]]>
+    </summary>
+    
+      <category term="读后感" scheme="http://rootlee.eu/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[常用一些专业知识的书签]]></title>
+    <link href="http://rootlee.eu/%E6%88%91%E7%9A%84%E4%B9%A6%E7%AD%BE/"/>
+    <id>http://rootlee.eu/我的书签/</id>
+    <published>2016-04-27T22:06:45.000Z</published>
+    <updated>2016-04-27T22:06:45.000Z</updated>
+    <content type="html"><![CDATA[<ul>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-jpeg/" target="_blank" rel="external">JPEG 原理详细实例分析</a></li>
+<li><a href="http://www.liantu.com/" target="_blank" rel="external">在线二维码生成器</a></li>
+<li><a href="https://msdn.microsoft.com/zh-cn/library/a72418yk%28v=vs.90%29.aspx" target="_blank" rel="external">Visual C# 入门</a></li>
+<li><a href="http://www.cnblogs.com/figure9/p/developer-reading-list.html" target="_blank" rel="external">程序员必读书单</a></li>
+<li><a href="http://club.topsage.com/forum.php" target="_blank" rel="external">大家论坛（各种等级考试资料下载）</a></li>
+<li><a href="http://www.salttiger.com/" target="_blank" rel="external">SaltTiger编程类电子书下载站</a></li>
+<li><a href="http://bookdl.com/" target="_blank" rel="external">BookDL国外编程类电子书下载站</a></li>
+<li><a href="https://github.com/justjavac/free-programming-books-zh_CN" target="_blank" rel="external">GitHub免费的计算机编程类中文书籍</a></li>
+<li><a href="http://www.userinterface.com.cn/" target="_blank" rel="external">设计师导航（素材下载）</a></li>
+<li><a href="http://en.savefrom.net/" target="_blank" rel="external">YouTube视频在线下载器</a></li>
+<li><a href="http://ai2.appinventor.mit.edu" target="_blank" rel="external">安卓软件在线开发</a></li>
+<li><a href="http://www.17coding.net/index.html" target="_blank" rel="external">App Inventor中文教程_参考手册</a></li>
+<li><a href="https://smallpdf.com/zh-TW/pdf-to-word" target="_blank" rel="external">PDF转Word网站（包括各种pdf操作）</a></li>
+<li><a href="http://kankindle.com/" target="_blank" rel="external">Kindle电子书下载</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<ul>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-jpeg/" target="_blank" rel="external">JPEG 原理详细实例分析</a></li>
+<li><a href=]]>
+    </summary>
+    
+      <category term="专业相关" scheme="http://rootlee.eu/categories/%E4%B8%93%E4%B8%9A%E7%9B%B8%E5%85%B3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Python使用request模块写爬虫中保持Cookies一直有效的方法]]></title>
+    <link href="http://rootlee.eu/python_cookie/"/>
+    <id>http://rootlee.eu/python_cookie/</id>
+    <published>2016-04-12T23:14:18.000Z</published>
+    <updated>2016-04-12T23:14:18.000Z</updated>
+    <content type="html"><![CDATA[<p>在使用request模块写爬虫爬取教务处信息时，cookie过一段时间便会自动失效，这时爬虫程序就无法继续运行，让人很是无奈。</p>
+<p>我们知道，cookie里面保存着我们的身份信息，网站服务器通过cookie来识别我们的身份，为了安全，一般cookie都会有有效时间，过了这个时间，则cookie会自动失效，此时，服务器便无法识别我们身份，这时如果我们请求一个需要登录才能查看的资源，网站会自动跳转到登录界面。</p>
+<p>刚开始想到的方法是使用服务器返回的url信息判断是否与发送的url相等，如果两个url相等，则说明cookie依然有效，如果两个url不想等则说明发生了跳转，也就是cookie已经失效了，这时我们再次手动输入cookie，通过手动更新cookie可以让程序继续运行，下次失效后则再次手动输入，代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> r.url == pic_url:</span><br><span class="line">    <span class="keyword">break</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Please input another Cookie:'</span></span><br><span class="line">    headers[<span class="string">'Cookie'</span>] = raw_input()</span><br><span class="line">    s.headers.update(headers)</span><br></pre></td></tr></table></figure>
+<p>这个方法虽然算是一个解决办法，但是当需要的数据量大时，程序运行时间很长时，我们总不能守在电脑旁看着程序运行，时刻监视着cookie是否已经失效吧！</p>
+<p>通过多方搜索，找到了如下解决办法：查阅文档得知，request中提供了一个高级用法：session</p>
+<blockquote>
+<p>session会话对象让你能够跨请求保持某些参数。它也会在同一个Session实例发出的所有请求之间保持cookies。</p>
+</blockquote>
+<p>也就是session可以自动更新请求时的headers，这功能真是让我喜出望外，立刻改写了程序去试了试，<br>但是…………<br>事实很残酷，虽然我们使用了session对象，cookie依旧会失效。<br>到底是request文档出错了还是我的使用方法错了？</p>
+<p>在谷歌上查找半天，终于发现了问题所在，session确实会根据服务器响应的信息自动更新下次请求的headers，但是，它并不是简单的覆盖原来的headers，而是与程序中我们自己设置的原来的headers合并，而且，用户设置的优先度更高，也就是说，合并时，新的cookie被丢弃了，而我们设置的旧的cookie却保留下来了。所以程序中的cookie依旧会失效，因为cookie一直没有更新嘛！</p>
+<p>找到了问题出现的原因，也就找到了解决方法：请求后自行更新cookie，代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">r = s.get(pic_url,timeout=<span class="number">40</span>)   <span class="comment">#GET命令获取图片</span></span><br><span class="line"><span class="keyword">if</span> r.cookies.get_dict():        <span class="comment">#保持cookie有效</span></span><br><span class="line">    s.cookies.update(r.cookies)</span><br></pre></td></tr></table></figure>
+<p>这样cookie即可保持一直有效。<br>关于完整版代码，请查看我github中的<a href="https://github.com/Root-lee/spider_photos_nuaa" target="_blank" rel="external">spider_photos_nuaa</a>项目</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>在使用request模块写爬虫爬取教务处信息时，cookie过一段时间便会自动失效，这时爬虫程序就无法继续运行，让人很是无奈。</p>
+<p>我们知道，cookie里面保存着我们的身份信息，网站服务器通过cookie来识别我们的身份，为了安全，一般cookie都会有有效时间]]>
+    </summary>
+    
+      <category term="python" scheme="http://rootlee.eu/categories/python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[大三暑期实习中用Python自动保存太阳活动数据]]></title>
+    <link href="http://rootlee.eu/py_save_data_of_sun/"/>
+    <id>http://rootlee.eu/py_save_data_of_sun/</id>
+    <published>2016-04-12T22:59:27.000Z</published>
+    <updated>2015-11-23T13:33:47.000Z</updated>
+    <content type="html"><![CDATA[<p>大三结束，学校（乌克兰哈尔科夫国立航空航天大学）安排为期一个月的暑期实习，实习地点为与学校相邻的一个航空航天研究所，这次实习收获良多，大体了解了研究所的研究内容，接触了一些专业软件，借这个机会学会了微软Office的Excel，实习前Excel小白一个，连利用数据画图表都不熟练，实习后，我已经会用数据透视图分析数据，几十万数据处理逼迫我使用宏来做一些重复性动作，也大体了解了VBA代码，也可以磕磕碰碰写出可以使用的VBA代码。<br>最最最重要的是，这次实习让我接触到了Python这门非常优秀简洁美观的编程语言，从此对Python爱不释手，用它写一些爬虫，一些小工具实在是太方便了。</p>
+<p>事情是这样的，有一次，实习老师布置了一个任务，让我搜集2013年到2015年每天太阳活动的数据，并给了我一个网址，网页部分内容如下：<br><img src="pic1.png" alt="pic1"><br>我需要做的工作就是选择年月日，然后点击后面的查询，然后网页会显示这一天的太阳活动图表，然后我再将图表保存到本地文件夹，并以当天日期命名。<br><img src="pic2.gif" alt="pic2"><br>无疑，这个任务很简单，但是很麻烦，如果不停的查询并保存三年一千多条数据，肯定要头昏脑涨了……<br>突然想起以前在某论坛看过一篇介绍网络“爬虫”的文章，似乎“爬虫”可以帮助我更轻松的完成这个任务。然后去谷歌搜索了一下“爬虫”这个关键词，发现大部分人推荐使用Python来写爬虫，也更确信了“爬虫“可以帮助我完成任务。<br>后面就是装Python，配置环境变量，各种问题的发现与解决……然后参照网上写的爬虫自己尝试写一写类似代码。<br>经过观察需要保存的图像地址，发现，图像地址是有规律的，前面地址都是一样的，后面图像是以年月日命名的gif文件，类似这样：<br><img src="pic3.png" alt="pic3"><br>这样就可以直接循环抓取图像了,程序会以年和月建立文件夹和子文件夹，并将自动图像数据保存到对应文件夹里。<br>代码如下：（这算是我写的第一个python程序了）<br><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> urllib</span><br><span class="line"></span><br><span class="line"><span class="built_in">year</span>=<span class="string">'2014'</span>  <span class="comment">//年份</span></span><br><span class="line"><span class="keyword">if</span> not os.path.exists(<span class="built_in">year</span>):   <span class="comment">//如果文件夹不存在就新建文件夹</span></span><br><span class="line">	os.makedirs(<span class="built_in">year</span>)</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">month</span> in range(<span class="number">1</span>,<span class="number">13</span>):     <span class="comment">//月份1-12</span></span><br><span class="line">	path=<span class="string">'%s/%s'</span> %(<span class="built_in">year</span>,<span class="built_in">month</span>)    <span class="comment">//保存路径</span></span><br><span class="line">	<span class="keyword">if</span> not os.path.exists(path):</span><br><span class="line">		os.makedirs(path)</span><br><span class="line">	<span class="keyword">for</span> <span class="built_in">day</span> in range(<span class="number">1</span>,<span class="number">32</span>):    <span class="comment">//日期1-31</span></span><br><span class="line">		urllib.urlretrieve(<span class="string">'http://212.111.210.10/IONOSPHERE/%s/%s_%s_%s.gif'</span> %(<span class="built_in">year</span>,<span class="built_in">year</span>,<span class="built_in">month</span>,<span class="built_in">day</span>),<span class="string">'%s/%s_%s_%s.gif'</span>% (path,<span class="built_in">year</span>,<span class="built_in">month</span>,<span class="built_in">day</span>))</span><br></pre></td></tr></table></figure></p>
+<p>虽然程序并不完善，比如，每月都以31天计算，没有考虑大小月，导致每次抓取图片后还要去文件夹里把没有31号的那天的图像文件手动删除，但这相比于一个个保存图像，已经省力了非常多了。</p>
+<p>也许老老实实一个个保存图像只需要一小时，而我安装学习python和编写代码耗费的时间远远大于一小时，但是，程序写出来后，抓取三年数据所需的时间不到两分钟，而且，我可以轻易的修改代码去抓取任意年月日的图像数据，而不再需要大量的重复劳动。</p>
+<p>后来实习中还有一个任务是每天的固定时间去一个网站保存数据，这个数据是实时更新的，每天都要在那一个时间点附近登录网站去保存数据，但我有时会有事导致不能上网保存数据，所以我将上面的程序稍微修改了一下，让它每天固定时刻去抓取数据，但我电脑不可能一直开机去运行这个爬虫程序，于是我将它运行在了Cloud9云端IDE里面，这样就可以二十四小时运行并在固定时间抓取数据了，我只需要过段时间将云端保存的数据保存到本地即可。</p>
+<p>总之，Python实在是在实习中帮了我大忙。人生苦短，快用Python。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>大三结束，学校（乌克兰哈尔科夫国立航空航天大学）安排为期一个月的暑期实习，实习地点为与学校相邻的一个航空航天研究所，这次实习收获良多，大体了解了研究所的研究内容，接触了一些专业软件，借这个机会学会了微软Office的Excel，实习前Excel小白一个，连利用数据画图表都不]]>
+    </summary>
+    
+      <category term="python" scheme="http://rootlee.eu/tags/python/"/>
+    
+      <category term="Python" scheme="http://rootlee.eu/categories/Python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[人人都有追求美的心--读《写给大家看的设计书》有感]]></title>
+    <link href="http://rootlee.eu/%E5%86%99%E7%BB%99%E5%A4%A7%E5%AE%B6%E7%9C%8B%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B9%A6/"/>
+    <id>http://rootlee.eu/写给大家看的设计书/</id>
+    <published>2016-04-12T22:59:27.000Z</published>
+    <updated>2015-11-02T22:10:37.000Z</updated>
+    <content type="html"><![CDATA[<p>科学技术发展迅猛的今天，似乎人人都很忙，忙于学习，忙于工作，忙于家庭。似乎人们总是注重效率，注重速度，而对事物本身的漂亮与否并不关心。但事实并非如此，爱美之心人皆有之。<br>在iphone出现之前，人们对于手机更多关心的是它的功能是不是繁多，它的使用寿命是不是够长，而并不是很关心手机外观的设计是否美，直到乔布斯拿出了具有设计感的iphone手机，人们恍然大悟：哦，这漂亮的手机就是我想要的！</p>
+<p>而诺基亚仍然没有意识到人们内心深处的爱美的本性到底有多强大，仍然坚持板砖一般的设计，并嘲笑苹果不如诺基亚耐摔。这么多年过去了，诺基亚已经不再能支撑下去了，先是裁员，后是卖楼，最后将手机部门出售给了微软，而注重设计之美的苹果公司市值达到了全球第一。这不得不说是大众的”爱美之心“的一场伟大胜利。</p>
+<p>而学校里并没有给学生应有的美学教育，多年的唯物主义思想让人们思想禁锢，认为只有直接提高生产力的知识才是值得学习的，而并不注重精神需求。<br>作为理工科大学生其实更应该有意识的去弥补这方面的缺失：</p>
+<ul>
+<li>软件专业：软件不能只是实现了应有的功能就行了，还要考虑，UI界面是否美观大方？交互是否友好？</li>
+<li>硬件专业：硬件也是一样，PCB布线是否合理？显示界面是否漂亮？产品尺寸是否合理？产品整体外观是否让人喜欢？</li>
+</ul>
+<p>《写给大家看的设计书》这本书教给我们设计基本的理念，虽然本书不能让我们与设计专业的人士水平相比，但如果我们认真应有书中的设计理念的话，至少我们的作品不会再那么丑。做PPt时应用这些设计理念，可以让你的PPt从一群不懂任何设计的工科生杂乱的PPt中脱颖而出，轻松赢得观众的好感。写一些Word文档时注重一下设计，可以让文档条理清晰，赏心悦目，会赢得读者的尊敬。</p>
+<p>《写给大家看的设计书》这本书总结下来就是四条基本设计规则：对比（Contrast），重复（Repetition），对齐（Alignment），与亲密性（Proximity）</p>
+<ol>
+<li><p>对比（Contrast）<br>对比的基本思想是，要避免页面上的元素太过相似。如果元素（字体、颜色、大小、线宽、形状、空间等）不相同，那就干脆让它们截然不同。要让页面引人注目，对比通常是最重要的一个因素，正是它能使读者首先看这个页面。</p>
+</li>
+<li><p>重复（Repetition）<br>让设计中的视觉要素在整个作品中重复出现。可以重复颜色、形状、材质、空间关系、线宽、字体、大小和图片，等等。这样一来，既能增加条理性，还可以加强统一性。</p>
+</li>
+<li><p>对齐（Alignment）<br>任何东西都不能在页面上随意安放。每个元素都应当与页面上的另一个元素有某种视觉联系。这样能建立一种清晰、精巧而且清爽的外观。</p>
+</li>
+<li><p>亲密性（Proximity）<br>彼此相关的项应当靠近，归组在一起。如果多个项相互之间存在很近的亲密性，它们就会成为一个视觉单元，而不是多个孤立的元素。这有助于组织信息，减少混乱，为读者提供清晰的结构</p>
+</li>
+</ol>
+<p>应用好这四大原则就可以让你的作品有很大改观。<br>除此之外书中介绍的字体的相关知识，也让我很有启发。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>科学技术发展迅猛的今天，似乎人人都很忙，忙于学习，忙于工作，忙于家庭。似乎人们总是注重效率，注重速度，而对事物本身的漂亮与否并不关心。但事实并非如此，爱美之心人皆有之。<br>在iphone出现之前，人们对于手机更多关心的是它的功能是不是繁多，它的使用寿命是不是够长，而并不]]>
+    </summary>
+    
+      <category term="读后感" scheme="http://rootlee.eu/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[电容触屏和电阻触屏对比]]></title>
+    <link href="http://rootlee.eu/%E8%A7%A6%E6%91%B8%E5%B1%8F/"/>
+    <id>http://rootlee.eu/触摸屏/</id>
+    <published>2016-04-12T22:59:27.000Z</published>
+    <updated>2016-01-30T00:58:30.000Z</updated>
+    <content type="html"><![CDATA[<table>
+<thead>
+<tr>
+<th style="text-align:left">触摸屏</th>
+<th style="text-align:left">电阻触屏</th>
+<th style="text-align:left">电容触屏</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>室内可视效果</strong></td>
+<td style="text-align:left">通常很好</td>
+<td style="text-align:left">通常很好</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>触摸敏感度</strong></td>
+<td style="text-align:left">需用压力使屏幕各层发生接触，可以使用手指（哪怕带上手套），指甲，触笔等进行操作。支持触笔在亚洲市场很重要，手势和文字识别在哪里都被看重。</td>
+<td style="text-align:left">来自带电的手指表层最细微的接触也能激活屏幕下方的电容感应系统。非生命物体、指甲、手套无效。手写识别较为困难。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>精度</strong></td>
+<td style="text-align:left">精度至少达到单个显示像素，触笔时能看出来。便于手写识别，有助于在使用小控制元素界面下进行操作。</td>
+<td style="text-align:left">理论精度可以达到几个像素，但会受手指接触面积限制。以至于用户难以精确点击小于1cm2的目标。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>成本</strong></td>
+<td style="text-align:left">很低廉。</td>
+<td style="text-align:left">不同厂商的电容屏价格比电阻屏贵10%到50%。这点额外成本对旗舰级产品无所谓，但可能会让中等价位手机望而却步。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>多点触摸可行性</strong></td>
+<td style="text-align:left">不可能，除非重组电阻屏与机器的电路连接。</td>
+<td style="text-align:left">取决于实现方式以及软件，已在G1的技术演示以及iPhone上实现。G1的1.7T版本已经可以实现浏览器的多点触摸特性。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>抗损性</strong></td>
+<td style="text-align:left">电阻屏的根本特性决定了它的顶部是柔软的，需要能够按下去。这使得屏幕非常容易产生划痕。电阻屏需要保护膜以及相对更频繁的校准。有利的方面是，使用塑料层的电阻触屏设备总体上更不易损，更不容易摔坏。</td>
+<td style="text-align:left">外层可以使用玻璃。这样虽然不至于坚不可摧，而且有可能在严重冲击下碎裂，但玻璃应对日常碰擦和污迹更好。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>清洁</strong></td>
+<td style="text-align:left">由于可以使用触笔或指甲进行操作，更不容易在屏幕上留下指纹、油渍和细菌。</td>
+<td style="text-align:left">要用整个手指进行触摸，但玻璃外层更容易清洁。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>环境适应性</strong></td>
+<td style="text-align:left">具体数值不得而知。但有证据表明使用电阻屏的Nokia 5800可以在-15°C至+45°C的温度下正常工作，对湿度也没什么要求。</td>
+<td style="text-align:left">典型的操作温度在0°至35°之间，需要至少5%的湿度(工作原理所限)。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>阳光下可视效果</strong></td>
+<td style="text-align:left">通常很糟，额外的屏幕层面反射了大量阳光。</td>
+<td style="text-align:left">通常很好</td>
+</tr>
+</tbody>
+</table>
+<h1 id="电容式触摸屏工作原理">电容式触摸屏工作原理</h1><p><img src="dianrong.jpg" alt="电容触屏"><br>电容屏要实现多点触控，靠的就是增加互电容的电极，简单地说，就是将屏幕分块，在每一个区域里设置一组互电容模块都是独立工作，所以电容屏就可以独立检测到各区域的触控情况，进行处理后，简单地实现多点触控。<br>电容技术触摸屏CTP（Capacity Touch Panel）是利用人体的电流感应进行工作的。电容屏是一块四层复合玻璃屏，玻璃屏的内表面和夹层各涂一层ITO（纳米铟锡金属氧化物），最外层是只有0.0015mm厚的矽土玻璃保护层，夹层ITO涂层作工作面，四个角引出四个电极，内层ITO为屏层以保证工作环境。<br>当用户触摸电容屏时，由于人体电场，用户手指和工作面形成一个耦合电容，因为工作面上接有高频信号，于是手指吸收走一个很小的电流，这个电流分别从屏的四个角上的电极中流出，且理论上流经四个电极的电流与手指头到四角的距离成比例，控制器通过对四个电流比例的精密计算，得出位置。可以达到99%的精确度，具备小于3ms的响应速度。<br>投射式电容面板的触控技术投射电容式触摸屏是在两层ITO导电玻璃涂层上蚀刻出不同的ITO导电线路模块。两个模块上蚀刻的图形相互垂直，可以把它们看作是X和Y方向 连续变化的滑条。由于X、Y架构在不同表面，其相交处形成一电容节点。一个滑条可以当成驱动线，另外一个滑条当成是侦测线。当电流经过驱动线中的一条导线时，如果外界有电容变化的信号，那么就会引起另一层导线上电容节点的变化。侦测电容值的变化可以通过与之相连的电子回路测量得到，再经由A/D控制器转为数字讯号让计算机做运算处理取得（X，Y） 轴位置，进而达到定位的目地。<br>操作时，控制器先后供电流给驱动线，因而使各节点与导线间形成一特定电场。然后逐列扫描感测线测量其电极间的电容变化量，从而达成多点定位。当手指或触动 媒介接近时，控制器迅速测知触控节点与导线间的电容值改变，进而确认触控的位置。这种一根轴通过一套AC 信号来驱动，而穿过触摸屏的响应则通过其它轴上的电极感测出来。使用者们把这称为‘横穿式’感应，也可称为投射式感应。传感器上镀有X，Y轴的ITO图 案，当手指触摸触控屏幕表面时，触碰点下方的电容值根据触控点的远近而增加，传感器上连续性的扫描探测到电容值的变化，控制芯片计算出触控点并回报给处理器。</p>
+<h1 id="电阻式触摸屏工作原理">电阻式触摸屏工作原理</h1><p><img src="dianzuyuanli.jpg" alt="电阻"><br>电阻触摸屏的工作原理主要是通过压力感应原理来实现对屏幕内容的操作和控制的，这种触摸屏屏体部分是一块与显示器表面非常配合的多层复合薄膜，其中第一层为玻璃或有机玻璃底层，第二层为隔层，第三层为多元树脂表层，表面还涂有一层透明的导电层，上面再盖有一层外表面经硬化处理、光滑防刮的塑料层。在多元脂表层表面的传导层及玻璃层感应器是被许多微小的隔层所分隔电流通过表层，轻触表层压下时，接触到底层，控制器同时从四个角读出相称的电流及计算手指位置的距离。这种触摸屏利用两层高透明的导电层组成触摸屏，两层之间距离仅为2.5微米。当手指触摸屏幕时，平常相互绝缘的两层导电层就在触摸点位置有了一个接触，因其中一面导电层接通Y轴方向的5V均匀电压场，使得侦测层的电压由零变为非零，控制器侦测到这个接通后，进行A/D转换，并将得到的电压值与5V相比，即可得触摸点的Y轴坐标，同理得出X轴的坐标，这就是所有电阻技术触摸屏共同的最基本原理。<br>触摸屏包含上下叠合的两个透明层，四线和八线触摸屏由两层具有相同表面电阻的透明阻性材料组成，五线和七线触摸屏由一个阻性层和一个导电层组成，通常还要用一种弹性材料来将两层隔开。当触摸屏表面受到的压力（如通过笔尖或手指进行按压）足够大时，顶层与底层之间会产生接触。所有的电阻式触摸屏都采用分压器原理来产生代表X坐标和Y坐标的电压。如图3，分压器是通过将两个电阻进行串联来实现的。上面的电阻（R1）连接正参考电压（VREF），下面的电阻（R2）接地。两个电阻连接点处的电压测量值与下面那个电阻的阻值成正比。<br>为了在电阻式触摸屏上的特定方向测量一个坐标，需要对一个阻性层进行偏置：将它的一边接VREF，另一边接地。同时，将未偏置的那一层连接到一个ADC的高阻抗输入端。当触摸屏上的压力足够大，使两层之间发生接触时，电阻性表面被分隔为两个电阻。它们的阻值与触摸点到偏置边缘的距离成正比。触摸点与接地边之间的电阻相当于分压器中下面的那个电阻。因此，在未偏置层上测得的电压与触摸点到接地边之间的距离成正比。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<table>
+<thead>
+<tr>
+<th style="text-align:left">触摸屏</th>
+<th style="text-align:left">电阻触屏</th>
+<th style="text-align:left">电容触屏</th>
+</tr>
+]]>
+    </summary>
+    
+      <category term="专业相关" scheme="http://rootlee.eu/categories/%E4%B8%93%E4%B8%9A%E7%9B%B8%E5%85%B3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Verilog中wire与reg类型的区别]]></title>
+    <link href="http://rootlee.eu/wirereg/"/>
+    <id>http://rootlee.eu/wirereg/</id>
+    <published>2016-04-12T22:59:27.000Z</published>
+    <updated>2015-10-28T22:27:19.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Introduction">Introduction</h1><p>Sections 1.1 to 1.3 discuss the difference between wire and reg in Verilog, and when to use each of them.</p>
+<h2 id="1-1_wire_Elements_(Combinational_logic)">1.1 wire Elements (Combinational logic)</h2><p>wire elements are simple wires (or busses of arbitrary width) in Verilog designs. The following are syntax<br>rules when using wires:</p>
+<ol>
+<li>wire elements are used to connect input and output ports of a module instantiation together with<br>some other element in your design.</li>
+<li>wire elements are used as inputs and outputs within an actual module declaration.</li>
+<li>wire elements must be driven by something, and cannot store a value without being driven.</li>
+<li>wire elements cannot be used as the left-hand side of an = or &lt;= sign in an always@ block.</li>
+<li>wire elements are the only legal type on the left-hand side of an assign statement.</li>
+<li>wire elements are a stateless way of connecting two peices in a Verilog-based design.</li>
+<li>wire elements can only be used to model combinational logic.</li>
+</ol>
+<p>Program 1 shows various legal uses of the wire element.</p>
+<p>Program 1 Legal uses of the wire element<br><figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="typename">wire</span> A, B, C, D, E; <span class="comment">// simple 1- bit wide wires</span></span><br><span class="line"><span class="typename">wire</span> [<span class="number">8</span><span class="keyword">:</span><span class="number">0</span>] Wide ; <span class="comment">// a 9- bit wide wire</span></span><br><span class="line"><span class="typename">reg</span> I;</span><br><span class="line"></span><br><span class="line"><span class="keyword">assign</span> A <span class="keyword">=</span> B <span class="keyword">&amp;</span> C; <span class="comment">// using a wire with an assign statement</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> <span class="keyword">@</span>(B <span class="keyword">or</span> C) <span class="keyword">begin</span></span><br><span class="line">I <span class="keyword">=</span> B <span class="keyword">|</span> C; <span class="comment">// using wires on the right - hand side of an always@</span></span><br><span class="line"><span class="comment">// assignment</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">mymodule mymodule_instance (. In (D),</span><br><span class="line"><span class="typename">.Out</span>(E)); <span class="comment">// using a wire as the output of a module</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="1-2_reg_Elements_(Combinational_and_Sequential_logic)">1.2 reg Elements (Combinational and Sequential logic)</h2><p>reg are similar to wires, but can be used to store information (‘state’) like registers. The following are<br>syntax rules when using reg elements.</p>
+<ol>
+<li>reg elements can be connected to the input port of a module instantiation.</li>
+<li>reg elements cannot be connected to the output port of a module instantiation.</li>
+<li>reg elements can be used as outputs within an actual module declaration.</li>
+<li>reg elements cannot be used as inputs within an actual module declaration.</li>
+<li>reg is the only legal type on the left-hand side of an always@ block = or &lt;= sign.</li>
+<li>reg is the only legal type on the left-hand side of an initial block = sign (used in Test Benches).</li>
+<li>reg cannot be used on the left-hand side of an assign statement.</li>
+<li>reg can be used to create registers when used in conjunction with always@(posedge Clock) blocks.</li>
+<li>reg can, therefore, be used to create both combinational and sequential logic.<br>Program 2 shows various legal uses of the reg element.</li>
+</ol>
+<p>Program 2 Legal uses of the reg element<br><figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="typename">wire</span> A, B;</span><br><span class="line"><span class="typename">reg</span> I, J, K; <span class="comment">// simple 1- bit wide reg elements</span></span><br><span class="line"><span class="typename">reg</span> [<span class="number">8</span><span class="keyword">:</span><span class="number">0</span>] Wide ; <span class="comment">// a 9- bit wide reg element</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> <span class="keyword">@</span>(A <span class="keyword">or</span> B) <span class="keyword">begin</span></span><br><span class="line">I <span class="keyword">=</span> A <span class="keyword">|</span> B; <span class="comment">// using a reg as the left - hand side of an always@</span></span><br><span class="line"><span class="comment">// assignment</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">initial</span> <span class="keyword">begin</span> <span class="comment">// using a reg in an initial block</span></span><br><span class="line">J <span class="keyword">=</span> <span class="number">1</span>’b1;</span><br><span class="line"><span class="keyword">#</span><span class="number">1</span></span><br><span class="line">J <span class="keyword">=</span> <span class="number">1</span>’b0;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> <span class="keyword">@</span>( <span class="keyword">posedge</span> Clock ) <span class="keyword">begin</span></span><br><span class="line">K <span class="keyword">&lt;</span><span class="keyword">=</span> I; <span class="comment">// using a reg to create a positive -edge - triggered register</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="1-3_When_wire_and_reg_Elements_are_Interchangable">1.3 When wire and reg Elements are Interchangable</h2><p>wire and reg elements can be used interchangably in certain situations:</p>
+<ol>
+<li>Both can appear on the right-hand side of assign statements and always@ block = or &lt;= signs.</li>
+<li>Both can be connected to the input ports of module instantiations.</li>
+</ol>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Introduction">Introduction</h1><p>Sections 1.1 to 1.3 discuss the difference between wire and reg in Verilog, and when to use each o]]>
+    </summary>
+    
+      <category term="verilog" scheme="http://rootlee.eu/tags/verilog/"/>
+    
+      <category term="专业相关" scheme="http://rootlee.eu/categories/%E4%B8%93%E4%B8%9A%E7%9B%B8%E5%85%B3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[编写可综合风格的Verilog HD代码的八大原则]]></title>
+    <link href="http://rootlee.eu/verilog%E5%8E%9F%E5%88%99/"/>
+    <id>http://rootlee.eu/verilog原则/</id>
+    <published>2016-04-12T22:59:27.000Z</published>
+    <updated>2015-11-16T20:54:00.000Z</updated>
+    <content type="html"><![CDATA[<p>掌握可综合风格的 Verilog 模块编程的八个原则会有很大的帮助。</p>
+<ul>
+<li>原则一：时序电路建模时，用非阻塞赋值。 </li>
+<li>原则二：锁存器电路建模时，用非阻塞赋值。 </li>
+<li>原则三：用 always 块建立组合逻辑模型时，用阻塞赋值。 </li>
+<li>原则四：在同一个 always 块中建立时序和组合逻辑电路时，用非阻塞赋值。 </li>
+<li>原则五：在同一个 always 块中不要既用非阻塞赋值又用阻塞赋值。 </li>
+<li>原则六：不要在一个以上的 always 块中为同一个变量赋值。 </li>
+<li>原则七：用$strobe 系统任务来显示用非阻塞赋值的变量值 </li>
+<li>原则八：在赋值时不要使用 #0 延迟</li>
+</ul>
+<p>在编写时牢记这八个要点可以为绝大多数的Verilog 用户解决在综合后仿真中出现的 90-100% 的冒险竞争问题。 </p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>掌握可综合风格的 Verilog 模块编程的八个原则会有很大的帮助。</p>
+<ul>
+<li>原则一：时序电路建模时，用非阻塞赋值。 </li>
+<li>原则二：锁存器电路建模时，用非阻塞赋值。 </li>
+<li>原则三：用 always 块建立组合逻辑模型时，用阻塞赋]]>
+    </summary>
+    
+      <category term="FPGA" scheme="http://rootlee.eu/tags/FPGA/"/>
+    
+      <category term="verilog" scheme="http://rootlee.eu/tags/verilog/"/>
+    
+      <category term="专业知识" scheme="http://rootlee.eu/categories/%E4%B8%93%E4%B8%9A%E7%9F%A5%E8%AF%86/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[学习Verilog HDL时犯的一些错误]]></title>
+    <link href="http://rootlee.eu/verilog/"/>
+    <id>http://rootlee.eu/verilog/</id>
+    <published>2016-04-12T22:59:27.000Z</published>
+    <updated>2015-11-17T16:28:14.000Z</updated>
+    <content type="html"><![CDATA[<p>这篇文章主要记录在平常Verilog HDL学习过程中遇到的一些错误，有的错误很低级，有的错误莫名其妙，有的错误很典型。这些错误要么是粗心大意，要么是对基本概念理解不透彻导致的。在此处将它们一一记录下来，如果错误被改正了，也会记录下解决办法，让这些大大小小的错误时刻警醒自己。</p>
+<h1 id="错误列表">错误列表</h1><p>错误描述：<br>因不够清楚wire类型和reg类型在模块中适用位置导致的错误<br>解决办法：<br>在模块内部，输入必须是wire类型。输出可以是wire也可以是reg类型，而当调用模块时，输入可以是wire或者reg类型，输出只能是wire类型。</p>
+<p>错误描述：<br>学习fifo模块时，自以为reset为低电平有效，所以将reset置1，导致仿真时发现fifo的full和empty标志位竟同时为1。<br>解决办法：<br>调用IP核或者模块时，一定要弄清楚各个接口的功能以及哪种电平有效！</p>
+<p>错误描述：<br>不知道写测试模块时如何产生时钟信号<br>解决办法：<br>always #(10/2) clk = ~clk;    //产生周期为10时钟信号</p>
+<p>错误描述：<br>fifo调用时用full标志判断fifo是否满会导致少写入数据<br>解决办法：<br>用fifo的almost_full标志代替full标志来判断。</p>
+<p>错误描述：<br>给寄存器赋值时，受C语言影响，习惯直接写成 a = 1 ;<br>解决办法：<br>verilog中默认数字是32位的，应该写成 a = 1’b1;</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>这篇文章主要记录在平常Verilog HDL学习过程中遇到的一些错误，有的错误很低级，有的错误莫名其妙，有的错误很典型。这些错误要么是粗心大意，要么是对基本概念理解不透彻导致的。在此处将它们一一记录下来，如果错误被改正了，也会记录下解决办法，让这些大大小小的错误时刻警醒自己]]>
+    </summary>
+    
+      <category term="FPGA" scheme="http://rootlee.eu/tags/FPGA/"/>
+    
+      <category term="verilog" scheme="http://rootlee.eu/tags/verilog/"/>
+    
+      <category term="专业相关" scheme="http://rootlee.eu/categories/%E4%B8%93%E4%B8%9A%E7%9B%B8%E5%85%B3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Visual Studio 2008 简体中文专业版下载(附序列号)破解]]></title>
+    <link href="http://rootlee.eu/vc2008/"/>
+    <id>http://rootlee.eu/vc2008/</id>
+    <published>2016-04-12T22:59:27.000Z</published>
+    <updated>2015-10-28T19:33:23.000Z</updated>
+    <content type="html"><![CDATA[<p>微软已经提供了专业版的试用版，换个序列号就可以变正式版了。</p>
+<blockquote>
+<p><a href="http://download.microsoft.com/download/e/7/7/e777851c-c1a4-4979-86b3-6886953b32e9/VS2008ProEdition90DayTrialCHSX1435983.iso" target="_blank" rel="external">Visual Studio 2008专业版下载地址</a></p>
+</blockquote>
+<p>先安装上面这个试用版，然后在“添加或删除程序”里找到VS2008，点“更改/删除”，就会看到一个输入序列号的地方，把序列号输进去，点“升级”按钮即可</p>
+<p><img src="vc2008.jpg" alt="VC2008破解"></p>
+<p>对于 Win7,Win8,Win8.1以及Win10的用户，会发现点击更改删除后面并没有输入序列号的地方，对于这种情况的解决方法便是下载一个破解补丁，<br>当出现“添加或删除功能的界面时，运行该补丁，就会出现输入序列号的框，然后将后面提供的序列号输入到框中，稍等片刻便会提示升级成功。</p>
+<blockquote>
+<p><a href="https://onedrive.live.com/redir?resid=867E559822576758!10033&amp;authkey=!AB7MUDyeAEF8c3Q&amp;ithint=file%2czip" target="_blank" rel="external">显示序列号输入框的补丁</a></p>
+</blockquote>
+<p>以下为 Root lee 我亲测可用的序列号：</p>
+<p><em>PYHYP-WXB3B-B2CCM-V9DX9-VDY8T</em></p>
+<blockquote>
+<p><em>感谢秦建辉和薛军涛提供破解软件</em></p>
+</blockquote>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>微软已经提供了专业版的试用版，换个序列号就可以变正式版了。</p>
+<blockquote>
+<p><a href="http://download.microsoft.com/download/e/7/7/e777851c-c1a4-4979-86b3-6886953b3]]>
+    </summary>
+    
+      <category term="VC++" scheme="http://rootlee.eu/tags/VC/"/>
+    
+      <category term="专业软件" scheme="http://rootlee.eu/categories/%E4%B8%93%E4%B8%9A%E8%BD%AF%E4%BB%B6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[SketchUp8.0+Vray软件下载与破解]]></title>
+    <link href="http://rootlee.eu/sketchupdownload/"/>
+    <id>http://rootlee.eu/sketchupdownload/</id>
+    <published>2016-04-12T22:59:27.000Z</published>
+    <updated>2016-02-02T00:24:28.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="SketchUp介绍">SketchUp介绍</h1><p>SketchUp是一套面向建筑师、城市规划专家、制片人、游戏开发者以及相关专业人员的3D建模程序。它用于Google Earth上的建模也十分方便。它比其他三维CAD程序更直观，灵活以及易于使用。</p>
+<p>基于便于使用的理念，它拥有一个非常简单的界面。SketchUp世界中一个众所周知的特性便是3D Warehouse。用户可以利用他们的Google账户来上传创建的模型，并且浏览其他的组件和模型。</p>
+<p>部分关键特性和用处包括：</p>
+<ol>
+<li>“Smart”：智能光标系统，允许用户使用2维的屏幕和鼠标来描绘3维的部件。</li>
+<li>“push-pull”：通过沿预定的路径挤压2维界面从而创建3维物件。</li>
+<li>“Follow Me”简单高效的学习能力。</li>
+<li>可以模拟摄像机和太阳的运动</li>
+<li>与Google Earth的协同功能</li>
+</ol>
+<h1 id="SketchUp8-0下载">SketchUp8.0下载</h1><p>我刚开始时下载的是SketchUp16.0版本，虽然也成功破解并正常使用，但是把模型做好需要用Vray插件渲染时发现SketchUp的版本太新，并不能下载到合适的Vray破解版，所以狠心将其卸载，并安装了使用广泛的SketchUp8.0版本，该版本具备所有的基本功能，完全满足建模需要，且<a href="https://3dwarehouse.sketchup.com/index.html" target="_blank" rel="external">官网模型库</a>里大部分模型也支持SketchUp8.0版本，所以将该版本下载地址给出，以备不时之需。</p>
+<blockquote>
+<p><a href="http://pan.baidu.com/s/1sktGbDz" target="_blank" rel="external">http://pan.baidu.com/s/1sktGbDz</a><br>提取密码：spup</p>
+</blockquote>
+<h1 id="VRay介绍">VRay介绍</h1><p>VRay是由chaosgroup和asgvis公司出品，中国由曼恒公司负责推广的一款高质量渲染软件。VRay是目前业界最受欢迎的渲染引擎。基于V-Ray 内核开发的有VRay for 3ds max、Maya、Sketchup、Rhino等诸多版本，为不同领域的优秀3D建模软件提供了高质量的图片和动画渲染。方便使用者渲染各种图片。</p>
+<h1 id="VRay下载与安装">VRay下载与安装</h1><p>VRay针对不同3D建模软件分为好多种，比如VRay for 3ds max、Maya、Sketchup、Rhino等诸多版本，此处我们下载的是VRay for Sketchup 插件，该插件配合Sketchup可以渲染出堪比高清图片的效果图。以下为下载地址：</p>
+<blockquote>
+<p><a href="http://pan.baidu.com/s/1sjZxutJ" target="_blank" rel="external">http://pan.baidu.com/s/1sjZxutJ</a><br>提取密码：f86v</p>
+</blockquote>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="SketchUp介绍">SketchUp介绍</h1><p>SketchUp是一套面向建筑师、城市规划专家、制片人、游戏开发者以及相关专业人员的3D建模程序。它用于Google Earth上的建模也十分方便。它比其他三维CAD程序更直观，灵活以及易于使用。</p>]]>
+    </summary>
+    
+      <category term="开发软件" scheme="http://rootlee.eu/tags/%E5%BC%80%E5%8F%91%E8%BD%AF%E4%BB%B6/"/>
+    
+      <category term="专业相关" scheme="http://rootlee.eu/categories/%E4%B8%93%E4%B8%9A%E7%9B%B8%E5%85%B3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[爱情输给现实不必惋惜————再读《平凡的世界》第一部有感]]></title>
+    <link href="http://rootlee.eu/review_pingfan1/"/>
+    <id>http://rootlee.eu/review_pingfan1/</id>
+    <published>2016-04-12T22:59:27.000Z</published>
+    <updated>2016-02-27T18:24:28.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="陪你看世界读书会第一期之《平凡的世界》第一部"><em>陪你看世界</em>读书会第一期之《平凡的世界》第一部</h2><p>时隔多年再读《平凡的世界》这本对我影响极大的书，又有了新的感悟、新的思考。虽然这本书的情节已经遗忘的差不多了，重读时却意外地发现孙少平已经深深扎根到我的灵魂里，读这本书既是读他也是读我自己，读那个也曾因家庭条件而自卑的自己，读那个也曾为了所谓的感情受挫而漫步街头的自己，也读那个无论处于何种境地都坚持读书的自己，也读那个碰到一个想照顾一生的人却彷徨犹豫的自己……</p>
+<p>第一次读时，为润叶多次想向爱的人孙少安吐露心迹的时候都被莫名其妙的事情而打断而感到深深的惋惜，幻想着如果润叶说出来了也许这两个互相爱恋的人最后会幸福的生活在一起。现在再读，却释然了，即使润叶最终说了出来，结局依然不会有任何的改变，面对两个家庭的巨大差异，少安是无论如何都没有勇气去接受这份爱的。这里少安的感情向现实妥协了，也可以用现在经常提起的一句话说：“爱情输给了现实”。</p>
+<p>刚过年，两则新闻就引爆了网络时间，一个是：<em>上海女孩春节到男朋友的江西老家过年一顿饭后与男友闹分手</em>，另一个是：<em>回乡不能上桌吃城里媳妇掀桌子</em>（先不管新闻的真实性如何）这些新闻里其实并没有谁对谁错，没有任何人应该被指责，无论男方还是女方，这两则新闻只不过或多或少反映了社会的现实：跨越家庭阶级的结合已经越来越困难。</p>
+<p>古人讲：门当户对。<br>这话真是无论何时都适用，差异巨大的家庭成长环境会造就人不同的追求、不同的观念、不同的生活方式……想要克服这些最终走到一起真的需要双方莫大的勇气与毅力。古典小说里名门望族的小姐爱上穷书生的故事我们已经看了太多，最终的结局大都是劳燕分飞。恋爱只需要两个人的心互相贴近，而最终结婚却不仅仅是两个人的事情，结婚是两个不同家族的碰撞与融合，而两个门不当户不对的家庭就像两块互相排斥的磁铁，在这股互斥的阻力面前大多爱情都会被撕得粉碎。</p>
+<p>虽然戏剧里有穷书生高中状元回来迎娶昔日爱人的情节，但戏里的人生终究是戏里的人生，离奇的事情才叫戏剧，这种情节出现在戏里就说明了这种事在现实中的罕见性，现实中的穷书生不可能全中状元。</p>
+<p>人生遇到真正的爱情并不容易，拿出所有的真心、恒心和耐心去认真对待与呵护这份得来不易的感情就行了，结局真的不那么重要了。</p>
+<p>如果注定不能陪你走完这一生，我愿意陪你走一程，去陪你走走看看，去体验，去感知。<br>终有一天走到了必须要分别的岔路口<br>挥手<br>微笑<br>告别<br>互道珍重<br>不必惋惜<br>……</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="陪你看世界读书会第一期之《平凡的世界》第一部"><em>陪你看世界</em>读书会第一期之《平凡的世界》第一部</h2><p>时隔多年再读《平凡的世界》这本对我影响极大的书，又有了新的感悟、新的思考。虽然这本书的情节已经遗忘的差不多了，重读时却意外地发现孙少平已经]]>
+    </summary>
+    
+      <category term="读后感" scheme="http://rootlee.eu/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[当美好的事物毁灭在你面前————读《巴黎圣母院》有感]]></title>
+    <link href="http://rootlee.eu/review_paris/"/>
+    <id>http://rootlee.eu/review_paris/</id>
+    <published>2016-04-12T22:59:27.000Z</published>
+    <updated>2016-02-25T13:09:44.000Z</updated>
+    <content type="html"><![CDATA[<p><img src="paris.jpg" alt="巴黎圣母院"></p>
+<blockquote>
+<p>悲剧是将人生有价值的东西毁灭给人看    ——鲁迅</p>
+</blockquote>
+<p>今日将维克多-雨果的长篇小说《巴黎圣母院》看完了，真是百感交集，久久不能自已。为格兰古瓦因作品表演失败无家可归驻足河滩的境遇而心生同情，对美丽、纯洁、善良的吉普赛女郎带着金角小山羊街头卖艺的场景而心生爱怜，也为敲钟人加西莫多第一次得到大家关注却是因为被评为了“丑人王”而苦笑，为副主教的种种卑鄙行径而感到愤怒的同时又为他被教会教条和个人欲望撕碎而感到可怜，更为爱斯梅拉达被他心爱的卫队长一步步推进深渊而感到无比的寒心……</p>
+<p>如果按照鲁迅先生对悲剧的定义来看，《巴黎圣母院》真是一个彻头彻尾的悲剧，它几乎将人类所有美好的东西全部毁灭在读者面前：忠诚、爱情、信仰、艺术、纯洁、善良、美丽、母爱、友谊、手足情……真是毁地彻彻底底，毁地干干净净！<br>人总是在失去时才知道珍惜，所以《巴黎圣母院》将这些美好的事物毁灭给你看，诚然，这样的毁灭让人心痛，但只有我们体会并记住这种心痛的感觉，我们才会更加珍惜我们现在所拥有的那些美好。</p>
+<p>爱斯梅拉达善良纯洁、美丽、善良，她在流浪汉手中救下了即将被处死的“哲学家”格兰古瓦，也用一口清水救活了被绑在耻辱柱上加西莫多那几乎死寂的心。多少次，我都似乎看到美丽的爱斯梅拉达在阳光下翩翩起舞，一脸的天真烂漫，旁边还跟着她那惹人喜爱的小山羊加利。这画卷一般的场景却在黑暗的中世纪中被碾压地粉碎……</p>
+<p>加西莫多无疑是丑的，他脸丑、背驼、腿瘸、耳聋、独眼……，即使到最后化为一堆白骨，依然有着弓形的脊椎，长短不一的腿骨……<br>但加西莫多的美是更真是的，无论他对从小收养他的副主教无比忠诚（虽然副主教收养他是因为想增加以后升入天堂的砝码），他对爱斯梅拉达的爱是无私的真诚的，从绞刑架上救下爱斯梅拉达的他是勇敢的，而救下爱的人之后在教堂走廊奔跑的他又是孩子一般天真，为了保护爱人以一人之力抵挡住所有围攻圣母院的流浪汉的他又是机智的，以及死后也要拥抱着爱的人的那份炽热的爱无不让人动容。与加西莫多相比，副主教的卑鄙无耻道貌岸然和卫队长的冷酷无情才是真的丑。</p>
+<p>美丽的心灵才是真的美<br>灵魂的肮脏才是真的丑</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><img src="paris.jpg" alt="巴黎圣母院"></p>
+<blockquote>
+<p>悲剧是将人生有价值的东西毁灭给人看    ——鲁迅</p>
+</blockquote>
+<p>今日将维克多-雨果的长篇小说《巴黎圣母院》看完了，真是百感交集，久久不能]]>
+    </summary>
+    
+      <category term="读后感" scheme="http://rootlee.eu/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[每个人都有最艰难的一年----读《岛上书店》有感]]></title>
+    <link href="http://rootlee.eu/review_island/"/>
+    <id>http://rootlee.eu/review_island/</id>
+    <published>2016-04-12T22:59:27.000Z</published>
+    <updated>2016-03-20T00:52:25.000Z</updated>
+    <content type="html"><![CDATA[<p><em>每个人都有最艰难的一年，将你的人生变得美好而广阔。</em></p>
+<p>我参加过两次高考。</p>
+<p>2011年夏天，考完数学，我茫然地走出考场。只能恍惚看到周围的人从我身边走过，讨论着议论着刚考完的试，可我却什么都听不清，只感觉到那天异常的闷热，闷热地让人窒息。</p>
+<p>考试前有个同学问了我一道矩阵题目，我给他讲解了一下，也就是这道题让我产生了思维定势，在考试中将及其简单的题目复杂化了，数学附加题，4题40分，一共30分钟，可最简单的第一题我却用了二十分钟，我满头大汗，依然没算出结果，回头一看题目才发现是我想法错了，题目给的答题空间早被我错误的答案写满，试卷上已经没有空白让我更改了，时间也来不及了，只得匆匆做了下一题，连最后两题都没来得及看便交了卷。从来没有想过，高考会在平时最有把握的附加题上栽跟头，这40分竟然最高只能得10分。</p>
+<p>感觉完了，这么多年的努力都白费了，我怪自己，却不知道是应该怪自己准备不周还是怪自己运气太差？</p>
+<p>曾经所有的自尊、骄傲瞬间灰飞烟灭……</p>
+<p>我哭着给我妈打电话说我不想继续考了。</p>
+<p>最终我还是坚持考完了剩余的科目。</p>
+<p>整个暑假，都是在不停地叹气中度过的，我不甘心，我不知道为什么会这样，为什么我所努力准备的高考给我的会是这样一个结局？我想不通。</p>
+<p>拿着数学附加题10分的成绩单和南京信息工程大学的录取通知书，老师同学都说二本已经不错了，但我清楚地知道这些不是我想要的。</p>
+<p>我决定复读。</p>
+<p>没想到那么坚定地坚持要去复读的我，看着同学都开始准备即将开始的大学生活，也面对我这前途未卜而又注定艰难的复读之路，在开学的前一天晚上突然退却了。就像雄赳赳去参战的士兵，在打仗前却没有勇气拿起手里的枪。</p>
+<p>怯懦如逃兵。</p>
+<p>曾经我认为我可以不顾任何险阻，而当险阻到了面前，我发现我没我想象的那么坚强，我不敢去面对前方等着我的炼狱般的生活，也看不到未来的任何希望，前方都是迷雾，全都是迷雾。</p>
+<p>是夜，我痛哭。</p>
+<p>卡莱尔说：“没有长夜痛哭过的人，不足语人生。”</p>
+<p>我长夜痛哭过，依然不足语人生，但一次长夜痛哭却可以让我对人生认识更深刻一些。</p>
+<p>每种选择后面都对应着一种人生，既然选择了一种人生，就要去接受去享受这种人生，不论困难还是容易。</p>
+<p>第二天，收拾行李，把往年的课本重新拿出来，我妈送我去学校，一路无言，当我重新走进熟悉的学校大门，回头挥手告别时，分明看到我妈也在流泪。</p>
+<p>单调的高三生活又开始了，每天依然是如山的试卷，不断的模拟考。我记得宿舍的起床铃的旋律，记得每天早晨6点校门口的包子与豆浆的味道，记得从宿舍到教室路旁的自行车修理铺，记得晚上路灯下我慢悠悠骑车回宿舍的身影，记得路旁小卖部里我经常使用的公用电话那老式的造型……</p>
+<p>又是一年高考，我又一次站在了这年轻的战场，这一次的我全副武装，持枪而立，不会后退半步。</p>
+<p>当我查询高考成绩时，握着电话的手止不住的发抖，当那电话里的语音报完我的成绩时，我抱着我妈喜极而泣，像个孩子。</p>
+<p>怎么能说“像”呢，在我妈眼里，我一直是个孩子。</p>
+<p>《岛上书店》里的A.J在妻子出车祸身亡之后逐渐沉沦，像陷入沼泽地一样越挣扎陷得越快，只好等着泥淖逐渐淹没头顶。小女孩玛雅的出现为深陷沼泽的A.J带来了曙光，他逐渐开始注意自己的生活方式，逐渐的拾回对生活的热爱。他说：</p>
+<blockquote>
+<p>一旦一个人在乎一件事，就发现自己不得不开始在乎一切事。<br>深陷泥潭，你需要一根绳子，玛雅就是上帝给A.J的一根绳子。</p>
+</blockquote>
+<p>我现在也偶尔会陷入对未来的焦虑之中无法自拔，感觉前途渺茫，看不到希望，对一切事物都抱有消极态度。想从这种状态里走出来就要努力去在意一件事，这件事可以是读书、健身、甚至是背两个单词，只要你在意了一件事，这件事就是将你从沼泽中拉出来的绳子。当你开始忙起来，一步步去提高自己，一步步去接近遥远的理想，自然就无暇去无谓的焦虑了。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><em>每个人都有最艰难的一年，将你的人生变得美好而广阔。</em></p>
+<p>我参加过两次高考。</p>
+<p>2011年夏天，考完数学，我茫然地走出考场。只能恍惚看到周围的人从我身边走过，讨论着议论着刚考完的试，可我却什么都听不清，只感觉到那天异常的闷热，闷热地让人]]>
+    </summary>
+    
+      <category term="读后感" scheme="http://rootlee.eu/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[小心自己的本能反应被别有用心的人利用--读《影响力》笔记]]></title>
+    <link href="http://rootlee.eu/%E5%BD%B1%E5%93%8D%E5%8A%9B/"/>
+    <id>http://rootlee.eu/影响力/</id>
+    <published>2016-04-12T22:59:27.000Z</published>
+    <updated>2015-11-05T18:01:19.000Z</updated>
+    <content type="html"><![CDATA[<p>人是高级动物，所以每个人身上都难免会有动物的本能反应，而别有用心的人便会乘机利用我们的这些本能反应，为自己谋利。<br>俗话说：吃人嘴短，拿人手短。 这便是利用人的接收恩惠后负罪感来达到自己的目的。生活中还有类似的种种事情，《影响力》这本书将生活中商家常用的一些手段分为六类原理来让我们警惕这些陷阱：</p>
+<h2 id="互惠性">互惠性</h2><p>人们接受了别人的好处之后便会产生愧疚感，便会总想着要去还这份人情，以将自己从这份愧疚感之中解脱。<br><strong>例子:</strong> <em>募捐时先送上小礼物，互相妥协</em></p>
+<h2 id="承诺一致性">承诺一致性</h2><p>人们总是使自己前后行为一致，即使前面的承诺并不正确，人们也倾向于维持承诺。<br><strong>例子：</strong> <em>共党抗美援朝时对俘虏的方式,商家促销让顾客先说商品的好处，各种活动的承诺签名。</em></p>
+<h2 id="社会认同性">社会认同性</h2><p>人们总是倾向于与周围的人保持一致。<br><strong>例子：</strong> <em>喜剧里配的人造笑声，剧院里捧场，冷漠的路人</em></p>
+<h2 id="喜好">喜好</h2><p>人们总是喜欢符合自己爱好的东西以及与所喜爱东西相关联的东西。<br><strong>例子：</strong> <em>爱屋及乌，车模，</em></p>
+<h2 id="权威">权威</h2><p>人们会倾向于相信专业人士的话，或者与权威相关联的东西。<br><strong>例子：</strong> <em>电击实验，不敢质疑医生的错误，广告请经常演医生的演员代言</em></p>
+<h2 id="短缺">短缺</h2><p>人们对于很难得到或者即将失去的东西会更加喜爱。<br><strong>例子</strong> <em>广告词中限时限量的口号，法国大革命，美国黑人争取权益，影院故意让人排队营造火爆的错觉</em></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>人是高级动物，所以每个人身上都难免会有动物的本能反应，而别有用心的人便会乘机利用我们的这些本能反应，为自己谋利。<br>俗话说：吃人嘴短，拿人手短。 这便是利用人的接收恩惠后负罪感来达到自己的目的。生活中还有类似的种种事情，《影响力》这本书将生活中商家常用的一些手段分为六类]]>
+    </summary>
+    
+      <category term="读后感" scheme="http://rootlee.eu/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[安防监控雷达发展现状]]></title>
+    <link href="http://rootlee.eu/radar/"/>
+    <id>http://rootlee.eu/radar/</id>
+    <published>2016-04-12T22:59:27.000Z</published>
+    <updated>2015-11-16T21:49:57.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="安防/监控雷达的概念">安防/监控雷达的概念</h1><p>安防雷达是一种便携式侦察监控雷达，可以安装在固定支架上，或安装于车辆上，多部雷达可以迅速形成防护网络。安防雷达由雷达传感器和配套软件组成，安防雷达广泛应用于重点区域的防护，比如电站、监狱、铁路道口等。<br>雷达配有大功率发射机及极低噪声输入放大器，采用CW体制，雷达探测前方几乎没有盲区。雷达的工作几乎不受能见度等天气条件的影响。由于其工作特点，安防雷达系统可以构成对大型围栏（如机场、监狱、场馆等）或建筑物的出入口形成封闭式的防范，为现代化建筑及重点区域防护和防盗方案，提供“御贼于户外”、住户自由活动于户内的高度人性化的安全防护。也可以应用于河道封锁、铁路道口或者需要快速布防的场合。</p>
+<h1 id="安防/监控雷达产业现状">安防/监控雷达产业现状</h1><h2 id="主要厂商">主要厂商</h2><p>安防雷达是最近几年才兴起的安防产品，由于它具备其它探测手段所没有的优势，所以被应用在多种场合中。这方面国外起步比较早，产品种类也很多。<br>知名的国外的品牌有：<br>美国的SpotterRF C20/C40/C550/C950系列安防监控雷达<br>德国的Innosent<br>英国的Navtech<br>国内的品牌有：<br>西安飞达电子科技有限公司的FD系列安防雷达。</p>
+<p><strong>注释：因为德国Innosent主要做安防雷达传感器，其他国内一些小公司的产品也不太成熟，下文的对比主要用美国的SpotterRF安防监控雷达和英国Navtech的AGS系列雷达以及国内的西安飞达电子科技有限公司的FD系列安防雷达相比较，其他厂商的比较请见附件：安防监控雷达行业现状.xlsx</strong></p>
+<h2 id="功能对比">功能对比</h2><p>各种安防雷达都具备侦测特定区域移动车辆和人员的功能，<br>此外西安飞达电子科技有限公司的FD系列的安防雷达还实现了如下功能：<br>无机械运动部件,电控扫描； 全天候24 小时工作；全区域实时连续监控；低误警率。<br>而美国的SpotterRF C20/C40/C550/C950系列安防监控雷达有以下特色：<br>摄像头自动定位；各种天气状况自适应；与智能手机相互配合；低误警率；每秒钟与GPS协调输出。<br>英国的Navtech AGS系列安防监控雷达有以下特色：<br>安装支架可调节，最高可达6米；可以使用太阳能供电；恶劣天气照常工作；低误警率；提供NavCover+支持平台。</p>
+<h2 id="性能对比">性能对比</h2><p>西安飞达电子科技有限公司的FD-1,FD-2,FD-3,FD-4安防雷达系列侦测距离：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">厂商</th>
+<th style="text-align:left">产品型号</th>
+<th style="text-align:left">行人探测距离</th>
+<th style="text-align:left">车辆探测距离</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">西安飞达电子科技</td>
+<td style="text-align:left">FD-4微型（200m）</td>
+<td style="text-align:left">200m</td>
+<td style="text-align:left">200m</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">FD-3近程（1km）</td>
+<td style="text-align:left">1000m</td>
+<td style="text-align:left">1500m</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">FD-2中程（5km）</td>
+<td style="text-align:left">5km</td>
+<td style="text-align:left">10km</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">FD-1远程（10km）</td>
+<td style="text-align:left">10km</td>
+<td style="text-align:left">16km/25km</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>美国SpotterRF C20/C40/C550/C950系列安防监控雷达侦测距离：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">厂商</th>
+<th style="text-align:left">产品型号</th>
+<th style="text-align:left">行人探测距离</th>
+<th style="text-align:left">车辆探测距离</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">美国spotterrf</td>
+<td style="text-align:left">C20</td>
+<td style="text-align:left">120m</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">c40</td>
+<td style="text-align:left">350m</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">C40-EXT</td>
+<td style="text-align:left">450m</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">C550</td>
+<td style="text-align:left">850m</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">C550-EXT</td>
+<td style="text-align:left">950m</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">C950</td>
+<td style="text-align:left">1350m</td>
+<td style="text-align:left">2000m</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>英国的Navtech AGS系列安防监控雷达侦测距离：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">厂商</th>
+<th style="text-align:left">产品型号</th>
+<th style="text-align:left">行人探测距离</th>
+<th style="text-align:left">车辆探测距离</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">英国Navtech</td>
+<td style="text-align:left">AGS200</td>
+<td style="text-align:left">200m</td>
+<td style="text-align:left">200m</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">AGS200-X</td>
+<td style="text-align:left">200m</td>
+<td style="text-align:left">200m</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">AGS500</td>
+<td style="text-align:left">500m</td>
+<td style="text-align:left">500m</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">AGS500-X</td>
+<td style="text-align:left">350m</td>
+<td style="text-align:left">500m</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">AGS800</td>
+<td style="text-align:left">750m</td>
+<td style="text-align:left">800m</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">AGS800-X</td>
+<td style="text-align:left">600m</td>
+<td style="text-align:left">800m</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">AGS1600</td>
+<td style="text-align:left">1000m</td>
+<td style="text-align:left">1454m</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">AGS1600-X</td>
+<td style="text-align:left">760m</td>
+<td style="text-align:left">1454m</td>
+</tr>
+</tbody>
+</table>
+<p> 在探测距离上西安飞达电子科技有限公司的FD-1,FD-2,FD-3,FD-4安防雷达系列明显占据优势<br><strong>更多详细对比请见附件EXCEL文件：安防监控雷达行业现状.xlsx</strong></p>
+<h2 id="技术路线">技术路线</h2><p>广泛应用的安防监控系统主要有红外报警器，振动传感报警器，微波对射系统，光栅防越栅栏，静电感应报警器，3D安防雷达，微机视觉报警器等，通常针对不同场合选择合适的安防设备。<br>红外对射是最早普及的一种周界防范手段。它的主要缺陷表现在对环境适应能力差，易受可见光的影响。防范区域不灵活，封锁线只能为直线，无法知道闯入者具体位置，无法适应地形变化。好处是技术成熟，国内做相关产品的公司众多，主要应用于室内安防和控制。<br>振动传感探测器，静电感应探测器，压力传感探测器都属于传感器类周界防护设备。其报警方式都是入侵者直接或间接碰触到传感器，引发报警。易受安装环境制约，尤其大面积布防时，成本太高。优点是稳定可靠，可知道入侵者具体方位。<br>视频移动探测器的任务是对摄像机的图像进行电子分析，通过比较几帧图像的差异判断画面有无变化，从而判断是否有入侵者闯入。这种装置能够对画面进行长时间监视，并在出现情况时通知安防人员。缺陷是无法适应外部环境，复杂的自然环境如光线，天气等容易导致系统误报。防护距离有限，通常为几十米。<br>微波对射系统原理上类似红外对射，不同的是由于它发射的是微波，所以对自然环境（雨，雾，强光）的适应性比红外线强的多。<br>安防雷达是安防市场上兴起的一种新的技术手段。通常，雷达多应用于军事，气象，航天领域中。随着技术的发展，低成本高性能的小型雷达被开发出来。与以上几种技术手段相比，雷达具有抗干扰能力强，灵敏度高，环境适应性强，探测距离远，综合成本低的优点。<br>普通的雷达发射一条直线形波束，凡是被波束照射的活动目标，雷达可以计算出其距离及速度。配合转台可实现360°区域覆盖。<br>新型的3D雷达可照射一定角度的区域，在雷达不动的前提下。凡是在雷达波束区域内的活动目标，其方位，距离，速度信息都可以被准确的计算出来。3D即代表距离，速度，方位。</p>
+<h2 id="体积/功耗">体积/功耗</h2><p>西安飞达电子科技有限公司的FD-1,FD-2,FD-3,FD-4安防雷达系列体积与功耗：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">厂商</th>
+<th style="text-align:left">产品型号</th>
+<th style="text-align:left">体积</th>
+<th style="text-align:left">功耗</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">西安飞达电子科技</td>
+<td style="text-align:left">FD-4微型（200m）</td>
+<td style="text-align:left">190×150×38 mm</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">FD-3近程（1km）</td>
+<td style="text-align:left">600×320×100 mm</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">FD-2中程（5km）</td>
+<td style="text-align:left">410×330×90 mm</td>
+<td style="text-align:left">≤40 W</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">FD-1远程（10km）</td>
+<td style="text-align:left">680×530×160 mm</td>
+<td style="text-align:left">≤60 W</td>
+</tr>
+</tbody>
+</table>
+<p>美国SpotterRF C20/C40/C550/C950系列安防监控雷达体积与功耗：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">厂商</th>
+<th style="text-align:left">产品型号</th>
+<th style="text-align:left">体积</th>
+<th style="text-align:left">功耗</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">美国spotterrf</td>
+<td style="text-align:left">C20</td>
+<td style="text-align:left">172 x 225 x 42mm</td>
+<td style="text-align:left">&lt; 8W</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">c40</td>
+<td style="text-align:left">172 x 225 x 42mm</td>
+<td style="text-align:left">&lt; 8W</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">C40-EXT</td>
+<td style="text-align:left">172 x 225 x 42mm</td>
+<td style="text-align:left">&lt; 8W</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">C550</td>
+<td style="text-align:left">217.5 x 250 x 65mm</td>
+<td style="text-align:left">&lt; 10W</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">C550-EXT</td>
+<td style="text-align:left">217.5 x 250 x 65mm</td>
+<td style="text-align:left">&lt; 10W</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">C950</td>
+<td style="text-align:left">242 x 356 x 56.25mm</td>
+<td style="text-align:left">&lt; 10W</td>
+</tr>
+</tbody>
+</table>
+<p>英国的Navtech AGS系列安防监控雷达体积与功耗：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">厂商</th>
+<th style="text-align:left">产品型号</th>
+<th style="text-align:left">体积</th>
+<th style="text-align:left">功耗</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">英国 Navtech</td>
+<td style="text-align:left">AGS200</td>
+<td style="text-align:left">球型332 x 332 x576mm</td>
+<td style="text-align:left">18W</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">AGS200-X</td>
+<td style="text-align:left">球型332 x 332 x576mm</td>
+<td style="text-align:left">18W</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">AGS500</td>
+<td style="text-align:left">球型332 x 332 x576mm</td>
+<td style="text-align:left">18W</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">AGS500-X</td>
+<td style="text-align:left">球型332 x 332 x576mm</td>
+<td style="text-align:left">18W</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">AGS800</td>
+<td style="text-align:left">球型332 x 332 x576mm</td>
+<td style="text-align:left">18W</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">AGS800-X</td>
+<td style="text-align:left">球型332 x 332 x576mm</td>
+<td style="text-align:left">18W</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">AGS1600</td>
+<td style="text-align:left">球型516 x 516 x 725mm</td>
+<td style="text-align:left">18W</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">AGS1600-X</td>
+<td style="text-align:left">球型516 x 516 x 725mm</td>
+<td style="text-align:left">18W</td>
+</tr>
+</tbody>
+</table>
+<p>在功耗上美国spotterrf公司的C20/C40/C550/C950因为探测距离比较小，所以功耗也就更低一些。</p>
+<p><strong>更多详细对比请见附件EXCEL文件：安防监控雷达行业现状.xlsx</strong></p>
+<h2 id="价格">价格</h2><p>在价格上，西安飞达电子科技有限公司的FD-4微型（200m）在阿里巴巴上标价9800元，FD-3近程（1km）在淘宝上标价52800人民币。美国spotterrf公司的C40雷达官网售价12,000美元，折合人民币74400元，很明显， 美国spotterrf公司C40探测距离只有350米，但是价格却比西安飞达电子科技有限公司探测距离1km的FD-3近程（1km）还要贵两万块。<br>英国的Navtech AGS200（探测距离200m） 加上配套设施售价10000-15000英镑，约合人民币96974 - 145461元，价格最昂贵。</p>
+<h1 id="现有产品的优缺点">现有产品的优缺点</h1><p>西安飞达电子科技有限公司的FD-1,FD-2,FD-3,FD-4安防雷达系列<br>优点：该雷达是一种微型多用途监视雷达系统，采用FMCW体制，具有体积小、重量轻、可靠性高、价格便宜以及距离盲区小、无速度盲点、高距离分辨力、良好的抗干扰性能等优点。该雷达设计有以太网接口、串接口，可与光电系统及上位机通信<br>缺点：天线搜索范围太窄（30°），与之相配套的相关软件不够完善，与其他安防系统的协调工作能力太差。外观不够美观。</p>
+<p>美国SpotterRF C20/C40/C550/C950系列安防监控雷达<br>优点：摄像头自动定位；各种天气状况自适应；与智能手机相互配合；每秒钟与GPS协调输出；天线搜索范围宽（120°）；外观美观；<br>缺点：价格昂贵；侦测距离短。</p>
+<p>英国的Navtech AGS系列安防监控雷达<br>优点：安装支架可调节，最高可达6米；可以使用太阳能供电；恶劣天气照常工作；低误警率；提供NavCover+支持平台。<br>缺点：价格昂贵，侦测距离短，体积较大。</p>
+<h1 id="未来的发展趋势">未来的发展趋势</h1><h2 id="功能趋势">功能趋势</h2><p>1.由军事应用逐渐转向民用领域。<br>2.由单独工作逐渐转向与其他安防系统协同工作。<br>3.有电脑监控逐渐转向手持类设备（如手机，平板）监控。<br>4.视角覆盖将由单视角点状布局向 1 维多视角布局、 2 维多视角布局演化，最终趋于 3 维多视角布局。</p>
+<h2 id="性能趋势">性能趋势</h2><p>性能逐渐向 低功耗，小体积，低成本 方向发展。<br>雷达作为一种重要的检测目标手段，以前多用在军事应用上，特点是探测距离很远，体积较大，成本角高。近年来，随着电子水平及制造工艺的不断发展，电子器件不断小型化，低价化，民用小型化雷达被开发出来，并应用于各类安防系统中。</p>
+<h2 id="技术路线趋势">技术路线趋势</h2><p>与GPS全球定位系统等现代系统相互协调工作。<br>由普通雷达向新型3D雷达发展。<br>普通的雷达发射一条直线形波束，凡是被波束照射的活动目标，雷达可以计算出其距离及速度。配合转台可实现360°区域覆盖。<br>新型的3D雷达可照射一定角度的区域，在雷达不动的前提下。凡是在雷达波束区域内的活动目标，其方位，距离，速度信息都可以被准确的计算出来。3D即代表距离，速度，方位。</p>
+<h1 id="附件">附件</h1><p><a href="https://onedrive.live.com/redir?resid=867E559822576758!10076&amp;authkey=!AENj1iCeQkYBzBk&amp;ithint=file%2cxlsx" target="_blank" rel="external"><strong>安防监控雷达行业现状.xlsx</strong></a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="安防/监控雷达的概念">安防/监控雷达的概念</h1><p>安防雷达是一种便携式侦察监控雷达，可以安装在固定支架上，或安装于车辆上，多部雷达可以迅速形成防护网络。安防雷达由雷达传感器和配套软件组成，安防雷达广泛应用于重点区域的防护，比如电站、监狱、铁路道口等。<b]]>
+    </summary>
+    
+      <category term="专业相关" scheme="http://rootlee.eu/categories/%E4%B8%93%E4%B8%9A%E7%9B%B8%E5%85%B3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Python多线程学习心得]]></title>
+    <link href="http://rootlee.eu/python_thread/"/>
+    <id>http://rootlee.eu/python_thread/</id>
+    <published>2016-04-12T22:59:27.000Z</published>
+    <updated>2015-11-29T22:59:16.000Z</updated>
+    <content type="html"><![CDATA[<p>使用python写程序，并用PyQt创建一个Gui。</p>
+<h1 id="问题描述">问题描述</h1><p>当python程序运行耗费时间过长时，便会阻塞Gui进程，导致Gui无法刷新，从而使得程序出现“未响应”的情况。</p>
+<h1 id="解决办法">解决办法</h1><p>这种情况下便需要使用Python的多线程功能。<br>最常见的线程协同方式：UI主线程+后台线程<br>UI被触发后，对应的主线程创建后台线程，后台线程在后台运行，并通过发信号给主线程，从而间接控制UI的显示。</p>
+<h1 id="例子">例子</h1><p>以下是我编写的一个英雄联盟语音汉化程序（因为在国外，LOL只能玩俄服，俄服的俄语虽然也好听，但终究感觉不如汉语亲切，于是便用python写了这个汉化小程序），程序功能极其简单，就是简单的把汉语语音解压到俄服LOL的安装文件夹语音文件位置，并将其覆盖。但是，解压很耗费时间，如果将解压程序和UI放在一个线程里，就会导致程序长时间的“未响应”状态，这就是因为解压过程阻塞了UI进程。后来使用多线程改进后问题得到解决。以下是部分程序（不完整，程序不太重要的部分被略去了）</p>
+<p>hanhua.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Ui_Dialog</span><span class="params">(QtGui.QWidget)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span>  <span class="title">__init__</span><span class="params">(self, parent = None)</span>:</span></span><br><span class="line">        QtGui.QWidget.__init__(self, parent)</span><br><span class="line">        self.setupUi(self)</span><br><span class="line">        self.retranslateUi(self)</span><br><span class="line">        self.connect(self.pushButton, QtCore.SIGNAL(<span class="string">'clicked()'</span>),self.un_zip)      //点击按钮后进入un_zip函数</span><br><span class="line">        self.setWindowIcon(QtGui.QIcon(<span class="string">'web.png'</span>))</span><br><span class="line">        self.setWindowTitle(_fromUtf8(<span class="string">'LOL俄服汉化'</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setupUi</span><span class="params">(self, Dialog)</span>:</span></span><br><span class="line">        ...  //初始化UI，程序略</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">retranslateUi</span><span class="params">(self, Dialog)</span>:</span></span><br><span class="line">        Dialog.setWindowTitle(_translate(<span class="string">"Dialog"</span>, <span class="string">"Dialog"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.pushButton.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"汉化"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"LOL俄服汉化语音"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label_2.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"--By Root lee"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label_3.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"适用于俄服5.16版"</span>, <span class="keyword">None</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">updateUI</span><span class="params">(self)</span>:</span></span><br><span class="line">        ...   //更新UI，程序略</span><br><span class="line">    <span class="function"><span class="keyword">def</span>  <span class="title">un_zip</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">from</span> threads <span class="keyword">import</span> MyThread   //导入进程类</span><br><span class="line">        self.bwThread = MyThread()   //新建进程对象</span><br><span class="line">        self.connect(self.bwThread.QtCore.SIGNAL(<span class="string">"where"</span>),self.updateUI)   //关联子进程发射过来的信号与updateUI函数</span><br><span class="line">        self.bwThread.start()    //运行子线程</span><br></pre></td></tr></table></figure></p>
+<p>thread.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyThread</span><span class="params">(QtCore.QThread)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,parent = None)</span>:</span></span><br><span class="line">        ...   //初始化，程序略</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        ...   //解压相关代码，略</span><br><span class="line">        self.emit(QtCore.SIGNAL(<span class="string">"where"</span>),j)  //发送<span class="string">"where"</span>信号给UI线程，然后UI线程调用updateUI()函数来更新UI</span><br></pre></td></tr></table></figure></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>使用python写程序，并用PyQt创建一个Gui。</p>
+<h1 id="问题描述">问题描述</h1><p>当python程序运行耗费时间过长时，便会阻塞Gui进程，导致Gui无法刷新，从而使得程序出现“未响应”的情况。</p>
+<h1 id="解决办法">解决办法<]]>
+    </summary>
+    
+      <category term="pyqt" scheme="http://rootlee.eu/tags/pyqt/"/>
+    
+      <category term="python" scheme="http://rootlee.eu/tags/python/"/>
+    
+      <category term="Python" scheme="http://rootlee.eu/categories/Python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[python使用mkdir函数出现错误WindowsError:[Error 3]的解决办法]]></title>
+    <link href="http://rootlee.eu/python_mkdir/"/>
+    <id>http://rootlee.eu/python_mkdir/</id>
+    <published>2016-04-12T22:59:27.000Z</published>
+    <updated>2016-03-11T22:36:03.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="错误出现背景">错误出现背景</h1><p>最近在写python爬虫抓取照片时，需要将抓到的照片按学年、学院、班级建立文件夹并将相应图片存入相应文件夹。程序中使用到了这样一段代码，即先判断即将创建的文件夹是否存在，如果不存在，则创建该文件夹，代码类似如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-  </span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line">path_of_pic = <span class="string">'1\\2'</span>  <span class="comment">#当前文件夹子文件夹1，子文件夹1里又含有子文件夹2</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(path_of_pic):    <span class="comment">#如果文件夹不存在则创建</span></span><br><span class="line">    os.mkdir(path_of_pic)</span><br></pre></td></tr></table></figure>
+<p>但是运行时却出现错误：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Traceback (most recent <span class="operator"><span class="keyword">call</span> <span class="keyword">last</span>):</span><br><span class="line">  <span class="keyword">File</span> <span class="string">"path.py"</span>, line <span class="number">8</span>, <span class="keyword">in</span> &lt;<span class="keyword">module</span>&gt;</span><br><span class="line">    os.mkdir(path_of_pic)</span><br><span class="line">WindowsError: [<span class="keyword">Error</span> <span class="number">3</span>] : <span class="string">'1\\2'</span></span></span><br></pre></td></tr></table></figure></p>
+<p><img src="error3.png" alt="error3"></p>
+<h1 id="解决办法">解决办法</h1><p>首先我查阅了WindowsError的错误代码Error 3 的意思，微软的 官方网站对这个错误的解释为：</p>
+<blockquote>
+<p>ERROR_PATH_NOT_FOUND<br>   3 (0x3)<br>   The system cannot find the path specified.</p>
+</blockquote>
+<p>意思就是”系统找不到该路径”。<br>检查代码，发现也许是mkdir不能在不存在的文件夹“1”下面建立另一个文件夹，因为程序调用创建文件夹路径时，找不到文件夹“1”，所以会报错说找不到路径。</p>
+<p>然后去搜索mkdir的相关信息，发现果然和我想得一样：mkdir只能在已存在的文件夹里创建子文件夹。<br>如果想实现程序想要的直接创建多级目录的目标，则需要另外一个函数“makedirs”，这个函数的功能是创建递归的目录树，即可以一次递归创建多级目录，所以我们将原程序修改为如下：<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import os</span><br><span class="line">path_of_pic = <span class="string">'1\\2'</span>  #当前文件夹子文件夹<span class="number">1</span>，子文件夹<span class="number">1</span>里又含有子文件夹<span class="number">2</span></span><br><span class="line"><span class="keyword">if</span> not os<span class="class">.path</span><span class="class">.exists</span>(path_of_pic):    #如果文件夹不存在则创建</span><br><span class="line">    os.<span class="function"><span class="title">makedirs</span><span class="params">(path_of_pic)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>运行程序后，<br><img src="path.png" alt="path"><br>发现二级目录已经成功创建，问题解决。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="错误出现背景">错误出现背景</h1><p>最近在写python爬虫抓取照片时，需要将抓到的照片按学年、学院、班级建立文件夹并将相应图片存入相应文件夹。程序中使用到了这样一段代码，即先判断即将创建的文件夹是否存在，如果不存在，则创建该文件夹，代码类似如下：</p>]]>
+    </summary>
+    
+      <category term="python" scheme="http://rootlee.eu/tags/python/"/>
+    
+      <category term="python" scheme="http://rootlee.eu/categories/python/"/>
+    
+  </entry>
+  
+</feed>

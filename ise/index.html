@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="I&#39;m Root lee !">
+    <title>Xilinx ISE 14.4 安装与破解 - I&#39;m Root lee !</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="I&#39;m Root lee !">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="简介ISE的全称为Integrated Software Environment，即“集成软件环境”，是Xilinx公司的硬件设计工具。相对容易使用的、首屈一指的PLD设计环境 ！ ISE将先进的技术与灵活性、易使用性的图形界面结合在一起，不管您的经验如何，都让您在最短的时间，以最少的努力，达到最佳的硬件设计。
+ISE工程设计流程下面主要概述ISE的基本开发流程以及在开发过程中的各个阶段需要用到的">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Xilinx ISE 14.4 安装与破解">
+<meta property="og:url" content="http://rootlee.eu/ise/index.html">
+<meta property="og:site_name" content="I'm Root lee !">
+<meta property="og:description" content="简介ISE的全称为Integrated Software Environment，即“集成软件环境”，是Xilinx公司的硬件设计工具。相对容易使用的、首屈一指的PLD设计环境 ！ ISE将先进的技术与灵活性、易使用性的图形界面结合在一起，不管您的经验如何，都让您在最短的时间，以最少的努力，达到最佳的硬件设计。
+ISE工程设计流程下面主要概述ISE的基本开发流程以及在开发过程中的各个阶段需要用到的">
+<meta property="og:updated_time" content="2015-10-28T19:58:05.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Xilinx ISE 14.4 安装与破解">
+<meta name="twitter:description" content="简介ISE的全称为Integrated Software Environment，即“集成软件环境”，是Xilinx公司的硬件设计工具。相对容易使用的、首屈一指的PLD设计环境 ！ ISE将先进的技术与灵活性、易使用性的图形界面结合在一起，不管您的经验如何，都让您在最短的时间，以最少的努力，达到最佳的硬件设计。
+ISE工程设计流程下面主要概述ISE的基本开发流程以及在开发过程中的各个阶段需要用到的">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/rootlee.jpg"/>
+    
+    
+        <meta property="og:image" content="/ise/ise.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://rootlee.eu/ise/ise.jpg" />
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style.min.css" type="text/css">
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">I&#39;m Root lee !</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="/#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/rootlee.jpg"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/ 
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="/#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">Xilinx ISE 14.4 安装与破解</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Tue Apr 12 2016 22:59:27 GMT+0000">
+        Apr 12, 2016
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/专业软件/">专业软件</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h2 id="简介">简介</h2><p>ISE的全称为Integrated Software Environment，即“集成软件环境”，是Xilinx公司的硬件设计工具。相对容易使用的、首屈一指的PLD设计环境 ！ ISE将先进的技术与灵活性、易使用性的图形界面结合在一起，不管您的经验如何，都让您在最短的时间，以最少的努力，达到最佳的硬件设计。</p>
+<h2 id="ISE工程设计流程">ISE工程设计流程</h2><p>下面主要概述ISE的基本开发流程以及在开发过程中的各个阶段需要用到的工具软件。<br>利用Xilinx公司的ISE开发设计软件的工程设计流程，具体分为五个步骤：即输入（Design Entry）、综合（Synthesis）、实现(Implementation)、验证（Verification）、下载（Download）。</p>
+<ol>
+<li>图形或文本输入(Design Entry)<br>图形或文本输入包括原理图、状态机、波形图、硬件描述语言（HDL），是工程设计的第一步，ISE集成的设计工具主要包括HDL编辑器（HDL Editor）、状态机编辑器（StateCAD）、原理图编辑器（ECS）、IP核生成器（CoreGenerator）和测试激励生成器（HDL Bencher）等。<br>常用的设计输入方法是硬件描述语言（HDL）和原理图设计输入方法。原理图输入是一种常用的基本的输入方法，其是利用元件库的图形符号和连接线在ISE软件的图形编辑器中作出设计原理图，ISE中设置了具有各种电路元件的元件库，包括各种门电路、触发器、锁存器、计数器、各种中规模电路、各种功能较强的宏功能块等用户只要点击这些器件就能调入图形编辑器中。这种方法的优点是直观、便于理解、元件库资源丰富。但是在大型设计中，这种方法的可维护性差，不利于模块建设与重用。更主要的缺点是：当所选用芯片升级换代后，所有的原理图都要作相应的改动。故在ISE软件中一般不利用此种方法。<br>为了克服原理图输入方法的缺点，目前在大型工程设计中，在ISE软件中常用的设计方法是HDL设计输入法，其中影响最为广泛的HDL语言是VHDL和Verilog HDL。它们的共同优点是利于由顶向下设计，利于模块的划分与复用，可移植性好，通用性强，设计不因芯片的工艺和结构的变化而变化，更利于向ASIC的移植，故在ISE软件中推荐使用HDL设计输入法。<br>波形输入及状态机输入方法是两种最常用的辅助设计输入方法，使用波形输入法时，只要绘制出激励波形的输出波形，ISE软件就能自动地根据响应关系进行设计；而使用状态机输入时，只需设计者画出状态转移图，ISE软件就能生成相应的HDL代码或者原理图，使用十分方便。其中ISE工具包中的StateCAD就能完成状态机输入的功能。但是需要指出的是，后两种设计方法只能在某些特殊情况下缓解设计者的工作量，并不适合所有的设计。</li>
+<li>综合（Synthesis）<br>综合是将行为和功能层次表达的电子系统转化为低层次模块的组合。一般来说，综合是针对VHDL来说的，即将VHDL描述的模型、算法、行为和功能描述转换为FPGA/CPLD基本结构相对应的网表文件，即构成对应的映射关系。<br>在Xilinx ISE中，综合工具主要有Synplicity公司的Synplify/Synplify Pro，Synopsys公司的FPGA Compiler II/ Express， Exemplar Logic公司的 LeonardoSpectrum和Xilinx ISE 中的XST等，它们是指将HDL语言、原理图等设计输入翻译成由与、或、非门，RAM，寄存器等基本逻辑单元组成的逻辑连接（网表），并根据目标与要求优化所形成的逻辑连接，输出edf和edn等文件，供CPLD/FPGA厂家的布局布线器进行实现。</li>
+<li>实现(Implementation)<br>实现是根据所选的芯片的型号将综合输出的逻辑网表适配到具体器件上。Xilinx ISE的实现过程分为：翻译（Translate）、映射（Map）、布局布线（Place &amp; Route）等3个步骤。<br>ISE集成的实现工具主要有约束编辑器（Constraints Editor）、引脚与区域约束编辑器（PACE）、时序分析器（Timing Analyzer）、FPGA底层编辑器（FGPA Editor）、芯片观察窗（Chip Viewer）和布局规划器（Floorplanner）等。</li>
+<li>验证（Verification）<br>验证(Verification)包含综合后仿真和功能仿真（Simulation）等。功能仿真就是对设计电路的逻辑功能进行模拟测试，看其是否满足设计要求，通常是通过波形图直观地显示输入信号与输出信号之间的关系。<br>综合后仿真在针对目标器件进行适配之后进行，综合后仿真接近真实器件的特性进行，能精确给出输入与输出之间的信号延时数据。<br>ISE可结合第三方软件进行仿真，常用的工具如Model Tech公司的仿真工具ModelSim和测试激励生成器HDL Bencher ，Synopsys公司的VCS等。通过仿真能及时发现设计中的错误，加快设计中的错误，加快设计进度，提高设计的可靠性。<br>每个仿真步骤如果出现问题，就需要根据错误的定位返回到相应的步骤更改或者重新设计。</li>
+<li>下载（Download）<br>下载（Download）即编程（Program）设计开发的最后步骤就是将已经仿真实现的程序下载到开发板上，进行在线调试或者说将生成的配置文件写入芯片中进行测试。在ISE中对应的工具是iMPACT。</li>
+</ol>
+<blockquote>
+<p><a href="https://onedrive.live.com/redir?resid=867E559822576758!10038&amp;authkey=!AP4mqUvprPhp-jU&amp;ithint=file%2ctorrent" target="_blank" rel="external">Xilinx ISE 14.4 下载</a><br><a href="https://onedrive.live.com/redir?resid=867E559822576758!10039&amp;authkey=!ANoaL_KtyxAVSTw&amp;ithint=file%2crar" target="_blank" rel="external">Xilinx ISE 14.4 破解文件下载</a></p>
+</blockquote>
+<h2 id="破解方法">破解方法</h2><ol>
+<li>在 “Xilinx License Configuration Manager” 中找到 “Manage Xilinx Licenses”</li>
+<li>点击 “Copy License…”</li>
+<li>选择这个破解包里的”xilinx_ise.lic”</li>
+</ol>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/开发软件/">开发软件</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/isim/"  data-tooltip="ISE自带仿真器报错：ERROR:Simulator:861 – Failed to link the design 解决办法">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/img_process/" data-tooltip="在Matlab中使用均值和中值滤波法去除图像中的噪点">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://rootlee.eu/ise/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://rootlee.eu/ise/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://rootlee.eu/ise/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2016 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/isim/"  data-tooltip="ISE自带仿真器报错：ERROR:Simulator:861 – Failed to link the design 解决办法">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/img_process/" data-tooltip="在Matlab中使用均值和中值滤波法去除图像中的噪点">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://rootlee.eu/ise/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://rootlee.eu/ise/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://rootlee.eu/ise/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://rootlee.eu/ise/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://rootlee.eu/ise/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://rootlee.eu/ise/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/rootlee.jpg"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>涉猎俄语，热爱编程，犹爱Python</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Student</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Ukrain
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script.min.js" type="text/javascript"></script>
+<!--SCRIPTS END-->
+
+
+
+</html>

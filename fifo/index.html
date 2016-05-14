@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="I&#39;m Root lee !">
+    <title>XILINX的IP核FIFO学习记录 - I&#39;m Root lee !</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="I&#39;m Root lee !">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="什么是IP核？在集成电路的可重用设计方法学中，IP核，全称知识产权核（英语：intellectual property core），是指某一方提供的、形式为逻辑单元、芯片设计的可重用模块。IP核通常已经通过了设计验证，设计人员以IP核为基础进行设计，可以缩短设计所需的周期。IP核可以通过协议由一方提供给另一方，或由一方独自占有。IP核的概念源于产品设计的专利证书和源代码的版权等。设计人员能够以IP">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="XILINX的IP核FIFO学习记录">
+<meta property="og:url" content="http://rootlee.eu/fifo/index.html">
+<meta property="og:site_name" content="I'm Root lee !">
+<meta property="og:description" content="什么是IP核？在集成电路的可重用设计方法学中，IP核，全称知识产权核（英语：intellectual property core），是指某一方提供的、形式为逻辑单元、芯片设计的可重用模块。IP核通常已经通过了设计验证，设计人员以IP核为基础进行设计，可以缩短设计所需的周期。IP核可以通过协议由一方提供给另一方，或由一方独自占有。IP核的概念源于产品设计的专利证书和源代码的版权等。设计人员能够以IP">
+<meta property="og:image" content="http://rootlee.eu/fifosim1.png">
+<meta property="og:image" content="http://rootlee.eu/fifosim2.png">
+<meta property="og:updated_time" content="2015-11-16T21:46:26.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="XILINX的IP核FIFO学习记录">
+<meta name="twitter:description" content="什么是IP核？在集成电路的可重用设计方法学中，IP核，全称知识产权核（英语：intellectual property core），是指某一方提供的、形式为逻辑单元、芯片设计的可重用模块。IP核通常已经通过了设计验证，设计人员以IP核为基础进行设计，可以缩短设计所需的周期。IP核可以通过协议由一方提供给另一方，或由一方独自占有。IP核的概念源于产品设计的专利证书和源代码的版权等。设计人员能够以IP">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/rootlee.jpg"/>
+    
+    
+        <meta property="og:image" content="/fifo/fifo.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://rootlee.eu/fifo/fifo.png" />
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style.min.css" type="text/css">
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">I&#39;m Root lee !</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="/#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/rootlee.jpg"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/ 
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="/#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">XILINX的IP核FIFO学习记录</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Tue Apr 12 2016 22:59:27 GMT+0000">
+        Apr 12, 2016
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/专业相关/">专业相关</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h1 id="什么是IP核？">什么是IP核？</h1><p>在集成电路的可重用设计方法学中，IP核，全称知识产权核（英语：intellectual property core），是指某一方提供的、形式为逻辑单元、芯片设计的可重用模块。IP核通常已经通过了设计验证，设计人员以IP核为基础进行设计，可以缩短设计所需的周期。IP核可以通过协议由一方提供给另一方，或由一方独自占有。IP核的概念源于产品设计的专利证书和源代码的版权等。设计人员能够以IP核为基础进行特殊應用積體電路或现场可编程逻辑门阵列的逻辑设计，以减少设计周期。<br>IP核分为软核、硬核和固核。软核通常是与工艺无关、具有寄存器传输级硬件描述语言描述的设计代码，可以进行后续设计；硬核是前者通过逻辑综合、布局、布线之后的一系列表征文件，具有特定的工艺形式、物理实现方式；固核则通常介于上面两者之间，它已经通过功能验证、时序分析等过程，设计人员可以以逻辑门级网表的形式获取。</p>
+<h1 id="什么是FIFO?">什么是FIFO?</h1><p>FIFO是英文First In First Out 的缩写，是一种先进先出的数据缓存器，他与普通存储器的区别是没有外部读写地址线，这样使用起来非常简单，但缺点就是只能顺序写入数据，顺序的读出数据，其数据地址由内部读写指针自动加1完成，不能像普通存储器那样可以由地址线决定读取或写入某个指定的地址。</p>
+<h1 id="如何在ISE中调用FIFO的IP核？">如何在ISE中调用FIFO的IP核？</h1><ol>
+<li>在新建的工程上右击选择 New Source…</li>
+<li>选择IP(Core Generator &amp; Architecture Wizard)选项,并为将创建的IP核命名。</li>
+<li>在FIFO Generator中设置相应的参数，比如写数据宽度，读数据宽度以及FIFO深度等等。设置完点击Generate，即可生成fifo核。</li>
+<li>设置完即可看到工程中出现了一个fifo.xco的文件，点击该文件并双击下面的 View HDL Function Model ,即可查看fifo核的各个接口。</li>
+</ol>
+<h1 id="测试和仿真FIFO核">测试和仿真FIFO核</h1><ol>
+<li><p>编写myfifo.v 模块用来测试fifo是否正常工作。<br>Myfifo.v 代码如下：<br><strong>Verilog新手一个，虽然这只是一个简单的测试模块，但仍然会有一些常识错误，但我还是决定展示出来，毕竟勇于承认自己的不足，才会发现更好的自己。</strong> <em>-_-</em></p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">`</span><span class="keyword">timescale</span> <span class="number">1</span>ns <span class="keyword">/</span> <span class="number">1</span>ps</span><br><span class="line"><span class="comment">//////////////////////////////////////////////////////////////////////////////////</span></span><br><span class="line"><span class="comment">// Company: </span></span><br><span class="line"><span class="comment">// Engineer: </span></span><br><span class="line"><span class="comment">// </span></span><br><span class="line"><span class="comment">// Create Date:    15:07:31 11/15/2015 </span></span><br><span class="line"><span class="comment">// Design Name: </span></span><br><span class="line"><span class="comment">// Module Name:   myfifo </span></span><br><span class="line"><span class="comment">// Project Name: </span></span><br><span class="line"><span class="comment">// Target Devices: </span></span><br><span class="line"><span class="comment">// Tool versions: </span></span><br><span class="line"><span class="comment">// Description: </span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Dependencies: </span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Revision: </span></span><br><span class="line"><span class="comment">// Revision 0.01 - File Created</span></span><br><span class="line"><span class="comment">// Additional Comments: </span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">//////////////////////////////////////////////////////////////////////////////////</span></span><br><span class="line"><span class="keyword">module</span> myfifo();</span><br><span class="line"> <span class="typename">wire</span> rst ;</span><br><span class="line"> <span class="comment">//以下写测试</span></span><br><span class="line"> <span class="typename">reg</span> wr_clk;  <span class="comment">//写时钟</span></span><br><span class="line"> <span class="typename">wire</span> almost_full;  <span class="comment">//将要满标志位</span></span><br><span class="line"> <span class="typename">reg</span> [<span class="number">7</span><span class="keyword">:</span><span class="number">0</span>] din;     <span class="comment">//要写入的数据</span></span><br><span class="line"> <span class="keyword">assign</span> rst<span class="keyword">=</span><span class="number">1'b0</span>;   <span class="comment">//reset置0</span></span><br><span class="line"> <span class="typename">reg</span> wr_en;         <span class="comment">//写使能</span></span><br><span class="line"> </span><br><span class="line"> <span class="keyword">initial</span> <span class="keyword">begin</span>       <span class="comment">//初始化</span></span><br><span class="line">	wr_clk <span class="keyword">=</span> <span class="number">1'b0</span>;</span><br><span class="line">	din<span class="keyword">=</span><span class="number">8'd0</span>;</span><br><span class="line"> <span class="keyword">end</span></span><br><span class="line"> </span><br><span class="line"> <span class="keyword">always</span> <span class="value">#(10/2)</span> wr_clk <span class="keyword">=</span> <span class="keyword">~</span>wr_clk; <span class="comment">//产生周期时钟信号</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">always</span> <span class="keyword">@</span>(<span class="keyword">posedge</span> wr_clk) <span class="keyword">begin</span>  </span><br><span class="line">	<span class="keyword">if</span>(<span class="keyword">~</span>almost_full) <span class="keyword">begin</span>     <span class="comment">//fifo没有即将满的时候写入数据</span></span><br><span class="line">		wr_en <span class="keyword">&lt;</span><span class="keyword">=</span> <span class="number">1'b1</span>;</span><br><span class="line">		din <span class="keyword">&lt;</span><span class="keyword">=</span> din <span class="keyword">+</span> <span class="number">8'd1</span>;</span><br><span class="line">		<span class="keyword">end</span></span><br><span class="line">	<span class="keyword">else</span> wr_en <span class="keyword">=</span> <span class="number">1'b0</span>;        <span class="comment">//fifo即将满的时候关闭写数据</span></span><br><span class="line">	</span><br><span class="line"> <span class="keyword">end</span></span><br><span class="line"> <span class="comment">//以下为读测试</span></span><br><span class="line"> <span class="typename">reg</span> rd_en ;   <span class="comment">//读使能</span></span><br><span class="line"> <span class="typename">reg</span> rd_clk;   <span class="comment">//读时钟</span></span><br><span class="line"> <span class="typename">wire</span> empty ;  <span class="comment">//fifo空标志</span></span><br><span class="line"> <span class="typename">wire</span> [<span class="number">7</span><span class="keyword">:</span><span class="number">0</span>] dout ;  <span class="comment">//fifo数据输出</span></span><br><span class="line"> <span class="keyword">initial</span> <span class="keyword">begin</span></span><br><span class="line"> rd_clk <span class="keyword">=</span> <span class="number">1'b0</span>; </span><br><span class="line"> <span class="keyword">end</span></span><br><span class="line"> <span class="keyword">always</span> <span class="value">#(20/2)</span> rd_clk <span class="keyword">=</span> <span class="keyword">~</span>rd_clk;    <span class="comment">//周期读数据时钟 </span></span><br><span class="line"> <span class="keyword">always</span> <span class="keyword">@</span>(<span class="keyword">posedge</span> rd_clk) <span class="keyword">begin</span>     <span class="comment">//fifo非空时读数据，空时停止读数据</span></span><br><span class="line">	<span class="keyword">if</span>(<span class="keyword">~</span>empty)</span><br><span class="line">		rd_en <span class="keyword">&lt;</span><span class="keyword">=</span> <span class="number">1'b1</span>;</span><br><span class="line">	<span class="keyword">else</span> rd_en <span class="keyword">&lt;</span><span class="keyword">=</span> <span class="number">1'b0</span>;</span><br><span class="line"> <span class="keyword">end</span></span><br><span class="line"> fifo mfifo(<span class="typename">.rst</span>(rst),<span class="typename">.wr_en</span>(wr_en),<span class="typename">.wr_clk</span>(wr_clk),<span class="typename">.din</span>(din),<span class="typename">.almost_full</span>(almost_full),<span class="typename">.rd_en</span>(rd_en),<span class="typename">.rd_clk</span>(rd_clk),<span class="typename">.dout</span>(dout),<span class="typename">.empty</span>(empty));</span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>仿真  依次点击 View  &gt;  Simulation  &gt;  Isim Simulator  &gt;  Simulate Behavioral Model .即可进入仿真界面。</p>
+</li>
+<li>仿真结果：<br><img src="fifosim1.png" alt="仿真1"><br><img src="fifosim2.png" alt="仿真2"></li>
+</ol>
+<p>可见fifo读写均正确。</p>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/FPGA/">FPGA</a> <a class="tag tag--primary tag--small t-link" href="/tags/fifo/">fifo</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/fifo_problem/"  data-tooltip="Fifo学习中遇到的问题与解决办法">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/doc_replace/" data-tooltip="用Python写的文档批量替换软件">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://rootlee.eu/fifo/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://rootlee.eu/fifo/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://rootlee.eu/fifo/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2016 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/fifo_problem/"  data-tooltip="Fifo学习中遇到的问题与解决办法">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/doc_replace/" data-tooltip="用Python写的文档批量替换软件">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://rootlee.eu/fifo/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://rootlee.eu/fifo/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://rootlee.eu/fifo/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://rootlee.eu/fifo/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://rootlee.eu/fifo/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://rootlee.eu/fifo/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/rootlee.jpg"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>涉猎俄语，热爱编程，犹爱Python</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Student</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Ukrain
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script.min.js" type="text/javascript"></script>
+<!--SCRIPTS END-->
+
+
+
+</html>
