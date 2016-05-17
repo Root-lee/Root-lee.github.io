@@ -195,12 +195,12 @@
                 <div class="post-header">
                     <h1 class="post-title" itemprop="headline">
                         
-                                <a class="link-unstyled" href="/学习FPGA100个值得注意的要点/">学习FPGA100个值得注意的要点</a>
+                                <a class="link-unstyled" href="/verilog/">学习Verilog HDL时犯的一些错误</a>
                         
                     </h1>
                     <div class="post-meta">
-    <time  itemprop="datePublished" content="Tue Apr 12 2016 22:59:27 GMT+0000">
-        Apr 12, 2016
+    <time  itemprop="datePublished" content="Tue Nov 17 2015 16:28:14 GMT+0000">
+        Nov 17, 2015
     </time>
     
         <span>in </span>
@@ -214,21 +214,12 @@
                 <div class="post-excerpt" itemprop="articleBody">
                     
                         <p>
-                            
-FPGA不是编程语言，而是一种可综合的硬件描述语言。
-Verilog 支持两种进程initial和always进程
-阻塞与非阻塞指的相对于进程本身而言的。
-使用进程模块的电路类型：
-
-组合电路—–对组合逻辑中使用的所有输入敏感例子：
-1always@（a or b or sel）
-
-时序电路—–仅对时钟和控制信号敏感例子：
-1always @（posedge clk or negedge clr<br>
+                            这篇文章主要记录在平常Verilog HDL学习过程中遇到的一些错误，有的错误很低级，有的错误莫名其妙，有的错误很典型。这些错误要么是粗心大意，要么是对基本概念理解不透彻导致的。在此处将它们一一记录下来，如果错误被改正了，也会记录下解决办法，让这些大大小小的错误时刻警醒自己。
+错误列表错误描述：因不够清楚wire类型和reg类型在模块中适用位置导致的错误解决办法：在模块内部，输入必须是wire类型<br>
                     
                     
                         
-                            <a href="/学习FPGA100个值得注意的要点/" class="post-excerpt_link link ">Continue reading</a>
+                            <a href="/verilog/" class="post-excerpt_link link ">Continue reading</a>
                             
                         
                     
@@ -239,7 +230,114 @@ Verilog 支持两种进程initial和always进程
             </div>
             
                 <div class="post-thumbnailimg">
-                    <img alt="" itemprop="image" src="http://rootlee.eu/学习FPGA100个值得注意的要点/FPGA.jpg"/>
+                    <img alt="" itemprop="image" src="http://rootlee.eu/verilog/../wirereg/vhdl-or-verilog.PNG"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="post post--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="post-wrap">
+                <div class="post-header">
+                    <h1 class="post-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/fifo_problem/">Fifo学习中遇到的问题与解决办法</a>
+                        
+                    </h1>
+                    <div class="post-meta">
+    <time  itemprop="datePublished" content="Mon Nov 16 2015 22:01:17 GMT+0000">
+        Nov 16, 2015
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/专业相关/">专业相关</a>
+
+
+    
+</div>
+                </div>
+                <div class="post-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            问题描述第一次写程序判断fifo是否满用的是 full 标志位，这种写法会导致，fifo满的时候，会少写入一个数据,如图：
+发现此处的 109 这个数据并未写入fifo。
+解决办法：将full 标志位换为almost_full标志位即可解决。解决后如下图：这时数据写入读出都没问题了。
+<br>
+                    
+                    
+                        
+                            <a href="/fifo_problem/" class="post-excerpt_link link ">Continue reading</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="post-thumbnailimg">
+                    <img alt="" itemprop="image" src="http://rootlee.eu/fifo_problem/../fifo/fifo.png"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="post post--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="post-wrap">
+                <div class="post-header">
+                    <h1 class="post-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/fifo/">XILINX的IP核FIFO学习记录</a>
+                        
+                    </h1>
+                    <div class="post-meta">
+    <time  itemprop="datePublished" content="Mon Nov 16 2015 21:46:26 GMT+0000">
+        Nov 16, 2015
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/专业相关/">专业相关</a>
+
+
+    
+</div>
+                </div>
+                <div class="post-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            什么是IP核？在集成电路的可重用设计方法学中，IP核，全称知识产权核（英语：intellectual property core），是指某一方提供的、形式为逻辑单元、芯片设计的可重用模块。IP核通常已经通过了设计验证，设计人员以IP核为基础进行设计，可以缩短设计所需的周期。IP核可以通过协议由一方提供给另一方，或由一方独自占有。IP核的概念源于产品设计的专利证书和源代码的版权等。设计人员能够以IP<br>
+                    
+                    
+                        
+                            <a href="/fifo/" class="post-excerpt_link link ">Continue reading</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="post-thumbnailimg">
+                    <img alt="" itemprop="image" src="http://rootlee.eu/fifo/fifo.png"/>
                 </div>
                 
             
@@ -261,8 +359,8 @@ Verilog 支持两种进程initial和always进程
                         
                     </h1>
                     <div class="post-meta">
-    <time  itemprop="datePublished" content="Tue Apr 12 2016 22:59:27 GMT+0000">
-        Apr 12, 2016
+    <time  itemprop="datePublished" content="Mon Nov 16 2015 20:54:00 GMT+0000">
+        Nov 16, 2015
     </time>
     
         <span>in </span>
@@ -316,17 +414,17 @@ Verilog 支持两种进程initial和always进程
                 <div class="post-header">
                     <h1 class="post-title" itemprop="headline">
                         
-                                <a class="link-unstyled" href="/verilog/">学习Verilog HDL时犯的一些错误</a>
+                                <a class="link-unstyled" href="/isim/">ISE自带仿真器报错：ERROR:Simulator:861 – Failed to link the design 解决办法</a>
                         
                     </h1>
                     <div class="post-meta">
-    <time  itemprop="datePublished" content="Tue Apr 12 2016 22:59:27 GMT+0000">
-        Apr 12, 2016
+    <time  itemprop="datePublished" content="Sun Nov 08 2015 23:32:54 GMT+0000">
+        Nov 08, 2015
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/专业相关/">专业相关</a>
+    <a class="category-link" href="/categories/专业软件/">专业软件</a>
 
 
     
@@ -335,12 +433,11 @@ Verilog 支持两种进程initial和always进程
                 <div class="post-excerpt" itemprop="articleBody">
                     
                         <p>
-                            这篇文章主要记录在平常Verilog HDL学习过程中遇到的一些错误，有的错误很低级，有的错误莫名其妙，有的错误很典型。这些错误要么是粗心大意，要么是对基本概念理解不透彻导致的。在此处将它们一一记录下来，如果错误被改正了，也会记录下解决办法，让这些大大小小的错误时刻警醒自己。
-错误列表错误描述：因不够清楚wire类型和reg类型在模块中适用位置导致的错误解决办法：在模块内部，输入必须是wire类型<br>
+                            问题综述：我使用的是windows 10 32位专业版系统，电脑装的是ISE14.4版本，当我用此ISE自带的仿真器ISIM来仿真时，仿真器总是报错ERROR:Simulator:861 – Failed to link the design。多次检查Verilog代码，确认没有错误，但仿真是依然是这个问题，于是我用google搜索了一下，发现只要是Windows 8 版本以上的系统都会出现这个问<br>
                     
                     
                         
-                            <a href="/verilog/" class="post-excerpt_link link ">Continue reading</a>
+                            <a href="/isim/" class="post-excerpt_link link ">Continue reading</a>
                             
                         
                     
@@ -351,7 +448,7 @@ Verilog 支持两种进程initial和always进程
             </div>
             
                 <div class="post-thumbnailimg">
-                    <img alt="" itemprop="image" src="http://rootlee.eu/verilog/../wirereg/vhdl-or-verilog.PNG"/>
+                    <img alt="" itemprop="image" src="http://rootlee.eu/isim/ise.jpg"/>
                 </div>
                 
             
@@ -373,8 +470,8 @@ Verilog 支持两种进程initial和always进程
                         
                     </h1>
                     <div class="post-meta">
-    <time  itemprop="datePublished" content="Tue Apr 12 2016 22:59:27 GMT+0000">
-        Apr 12, 2016
+    <time  itemprop="datePublished" content="Fri Oct 23 2015 23:13:45 GMT+0000">
+        Oct 23, 2015
     </time>
     
         <span>in </span>
@@ -431,64 +528,12 @@ ModelSim的特点
                 <div class="post-header">
                     <h1 class="post-title" itemprop="headline">
                         
-                                <a class="link-unstyled" href="/isim/">ISE自带仿真器报错：ERROR:Simulator:861 – Failed to link the design 解决办法</a>
+                                <a class="link-unstyled" href="/学习FPGA100个值得注意的要点/">学习FPGA100个值得注意的要点</a>
                         
                     </h1>
                     <div class="post-meta">
-    <time  itemprop="datePublished" content="Tue Apr 12 2016 22:59:27 GMT+0000">
-        Apr 12, 2016
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/专业软件/">专业软件</a>
-
-
-    
-</div>
-                </div>
-                <div class="post-excerpt" itemprop="articleBody">
-                    
-                        <p>
-                            问题综述：我使用的是windows 10 32位专业版系统，电脑装的是ISE14.4版本，当我用此ISE自带的仿真器ISIM来仿真时，仿真器总是报错ERROR:Simulator:861 – Failed to link the design。多次检查Verilog代码，确认没有错误，但仿真是依然是这个问题，于是我用google搜索了一下，发现只要是Windows 8 版本以上的系统都会出现这个问<br>
-                    
-                    
-                        
-                            <a href="/isim/" class="post-excerpt_link link ">Continue reading</a>
-                            
-                        
-                    
-                    
-                        </p>
-                    
-                </div>
-            </div>
-            
-                <div class="post-thumbnailimg">
-                    <img alt="" itemprop="image" src="http://rootlee.eu/isim/ise.jpg"/>
-                </div>
-                
-            
-        </article>
-    
-        
-            
-                
-            
-        
-        
-            <article class="post post--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
-        
-            <div class="post-wrap">
-                <div class="post-header">
-                    <h1 class="post-title" itemprop="headline">
-                        
-                                <a class="link-unstyled" href="/fifo_problem/">Fifo学习中遇到的问题与解决办法</a>
-                        
-                    </h1>
-                    <div class="post-meta">
-    <time  itemprop="datePublished" content="Tue Apr 12 2016 22:59:27 GMT+0000">
-        Apr 12, 2016
+    <time  itemprop="datePublished" content="Thu Oct 22 2015 18:21:08 GMT+0000">
+        Oct 22, 2015
     </time>
     
         <span>in </span>
@@ -502,14 +547,21 @@ ModelSim的特点
                 <div class="post-excerpt" itemprop="articleBody">
                     
                         <p>
-                            问题描述第一次写程序判断fifo是否满用的是 full 标志位，这种写法会导致，fifo满的时候，会少写入一个数据,如图：
-发现此处的 109 这个数据并未写入fifo。
-解决办法：将full 标志位换为almost_full标志位即可解决。解决后如下图：这时数据写入读出都没问题了。
-<br>
+                            
+FPGA不是编程语言，而是一种可综合的硬件描述语言。
+Verilog 支持两种进程initial和always进程
+阻塞与非阻塞指的相对于进程本身而言的。
+使用进程模块的电路类型：
+
+组合电路—–对组合逻辑中使用的所有输入敏感例子：
+1always@（a or b or sel）
+
+时序电路—–仅对时钟和控制信号敏感例子：
+1always @（posedge clk or negedge clr<br>
                     
                     
                         
-                            <a href="/fifo_problem/" class="post-excerpt_link link ">Continue reading</a>
+                            <a href="/学习FPGA100个值得注意的要点/" class="post-excerpt_link link ">Continue reading</a>
                             
                         
                     
@@ -520,59 +572,7 @@ ModelSim的特点
             </div>
             
                 <div class="post-thumbnailimg">
-                    <img alt="" itemprop="image" src="http://rootlee.eu/fifo_problem/../fifo/fifo.png"/>
-                </div>
-                
-            
-        </article>
-    
-        
-            
-                
-            
-        
-        
-            <article class="post post--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
-        
-            <div class="post-wrap">
-                <div class="post-header">
-                    <h1 class="post-title" itemprop="headline">
-                        
-                                <a class="link-unstyled" href="/fifo/">XILINX的IP核FIFO学习记录</a>
-                        
-                    </h1>
-                    <div class="post-meta">
-    <time  itemprop="datePublished" content="Tue Apr 12 2016 22:59:27 GMT+0000">
-        Apr 12, 2016
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/专业相关/">专业相关</a>
-
-
-    
-</div>
-                </div>
-                <div class="post-excerpt" itemprop="articleBody">
-                    
-                        <p>
-                            什么是IP核？在集成电路的可重用设计方法学中，IP核，全称知识产权核（英语：intellectual property core），是指某一方提供的、形式为逻辑单元、芯片设计的可重用模块。IP核通常已经通过了设计验证，设计人员以IP核为基础进行设计，可以缩短设计所需的周期。IP核可以通过协议由一方提供给另一方，或由一方独自占有。IP核的概念源于产品设计的专利证书和源代码的版权等。设计人员能够以IP<br>
-                    
-                    
-                        
-                            <a href="/fifo/" class="post-excerpt_link link ">Continue reading</a>
-                            
-                        
-                    
-                    
-                        </p>
-                    
-                </div>
-            </div>
-            
-                <div class="post-thumbnailimg">
-                    <img alt="" itemprop="image" src="http://rootlee.eu/fifo/fifo.png"/>
+                    <img alt="" itemprop="image" src="http://rootlee.eu/学习FPGA100个值得注意的要点/FPGA.jpg"/>
                 </div>
                 
             
