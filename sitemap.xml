@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://rootlee.eu/NOAA_1/</loc>
+    
+    <lastmod>2016-06-18T00:28:58.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://rootlee.eu/NOAA_0/</loc>
+    
+    <lastmod>2016-06-18T00:28:58.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://rootlee.eu/learn_english/</loc>
     
     <lastmod>2016-05-23T00:20:40.000Z</lastmod>
@@ -25,7 +39,7 @@
   <url>
     <loc>http://rootlee.eu/%E5%AD%A6%E4%B9%A0FPGA100%E4%B8%AA%E5%80%BC%E5%BE%97%E6%B3%A8%E6%84%8F%E7%9A%84%E8%A6%81%E7%82%B9/</loc>
     
-    <lastmod>2016-05-18T21:50:50.000Z</lastmod>
+    <lastmod>2016-05-18T21:52:18.000Z</lastmod>
     
   </url>
   
@@ -299,13 +313,6 @@
     <loc>http://rootlee.eu/biandianzhan/</loc>
     
     <lastmod>2016-05-18T20:58:16.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://rootlee.eu/bishe1/</loc>
-    
-    <lastmod>2016-05-18T20:57:59.000Z</lastmod>
     
   </url>
   
