@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://rootlee.eu/"/>
-  <updated>2016-06-18T00:28:58.000Z</updated>
+  <updated>2016-06-18T00:34:56.000Z</updated>
   <id>http://rootlee.eu/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://rootlee.eu/NOAA_1/"/>
     <id>http://rootlee.eu/NOAA_1/</id>
     <published>2016-06-18T02:00:00.000Z</published>
-    <updated>2016-06-18T00:28:58.000Z</updated>
+    <updated>2016-06-18T00:34:56.000Z</updated>
     <content type="html"><![CDATA[<p>NOAA系列气象卫星（National Oceanic and Atmospheric Administration, USA）自从上世纪70年代就飞行在高度为800千米的地球轨道上（这个系列中第一个发射的的是卫星TIROS-M，发射于1970年2月23号）。</p>
 <p>NOAA气象卫星运行在太阳同步轨道，也就是，每一个NOAA气象卫星在每天相同的时间段经过某一地球区域。卫星轨道高度大约在800千米。考虑到视野带宽，为了保证测绘任意一个区域的表面都能取得较好空间分辨率，每昼夜每个NOAA气象卫星至少围绕地球转4圈。不同NOAA气象卫星在不同时间经过某点，以保证任意地点各个卫星的经过有均匀的时间间隔。</p>
 <p>地表遥感图片在频率137MHz上以APT模拟格式进行传输。在NOAA气象卫星中，图像数据被分为两个通道：</p>
@@ -83,7 +83,7 @@
 <li>“NOAA-18” （f=137.5 MHz）</li>
 <li>“NOAA-19” （f=137.1 MHz）</li>
 </ul>
-<p>NOAA气象卫星的外观为下图：<br><a href="NOAA.png">!NOAA</a></p>
+<p>NOAA气象卫星的外观为下图：<br><img src="NOAA.png" alt="NOAA"></p>
 ]]></content>
     <summary type="html">
     <![CDATA[<p>NOAA系列气象卫星（National Oceanic and Atmospheric Administration, USA）自从上世纪70年代就飞行在高度为800千米的地球轨道上（这个系列中第一个发射的的是卫星TIROS-M，发射于1970年2月23号）。</p>
