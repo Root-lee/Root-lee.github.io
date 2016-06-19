@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://rootlee.eu/"/>
-  <updated>2016-06-19T22:01:06.000Z</updated>
+  <updated>2016-06-19T23:21:18.000Z</updated>
   <id>http://rootlee.eu/</id>
   
   <author>
@@ -13,6 +13,27 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[NOAA气象卫星的基本参数]]></title>
+    <link href="http://rootlee.eu/NOAA_1_2/"/>
+    <id>http://rootlee.eu/NOAA_1_2/</id>
+    <published>2016-06-20T02:00:00.000Z</published>
+    <updated>2016-06-19T23:21:18.000Z</updated>
+    <content type="html"><![CDATA[<p>美国气象卫星NOAA系列迄今为止已经发射了共计15课卫星，现在以NOAA-18为例介绍一下NOAA卫星的一些基本参数：<br><strong>美国气象卫星NOAA-18</strong><br>| 参数名称 | 参数值 |<br>| :—– | :—– |<br>| 所属系列 | NOAA |<br>| 发射日期 | 2015年5月20日 |<br>| 计划服役时间 | 不少于2年 |<br>| 重量 | 1457kg |<br>| 轨道类型 | 太阳同步轨道 |<br>| 轨道高度 | 远地点：866km 近地点：845km |<br>| 倾斜角 | 98.74° |<br>| 轨道周期 | 102.12分钟 |<br>| 数据传输速率 | HRPT：665kbit/s APT：9.6kbit/s |<br>| 机载设备 | AVHRR/3，HIRS/4，AMSU-A1，AMSU-A2，MHS，SARSAT，SBUV/2，SEM/2，DCS/2|</p>
+<p>以上为NOAA气象卫星的基本参数，以下表格为NOAA系列卫星的发射、服役以及退役时间表：<br>| 卫星名称 | 发射时间 | 开始服役时间 | 退役时间 |<br>| :—– | :—– | :—– | :—– |<br>| TIROS-N 13 | Oct 1978 | 19 Oct 1978 | 30 Jan 1980 |<br>| NOAA-6 | 27 Jun 1979 | 27 Jun 1979 | 16 Nov 1986 |<br>| NOAA-7 | 23 Jun 1981 | 24 Aug 1981 | 7 Jun 1986 |<br>| NOAA-8 | 28 Mar 1983 | 3 May 1983 | 31 Oct 1985 |<br>| NOAA-9 | 12 Dec 1984 | 25 Feb 1985 | 11 May 1994 |<br>| NOAA-10 | 17 Sep 1986 | 17 Nov 1986 | 28 Jul 2015 |<br>| NOAA-11 | 24 Sep 1988 | 8 Nov 1988 | 13 Sep 1994 |<br>| NOAA-12 | 13 May 1991 | 14 May 1991 | 15 Dec 1994 |<br>| NOAA-14 | 30 Dec 1994 | 30 Dec 1994 | 23 May 2007 |<br>| NOAA-15 | 13 May 1998 | 13 May 1998 | 正在服役 |<br>| NOAA-16 | 21 Sep 2000 | 21 Sep 2000 | 9 Jun 2014 |<br>| NOAA-17 | 24 Jun 2002 | 24 Jun 2002 | 10 April 2013 |<br>| NOAA-18 | 20 May 2005 | 30 Aug 2005 | 正在服役 |<br>| NOAA-19 | 6 Feb 2009 | 2 Jun 2009 | 正在服役 |</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>美国气象卫星NOAA系列迄今为止已经发射了共计15课卫星，现在以NOAA-18为例介绍一下NOAA卫星的一些基本参数：<br><strong>美国气象卫星NOAA-18</strong><br>| 参数名称 | 参数值 |<br>| :—– | :—– |<br>| 所属系]]>
+    </summary>
+    
+      <category term="NOAA" scheme="http://rootlee.eu/tags/NOAA/"/>
+    
+      <category term="气象卫星" scheme="http://rootlee.eu/tags/%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
+    
+      <category term="NOAA气象卫星" scheme="http://rootlee.eu/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[NOAA气象卫星的结构和功能]]></title>
@@ -505,6 +526,33 @@
   </entry>
   
   <entry>
+    <title><![CDATA[Python多线程学习心得]]></title>
+    <link href="http://rootlee.eu/python_thread/"/>
+    <id>http://rootlee.eu/python_thread/</id>
+    <published>2016-03-12T20:00:00.000Z</published>
+    <updated>2016-05-18T21:13:20.000Z</updated>
+    <content type="html"><![CDATA[<p>使用python写程序，并用PyQt创建一个Gui。</p>
+<h1 id="问题描述">问题描述</h1><p>当python程序运行耗费时间过长时，便会阻塞Gui进程，导致Gui无法刷新，从而使得程序出现“未响应”的情况。</p>
+<h1 id="解决办法">解决办法</h1><p>这种情况下便需要使用Python的多线程功能。<br>最常见的线程协同方式：UI主线程+后台线程<br>UI被触发后，对应的主线程创建后台线程，后台线程在后台运行，并通过发信号给主线程，从而间接控制UI的显示。</p>
+<h1 id="例子">例子</h1><p>以下是我编写的一个英雄联盟语音汉化程序（因为在国外，LOL只能玩俄服，俄服的俄语虽然也好听，但终究感觉不如汉语亲切，于是便用python写了这个汉化小程序），程序功能极其简单，就是简单的把汉语语音解压到俄服LOL的安装文件夹语音文件位置，并将其覆盖。但是，解压很耗费时间，如果将解压程序和UI放在一个线程里，就会导致程序长时间的“未响应”状态，这就是因为解压过程阻塞了UI进程。后来使用多线程改进后问题得到解决。以下是部分程序（不完整，程序不太重要的部分被略去了）</p>
+<p>hanhua.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Ui_Dialog</span><span class="params">(QtGui.QWidget)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span>  <span class="title">__init__</span><span class="params">(self, parent = None)</span>:</span></span><br><span class="line">        QtGui.QWidget.__init__(self, parent)</span><br><span class="line">        self.setupUi(self)</span><br><span class="line">        self.retranslateUi(self)</span><br><span class="line">        self.connect(self.pushButton, QtCore.SIGNAL(<span class="string">'clicked()'</span>),self.un_zip)      //点击按钮后进入un_zip函数</span><br><span class="line">        self.setWindowIcon(QtGui.QIcon(<span class="string">'web.png'</span>))</span><br><span class="line">        self.setWindowTitle(_fromUtf8(<span class="string">'LOL俄服汉化'</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setupUi</span><span class="params">(self, Dialog)</span>:</span></span><br><span class="line">        ...  //初始化UI，程序略</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">retranslateUi</span><span class="params">(self, Dialog)</span>:</span></span><br><span class="line">        Dialog.setWindowTitle(_translate(<span class="string">"Dialog"</span>, <span class="string">"Dialog"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.pushButton.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"汉化"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"LOL俄服汉化语音"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label_2.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"--By Root lee"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label_3.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"适用于俄服5.16版"</span>, <span class="keyword">None</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">updateUI</span><span class="params">(self)</span>:</span></span><br><span class="line">        ...   //更新UI，程序略</span><br><span class="line">    <span class="function"><span class="keyword">def</span>  <span class="title">un_zip</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">from</span> threads <span class="keyword">import</span> MyThread   //导入进程类</span><br><span class="line">        self.bwThread = MyThread()   //新建进程对象</span><br><span class="line">        self.connect(self.bwThread.QtCore.SIGNAL(<span class="string">"where"</span>),self.updateUI)   //关联子进程发射过来的信号与updateUI函数</span><br><span class="line">        self.bwThread.start()    //运行子线程</span><br></pre></td></tr></table></figure></p>
+<p>thread.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyThread</span><span class="params">(QtCore.QThread)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,parent = None)</span>:</span></span><br><span class="line">        ...   //初始化，程序略</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        ...   //解压相关代码，略</span><br><span class="line">        self.emit(QtCore.SIGNAL(<span class="string">"where"</span>),j)  //发送<span class="string">"where"</span>信号给UI线程，然后UI线程调用updateUI()函数来更新UI</span><br></pre></td></tr></table></figure></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>使用python写程序，并用PyQt创建一个Gui。</p>
+<h1 id="问题描述">问题描述</h1><p>当python程序运行耗费时间过长时，便会阻塞Gui进程，导致Gui无法刷新，从而使得程序出现“未响应”的情况。</p>
+<h1 id="解决办法">解决办法<]]>
+    </summary>
+    
+      <category term="pyqt" scheme="http://rootlee.eu/tags/pyqt/"/>
+    
+      <category term="python" scheme="http://rootlee.eu/tags/python/"/>
+    
+      <category term="Python" scheme="http://rootlee.eu/categories/Python/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[电视剧《大明宫词》观后感及皮影戏《采桑女》戏词]]></title>
     <link href="http://rootlee.eu/caisang/"/>
     <id>http://rootlee.eu/caisang/</id>
@@ -534,33 +582,6 @@
     </summary>
     
       <category term="读后感" scheme="http://rootlee.eu/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Python多线程学习心得]]></title>
-    <link href="http://rootlee.eu/python_thread/"/>
-    <id>http://rootlee.eu/python_thread/</id>
-    <published>2016-03-12T20:00:00.000Z</published>
-    <updated>2016-05-18T21:13:20.000Z</updated>
-    <content type="html"><![CDATA[<p>使用python写程序，并用PyQt创建一个Gui。</p>
-<h1 id="问题描述">问题描述</h1><p>当python程序运行耗费时间过长时，便会阻塞Gui进程，导致Gui无法刷新，从而使得程序出现“未响应”的情况。</p>
-<h1 id="解决办法">解决办法</h1><p>这种情况下便需要使用Python的多线程功能。<br>最常见的线程协同方式：UI主线程+后台线程<br>UI被触发后，对应的主线程创建后台线程，后台线程在后台运行，并通过发信号给主线程，从而间接控制UI的显示。</p>
-<h1 id="例子">例子</h1><p>以下是我编写的一个英雄联盟语音汉化程序（因为在国外，LOL只能玩俄服，俄服的俄语虽然也好听，但终究感觉不如汉语亲切，于是便用python写了这个汉化小程序），程序功能极其简单，就是简单的把汉语语音解压到俄服LOL的安装文件夹语音文件位置，并将其覆盖。但是，解压很耗费时间，如果将解压程序和UI放在一个线程里，就会导致程序长时间的“未响应”状态，这就是因为解压过程阻塞了UI进程。后来使用多线程改进后问题得到解决。以下是部分程序（不完整，程序不太重要的部分被略去了）</p>
-<p>hanhua.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Ui_Dialog</span><span class="params">(QtGui.QWidget)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span>  <span class="title">__init__</span><span class="params">(self, parent = None)</span>:</span></span><br><span class="line">        QtGui.QWidget.__init__(self, parent)</span><br><span class="line">        self.setupUi(self)</span><br><span class="line">        self.retranslateUi(self)</span><br><span class="line">        self.connect(self.pushButton, QtCore.SIGNAL(<span class="string">'clicked()'</span>),self.un_zip)      //点击按钮后进入un_zip函数</span><br><span class="line">        self.setWindowIcon(QtGui.QIcon(<span class="string">'web.png'</span>))</span><br><span class="line">        self.setWindowTitle(_fromUtf8(<span class="string">'LOL俄服汉化'</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setupUi</span><span class="params">(self, Dialog)</span>:</span></span><br><span class="line">        ...  //初始化UI，程序略</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">retranslateUi</span><span class="params">(self, Dialog)</span>:</span></span><br><span class="line">        Dialog.setWindowTitle(_translate(<span class="string">"Dialog"</span>, <span class="string">"Dialog"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.pushButton.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"汉化"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"LOL俄服汉化语音"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label_2.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"--By Root lee"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label_3.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"适用于俄服5.16版"</span>, <span class="keyword">None</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">updateUI</span><span class="params">(self)</span>:</span></span><br><span class="line">        ...   //更新UI，程序略</span><br><span class="line">    <span class="function"><span class="keyword">def</span>  <span class="title">un_zip</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">from</span> threads <span class="keyword">import</span> MyThread   //导入进程类</span><br><span class="line">        self.bwThread = MyThread()   //新建进程对象</span><br><span class="line">        self.connect(self.bwThread.QtCore.SIGNAL(<span class="string">"where"</span>),self.updateUI)   //关联子进程发射过来的信号与updateUI函数</span><br><span class="line">        self.bwThread.start()    //运行子线程</span><br></pre></td></tr></table></figure></p>
-<p>thread.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyThread</span><span class="params">(QtCore.QThread)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,parent = None)</span>:</span></span><br><span class="line">        ...   //初始化，程序略</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        ...   //解压相关代码，略</span><br><span class="line">        self.emit(QtCore.SIGNAL(<span class="string">"where"</span>),j)  //发送<span class="string">"where"</span>信号给UI线程，然后UI线程调用updateUI()函数来更新UI</span><br></pre></td></tr></table></figure></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>使用python写程序，并用PyQt创建一个Gui。</p>
-<h1 id="问题描述">问题描述</h1><p>当python程序运行耗费时间过长时，便会阻塞Gui进程，导致Gui无法刷新，从而使得程序出现“未响应”的情况。</p>
-<h1 id="解决办法">解决办法<]]>
-    </summary>
-    
-      <category term="pyqt" scheme="http://rootlee.eu/tags/pyqt/"/>
-    
-      <category term="python" scheme="http://rootlee.eu/tags/python/"/>
-    
-      <category term="Python" scheme="http://rootlee.eu/categories/Python/"/>
     
   </entry>
   
@@ -714,32 +735,6 @@
     </summary>
     
       <category term="读后感" scheme="http://rootlee.eu/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[写在弟弟结婚前夜]]></title>
-    <link href="http://rootlee.eu/brother_marry/"/>
-    <id>http://rootlee.eu/brother_marry/</id>
-    <published>2016-02-06T14:00:00.000Z</published>
-    <updated>2016-05-18T21:01:54.000Z</updated>
-    <content type="html"><![CDATA[<p>我一直认为一个兄弟实在是父母给我们最珍贵的一个礼物。</p>
-<p>我们一起长大，一起闯祸，一起高兴地玩耍，当然，兄弟之间也避免不了争吵与打架。<br>而，<br>明天，<br>那个二十年来整天跟在我后面屁颠屁颠的臭小子，就要结婚了。</p>
-<p>从小，你就是一个好动的小孩，爬树掏鸟窝，下河抓鱼虾，去果园偷苹果……总是弄得一身脏兮兮的回家，自然免不了妈妈的一顿骂。一直以来，你都活在我的阴影之下，从小我的学习成绩都一直很优秀，而你却总是班里倒数的几个之一，老师亲戚和邻居都喜欢拿我与你对比，这时的你总是不发一言。</p>
-<p>但我知道你是一直爱着并尊敬我的。也不记得是几岁时，大约你还在上小学那时吧，那年你生日，一家人在给你过生日，你许了愿并吹灭了生日蜡烛，吃完蛋糕你神秘兮兮的问我：“你知道我许的什么愿吗？”我问：“什么？”你笑着说：“愿我哥哥考上大学。”当时我心里一阵感动，却忘了跟你说声谢谢。再过几个月我就大学毕业了，真没想到你小子许愿还挺灵的嘛！</p>
-<p>到了青春期叛逆时期，你也是整天问题不断，逃课，抽烟，去网吧，晚上不回家，我现在依然记得好多个晚上我和妈妈挨个去各个网吧去找你。后来，你说，老师总是放学后把你留下来补作业，无论如何都不愿意再去学校了，爸妈把你强行送到学校，你会再次逃出学校，如此反复几次，父母也只得作罢。</p>
-<p>如今，你就要结婚了，即将成为一个真正的大人了，你将要担起你那个小家庭的重担，希望你已经准备好了。可惜我在国外也不能看到你“将头发梳成大人模块，穿上一身帅气西装”的样子，也不能亲口祝福你们，但我还是要在这里送上我的祝愿，愿你们能够白头偕老。我想我的愿望也会像你的生日愿望一样得以实现!</p>
-<p>能在茫茫人海中找到一个能够相互深爱，相互信任，相互守护，能够携手共度生活中的难关的人真是太难了。现在你遇到了，请你一定要珍惜，一定要珍惜 ! </p>
-<p>恋爱时，双方都会对对方展现出最好的一面，而结婚，却是接纳对方生命中的一切，包括好的和不好的，从此两个人是永远站一起的，生活不易，困境需要两个人共同度过，无论遇到什么，都要不离不弃。这是一个陪你度过人生后面所以时光的人，一个你老了之后互相作伴的人，希望你不要吝啬你的爱，将你最好的一切都给她。</p>
-<p>如今，你结婚了，但作为哥哥的我却还在国外独自过春节。<br>幸好，<br>我苦苦寻找的那个对的人似乎也已经出现了，一个我认为可以相知相守的一个人。<br>也许也到了我向她吐露心迹的时候了？<br>无论结果如何，对我而言都不重要，至少我爱了，也说了。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>我一直认为一个兄弟实在是父母给我们最珍贵的一个礼物。</p>
-<p>我们一起长大，一起闯祸，一起高兴地玩耍，当然，兄弟之间也避免不了争吵与打架。<br>而，<br>明天，<br>那个二十年来整天跟在我后面屁颠屁颠的臭小子，就要结婚了。</p>
-<p>从小，你就是一个好动的小]]>
-    </summary>
-    
-      <category term="随笔" scheme="http://rootlee.eu/categories/%E9%9A%8F%E7%AC%94/"/>
     
   </entry>
   
