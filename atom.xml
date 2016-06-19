@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://rootlee.eu/"/>
-  <updated>2016-06-18T00:34:56.000Z</updated>
+  <updated>2016-06-19T22:01:06.000Z</updated>
   <id>http://rootlee.eu/</id>
   
   <author>
@@ -15,11 +15,45 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[NOAA气象卫星的结构和功能]]></title>
+    <link href="http://rootlee.eu/NOAA_1_1/"/>
+    <id>http://rootlee.eu/NOAA_1_1/</id>
+    <published>2016-06-20T02:00:00.000Z</published>
+    <updated>2016-06-19T22:01:06.000Z</updated>
+    <content type="html"><![CDATA[<p>美国气象卫星系统NOAA（National Oceanic and Atmospheric Administration）由以下两部分组成：</p>
+<ol>
+<li>地球静止轨道卫星“GOES”，专门用于短程天气预报和监测当前气象状况。</li>
+<li>太阳同步轨道卫星“POES”，用于长距离监测，卫星从800km的高度向地球发送天气信息。</li>
+</ol>
+<p>我们可以根据“POES”卫星和“GOES”卫星传送下来的数据对全球的气象状况进行监测，极轨卫星的数据用于 远距离预报天气、监测气候变化、观察突发天气现象、保证安全飞行（监测火山灰云）以及保证水上运输安全（监测和预报冰层的运动状况）。</p>
+<p>卫星监测到的数据先储存在板载存储器中，然后发送到以下两个地面接收中心：</p>
+<ol>
+<li>费尔班克斯（位于美国阿拉斯加州）</li>
+<li>瓦勒普斯岛（位于美国弗吉尼亚州）</li>
+</ol>
+<p>除此之外，NOAA气象卫星还配备了搜索和救援系统（S&amp;R），到现在为止，已经有两万多人的生命在NOAA气象卫星的帮助下得到了拯救。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>美国气象卫星系统NOAA（National Oceanic and Atmospheric Administration）由以下两部分组成：</p>
+<ol>
+<li>地球静止轨道卫星“GOES”，专门用于短程天气预报和监测当前气象状况。</li>
+<li>太阳同步轨道卫星]]>
+    </summary>
+    
+      <category term="NOAA" scheme="http://rootlee.eu/tags/NOAA/"/>
+    
+      <category term="气象卫星" scheme="http://rootlee.eu/tags/%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
+    
+      <category term="NOAA气象卫星" scheme="http://rootlee.eu/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[NOAA气象卫星系统简介]]></title>
     <link href="http://rootlee.eu/NOAA_1/"/>
     <id>http://rootlee.eu/NOAA_1/</id>
     <published>2016-06-18T02:00:00.000Z</published>
-    <updated>2016-06-18T00:34:56.000Z</updated>
+    <updated>2016-06-19T22:01:06.000Z</updated>
     <content type="html"><![CDATA[<p>NOAA系列气象卫星（National Oceanic and Atmospheric Administration, USA）自从上世纪70年代就飞行在高度为800千米的地球轨道上（这个系列中第一个发射的的是卫星TIROS-M，发射于1970年2月23号）。</p>
 <p>NOAA气象卫星运行在太阳同步轨道，也就是，每一个NOAA气象卫星在每天相同的时间段经过某一地球区域。卫星轨道高度大约在800千米。考虑到视野带宽，为了保证测绘任意一个区域的表面都能取得较好空间分辨率，每昼夜每个NOAA气象卫星至少围绕地球转4圈。不同NOAA气象卫星在不同时间经过某点，以保证任意地点各个卫星的经过有均匀的时间间隔。</p>
 <p>地表遥感图片在频率137MHz上以APT模拟格式进行传输。在NOAA气象卫星中，图像数据被分为两个通道：</p>
@@ -42,42 +76,42 @@
 <tr>
 <td style="text-align:left">1</td>
 <td style="text-align:left">1.09km</td>
-<td style="text-align:left">0.58-0.68um</td>
+<td style="text-align:left">0.58-0.68 um</td>
 <td style="text-align:left">白天云层和地表成像</td>
 </tr>
 <tr>
 <td style="text-align:left">2</td>
 <td style="text-align:left">1.09km</td>
-<td style="text-align:left">0.725-1.00um</td>
+<td style="text-align:left">0.725-1.00 um</td>
 <td style="text-align:left">海陆分界线</td>
 </tr>
 <tr>
 <td style="text-align:left">3A</td>
 <td style="text-align:left">1.09km</td>
-<td style="text-align:left">1.58-1.64um</td>
+<td style="text-align:left">1.58-1.64 um</td>
 <td style="text-align:left">冰雪区域</td>
 </tr>
 <tr>
 <td style="text-align:left">3B</td>
 <td style="text-align:left">1.09km</td>
-<td style="text-align:left">3.55-3.93um</td>
+<td style="text-align:left">3.55-3.93 um</td>
 <td style="text-align:left">夜晚成像，海洋表面温度</td>
 </tr>
 <tr>
 <td style="text-align:left">4</td>
 <td style="text-align:left">1.09km</td>
-<td style="text-align:left">10.30-11.30</td>
+<td style="text-align:left">10.30-11.30 um</td>
 <td style="text-align:left">夜晚成像，海洋表面温度</td>
 </tr>
 <tr>
 <td style="text-align:left">5</td>
 <td style="text-align:left">1.09km</td>
-<td style="text-align:left">11.50-12.50</td>
+<td style="text-align:left">11.50-12.50 um</td>
 <td style="text-align:left">海洋表面温度</td>
 </tr>
 </tbody>
 </table>
-<p>AVHRR的空间分辨率是1.1km，扫描带宽度是3000km，APT系统传输所需的地表图像由成像仪AVHRR产生。<br>当前运行的卫星有三个：</p>
+<p>AVHRR的空间分辨率是1.1km，扫描带宽度是3000km，APT系统传输所需的地表图像由成像仪AVHRR产生。<br>当前运行的NOAA气象卫星有三个：</p>
 <ul>
 <li>“NOAA-15” （f=137.63 MHz）</li>
 <li>“NOAA-18” （f=137.5 MHz）</li>
@@ -471,33 +505,6 @@
   </entry>
   
   <entry>
-    <title><![CDATA[Python多线程学习心得]]></title>
-    <link href="http://rootlee.eu/python_thread/"/>
-    <id>http://rootlee.eu/python_thread/</id>
-    <published>2016-03-12T20:00:00.000Z</published>
-    <updated>2016-05-18T21:13:20.000Z</updated>
-    <content type="html"><![CDATA[<p>使用python写程序，并用PyQt创建一个Gui。</p>
-<h1 id="问题描述">问题描述</h1><p>当python程序运行耗费时间过长时，便会阻塞Gui进程，导致Gui无法刷新，从而使得程序出现“未响应”的情况。</p>
-<h1 id="解决办法">解决办法</h1><p>这种情况下便需要使用Python的多线程功能。<br>最常见的线程协同方式：UI主线程+后台线程<br>UI被触发后，对应的主线程创建后台线程，后台线程在后台运行，并通过发信号给主线程，从而间接控制UI的显示。</p>
-<h1 id="例子">例子</h1><p>以下是我编写的一个英雄联盟语音汉化程序（因为在国外，LOL只能玩俄服，俄服的俄语虽然也好听，但终究感觉不如汉语亲切，于是便用python写了这个汉化小程序），程序功能极其简单，就是简单的把汉语语音解压到俄服LOL的安装文件夹语音文件位置，并将其覆盖。但是，解压很耗费时间，如果将解压程序和UI放在一个线程里，就会导致程序长时间的“未响应”状态，这就是因为解压过程阻塞了UI进程。后来使用多线程改进后问题得到解决。以下是部分程序（不完整，程序不太重要的部分被略去了）</p>
-<p>hanhua.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Ui_Dialog</span><span class="params">(QtGui.QWidget)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span>  <span class="title">__init__</span><span class="params">(self, parent = None)</span>:</span></span><br><span class="line">        QtGui.QWidget.__init__(self, parent)</span><br><span class="line">        self.setupUi(self)</span><br><span class="line">        self.retranslateUi(self)</span><br><span class="line">        self.connect(self.pushButton, QtCore.SIGNAL(<span class="string">'clicked()'</span>),self.un_zip)      //点击按钮后进入un_zip函数</span><br><span class="line">        self.setWindowIcon(QtGui.QIcon(<span class="string">'web.png'</span>))</span><br><span class="line">        self.setWindowTitle(_fromUtf8(<span class="string">'LOL俄服汉化'</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setupUi</span><span class="params">(self, Dialog)</span>:</span></span><br><span class="line">        ...  //初始化UI，程序略</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">retranslateUi</span><span class="params">(self, Dialog)</span>:</span></span><br><span class="line">        Dialog.setWindowTitle(_translate(<span class="string">"Dialog"</span>, <span class="string">"Dialog"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.pushButton.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"汉化"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"LOL俄服汉化语音"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label_2.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"--By Root lee"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label_3.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"适用于俄服5.16版"</span>, <span class="keyword">None</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">updateUI</span><span class="params">(self)</span>:</span></span><br><span class="line">        ...   //更新UI，程序略</span><br><span class="line">    <span class="function"><span class="keyword">def</span>  <span class="title">un_zip</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">from</span> threads <span class="keyword">import</span> MyThread   //导入进程类</span><br><span class="line">        self.bwThread = MyThread()   //新建进程对象</span><br><span class="line">        self.connect(self.bwThread.QtCore.SIGNAL(<span class="string">"where"</span>),self.updateUI)   //关联子进程发射过来的信号与updateUI函数</span><br><span class="line">        self.bwThread.start()    //运行子线程</span><br></pre></td></tr></table></figure></p>
-<p>thread.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyThread</span><span class="params">(QtCore.QThread)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,parent = None)</span>:</span></span><br><span class="line">        ...   //初始化，程序略</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        ...   //解压相关代码，略</span><br><span class="line">        self.emit(QtCore.SIGNAL(<span class="string">"where"</span>),j)  //发送<span class="string">"where"</span>信号给UI线程，然后UI线程调用updateUI()函数来更新UI</span><br></pre></td></tr></table></figure></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>使用python写程序，并用PyQt创建一个Gui。</p>
-<h1 id="问题描述">问题描述</h1><p>当python程序运行耗费时间过长时，便会阻塞Gui进程，导致Gui无法刷新，从而使得程序出现“未响应”的情况。</p>
-<h1 id="解决办法">解决办法<]]>
-    </summary>
-    
-      <category term="pyqt" scheme="http://rootlee.eu/tags/pyqt/"/>
-    
-      <category term="python" scheme="http://rootlee.eu/tags/python/"/>
-    
-      <category term="Python" scheme="http://rootlee.eu/categories/Python/"/>
-    
-  </entry>
-  
-  <entry>
     <title><![CDATA[电视剧《大明宫词》观后感及皮影戏《采桑女》戏词]]></title>
     <link href="http://rootlee.eu/caisang/"/>
     <id>http://rootlee.eu/caisang/</id>
@@ -527,6 +534,33 @@
     </summary>
     
       <category term="读后感" scheme="http://rootlee.eu/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Python多线程学习心得]]></title>
+    <link href="http://rootlee.eu/python_thread/"/>
+    <id>http://rootlee.eu/python_thread/</id>
+    <published>2016-03-12T20:00:00.000Z</published>
+    <updated>2016-05-18T21:13:20.000Z</updated>
+    <content type="html"><![CDATA[<p>使用python写程序，并用PyQt创建一个Gui。</p>
+<h1 id="问题描述">问题描述</h1><p>当python程序运行耗费时间过长时，便会阻塞Gui进程，导致Gui无法刷新，从而使得程序出现“未响应”的情况。</p>
+<h1 id="解决办法">解决办法</h1><p>这种情况下便需要使用Python的多线程功能。<br>最常见的线程协同方式：UI主线程+后台线程<br>UI被触发后，对应的主线程创建后台线程，后台线程在后台运行，并通过发信号给主线程，从而间接控制UI的显示。</p>
+<h1 id="例子">例子</h1><p>以下是我编写的一个英雄联盟语音汉化程序（因为在国外，LOL只能玩俄服，俄服的俄语虽然也好听，但终究感觉不如汉语亲切，于是便用python写了这个汉化小程序），程序功能极其简单，就是简单的把汉语语音解压到俄服LOL的安装文件夹语音文件位置，并将其覆盖。但是，解压很耗费时间，如果将解压程序和UI放在一个线程里，就会导致程序长时间的“未响应”状态，这就是因为解压过程阻塞了UI进程。后来使用多线程改进后问题得到解决。以下是部分程序（不完整，程序不太重要的部分被略去了）</p>
+<p>hanhua.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Ui_Dialog</span><span class="params">(QtGui.QWidget)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span>  <span class="title">__init__</span><span class="params">(self, parent = None)</span>:</span></span><br><span class="line">        QtGui.QWidget.__init__(self, parent)</span><br><span class="line">        self.setupUi(self)</span><br><span class="line">        self.retranslateUi(self)</span><br><span class="line">        self.connect(self.pushButton, QtCore.SIGNAL(<span class="string">'clicked()'</span>),self.un_zip)      //点击按钮后进入un_zip函数</span><br><span class="line">        self.setWindowIcon(QtGui.QIcon(<span class="string">'web.png'</span>))</span><br><span class="line">        self.setWindowTitle(_fromUtf8(<span class="string">'LOL俄服汉化'</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setupUi</span><span class="params">(self, Dialog)</span>:</span></span><br><span class="line">        ...  //初始化UI，程序略</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">retranslateUi</span><span class="params">(self, Dialog)</span>:</span></span><br><span class="line">        Dialog.setWindowTitle(_translate(<span class="string">"Dialog"</span>, <span class="string">"Dialog"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.pushButton.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"汉化"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"LOL俄服汉化语音"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label_2.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"--By Root lee"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label_3.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"适用于俄服5.16版"</span>, <span class="keyword">None</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">updateUI</span><span class="params">(self)</span>:</span></span><br><span class="line">        ...   //更新UI，程序略</span><br><span class="line">    <span class="function"><span class="keyword">def</span>  <span class="title">un_zip</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">from</span> threads <span class="keyword">import</span> MyThread   //导入进程类</span><br><span class="line">        self.bwThread = MyThread()   //新建进程对象</span><br><span class="line">        self.connect(self.bwThread.QtCore.SIGNAL(<span class="string">"where"</span>),self.updateUI)   //关联子进程发射过来的信号与updateUI函数</span><br><span class="line">        self.bwThread.start()    //运行子线程</span><br></pre></td></tr></table></figure></p>
+<p>thread.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyThread</span><span class="params">(QtCore.QThread)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,parent = None)</span>:</span></span><br><span class="line">        ...   //初始化，程序略</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        ...   //解压相关代码，略</span><br><span class="line">        self.emit(QtCore.SIGNAL(<span class="string">"where"</span>),j)  //发送<span class="string">"where"</span>信号给UI线程，然后UI线程调用updateUI()函数来更新UI</span><br></pre></td></tr></table></figure></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>使用python写程序，并用PyQt创建一个Gui。</p>
+<h1 id="问题描述">问题描述</h1><p>当python程序运行耗费时间过长时，便会阻塞Gui进程，导致Gui无法刷新，从而使得程序出现“未响应”的情况。</p>
+<h1 id="解决办法">解决办法<]]>
+    </summary>
+    
+      <category term="pyqt" scheme="http://rootlee.eu/tags/pyqt/"/>
+    
+      <category term="python" scheme="http://rootlee.eu/tags/python/"/>
+    
+      <category term="Python" scheme="http://rootlee.eu/categories/Python/"/>
     
   </entry>
   
@@ -706,40 +740,6 @@
     </summary>
     
       <category term="随笔" scheme="http://rootlee.eu/categories/%E9%9A%8F%E7%AC%94/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[用Sketchup和Vray绘制无人值守变电站安防雷达示意图]]></title>
-    <link href="http://rootlee.eu/biandianzhan/"/>
-    <id>http://rootlee.eu/biandianzhan/</id>
-    <published>2016-02-06T12:30:00.000Z</published>
-    <updated>2016-05-18T20:58:16.000Z</updated>
-    <content type="html"><![CDATA[<h1 id="使用Sketchup8-0建立变电站3D模型">使用Sketchup8.0建立变电站3D模型</h1><p><em>Sketchup软件下载请见博客另一篇文章：<a href="http://rootlee.eu/sketchupdownload/">SketchUp8.0+Vray软件下载与破解</a></em></p>
-<p>Sketchup是一款轻量3D软件，但是麻雀虽小，五脏俱全，Sketchup提供的3D建模的各种实用功能，比如：移动，推拉，旋转，偏移，拉伸，路径跟随等功能，我们可以使用这些工具绘制我们需要的3D模型，用来展示我们的想法，但更重要的是，sketchup的<a href="https://3dwarehouse.sketchup.com/index.html" target="_blank" rel="external">官网模型库</a>提供了大量的模型，都是用户精心建立的精美模型，一般情况下我们只需要下载这些模型，然后将模型导入我们自己的工程即可，这大大方便了我们做模型的速度，节约了大量时间。<br>在本项目中，我下载了以下模型：工厂模型，变压器模型，电线模型，雷达模型，监控摄像头，树模型，人和各种动物模型。<br>并且对模型进行了必要的修改和组合，比如：</p>
-<ol>
-<li>在工厂模型上添加“变电站”这个名称。</li>
-<li>将变压器和电线模型进行缩放以适应工厂大小，并将其放入“变电站”，以增加“变电站”的真实感。</li>
-<li>将人物和动物模型放进去，用来解释安防雷达工作原理。</li>
-<li>使用推拉工具将原本工厂模型低矮的围墙加高到合适高度。</li>
-<li>在围墙外拓展一片草坪空间，并用“草坪”材质填充。</li>
-<li>将摄像头模型和安防雷达模型放到变电站围墙和拐角处。</li>
-<li>绘制圆形“雷达波”，用来表示安防雷达的监控范围。</li>
-<li>调整模型日期和时间，以调整光照。</li>
-</ol>
-<p>以下是Sketchup建立好的模型：<br><img src="biandianzhan.png" alt="sketchup"></p>
-<h1 id="使用Vray插件渲染建立好的3D模型">使用Vray插件渲染建立好的3D模型</h1><p><em>Vray插件下载请见博客另一篇文章：<a href="http://rootlee.eu/sketchupdownload/">SketchUp8.0+Vray软件下载与破解</a></em></p>
-<p>Vray可以渲染Sketchup建立好的模型,使粗糙的3D模型达到高清照片级别的清晰度。<br>在Vray的设置面板里，用户可以更改光照条件，环境条件和输出图片的分辨率等参数。更多功能在此不在赘述。<br>渲染之后，用photoshop编辑图片，加上文字解释和图像示例，并对图片根据需要进行调整。<br>到此出，无人值守变电站的安防雷达示意图就基本完成了。以下为最终得到的示意图：<br><img src="biandianzhan1.png" alt="最终图"></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h1 id="使用Sketchup8-0建立变电站3D模型">使用Sketchup8.0建立变电站3D模型</h1><p><em>Sketchup软件下载请见博客另一篇文章：<a href="http://rootlee.eu/sketchupdownload/">Sketch]]>
-    </summary>
-    
-      <category term="Sketchup" scheme="http://rootlee.eu/tags/Sketchup/"/>
-    
-      <category term="Vray" scheme="http://rootlee.eu/tags/Vray/"/>
-    
-      <category term="专业相关" scheme="http://rootlee.eu/categories/%E4%B8%93%E4%B8%9A%E7%9B%B8%E5%85%B3/"/>
     
   </entry>
   
