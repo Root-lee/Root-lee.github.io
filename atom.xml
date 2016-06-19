@@ -191,7 +191,7 @@
     <link href="http://rootlee.eu/NOAA_1_1/"/>
     <id>http://rootlee.eu/NOAA_1_1/</id>
     <published>2016-06-20T02:00:00.000Z</published>
-    <updated>2016-06-19T22:01:06.000Z</updated>
+    <updated>2016-06-19T23:34:39.000Z</updated>
     <content type="html"><![CDATA[<p>美国气象卫星系统NOAA（National Oceanic and Atmospheric Administration）由以下两部分组成：</p>
 <ol>
 <li>地球静止轨道卫星“GOES”，专门用于短程天气预报和监测当前气象状况。</li>
@@ -204,6 +204,7 @@
 <li>瓦勒普斯岛（位于美国弗吉尼亚州）</li>
 </ol>
 <p>除此之外，NOAA气象卫星还配备了搜索和救援系统（S&amp;R），到现在为止，已经有两万多人的生命在NOAA气象卫星的帮助下得到了拯救。</p>
+<p>更多NOAA气象卫星的信息请参阅这里：<a href="http://rootlee.eu/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/">NOAA气象卫星专题</a></p>
 ]]></content>
     <summary type="html">
     <![CDATA[<p>美国气象卫星系统NOAA（National Oceanic and Atmospheric Administration）由以下两部分组成：</p>
@@ -225,7 +226,7 @@
     <link href="http://rootlee.eu/NOAA_1/"/>
     <id>http://rootlee.eu/NOAA_1/</id>
     <published>2016-06-18T02:00:00.000Z</published>
-    <updated>2016-06-19T22:01:06.000Z</updated>
+    <updated>2016-06-19T23:34:39.000Z</updated>
     <content type="html"><![CDATA[<p>NOAA系列气象卫星（National Oceanic and Atmospheric Administration, USA）自从上世纪70年代就飞行在高度为800千米的地球轨道上（这个系列中第一个发射的的是卫星TIROS-M，发射于1970年2月23号）。</p>
 <p>NOAA气象卫星运行在太阳同步轨道，也就是，每一个NOAA气象卫星在每天相同的时间段经过某一地球区域。卫星轨道高度大约在800千米。考虑到视野带宽，为了保证测绘任意一个区域的表面都能取得较好空间分辨率，每昼夜每个NOAA气象卫星至少围绕地球转4圈。不同NOAA气象卫星在不同时间经过某点，以保证任意地点各个卫星的经过有均匀的时间间隔。</p>
 <p>地表遥感图片在频率137MHz上以APT模拟格式进行传输。在NOAA气象卫星中，图像数据被分为两个通道：</p>
@@ -290,6 +291,7 @@
 <li>“NOAA-19” （f=137.1 MHz）</li>
 </ul>
 <p>NOAA气象卫星的外观为下图：<br><img src="NOAA.png" alt="NOAA"></p>
+<p>更多NOAA气象卫星的信息请参阅这里：<a href="http://rootlee.eu/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/">NOAA气象卫星专题</a></p>
 ]]></content>
     <summary type="html">
     <![CDATA[<p>NOAA系列气象卫星（National Oceanic and Atmospheric Administration, USA）自从上世纪70年代就飞行在高度为800千米的地球轨道上（这个系列中第一个发射的的是卫星TIROS-M，发射于1970年2月23号）。</p>
@@ -449,7 +451,7 @@
     <link href="http://rootlee.eu/NOAA_0/"/>
     <id>http://rootlee.eu/NOAA_0/</id>
     <published>2016-05-01T13:00:00.000Z</published>
-    <updated>2016-06-18T00:28:58.000Z</updated>
+    <updated>2016-06-19T23:34:39.000Z</updated>
     <content type="html"><![CDATA[<h1 id="简介">简介</h1><p>实现监测地球表面大气状况的传统方法是建立适当的地面网点和观察哨所，然而，这种收集有关环境状况信息的方法需要大量的人力和物力，需要人在偏远的地区工作，包括那些有着极其恶劣的气候条件的地方。</p>
 <p>与此同时，航天技术的极大发展使我们可以更加有效和低成本的定期收集可靠的环境参数数据。这些技术统称为-地球遥感（ERS）</p>
 <p>地球遥感-从人造卫星或飞机对地面观测，通过电磁波（包括光波）的传播与接收，感知目标的某些特性并加以进行分析的技術。</p>
@@ -484,6 +486,7 @@
 </ol>
 <p>其中应用最广泛且普通用户都负担的起的服务是自动图像传输，低分辨率格式APT。该信号容易接收-接收和解码只需要简单的硬件及软件即可，沿卫星的飞行轨道，卫星自动将本地实时的气候状况传递下来。</p>
 <p>宽带数字接收机（RTL-SDR）在市场上的流行促进了这种图像传输技术的兴起，有了这些设备每个人都可以直接接收到气象数据。因此，尽管APT技术已经有20年的历史，但现在有了新的硬件和软件解决方案，可以提高信号加工的质量。</p>
+<p>更多NOAA气象卫星的信息请参阅这里：<a href="http://rootlee.eu/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/">NOAA气象卫星专题</a></p>
 ]]></content>
     <summary type="html">
     <![CDATA[<h1 id="简介">简介</h1><p>实现监测地球表面大气状况的传统方法是建立适当的地面网点和观察哨所，然而，这种收集有关环境状况信息的方法需要大量的人力和物力，需要人在偏远的地区工作，包括那些有着极其恶劣的气候条件的地方。</p>
