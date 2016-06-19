@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://rootlee.eu/"/>
-  <updated>2016-06-19T23:28:49.000Z</updated>
+  <updated>2016-06-19T23:32:11.000Z</updated>
   <id>http://rootlee.eu/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://rootlee.eu/NOAA_1_2/"/>
     <id>http://rootlee.eu/NOAA_1_2/</id>
     <published>2016-06-20T02:00:00.000Z</published>
-    <updated>2016-06-19T23:28:49.000Z</updated>
+    <updated>2016-06-19T23:32:11.000Z</updated>
     <content type="html"><![CDATA[<p>美国气象卫星NOAA系列迄今为止已经发射了共计15课卫星，现在以NOAA-18为例介绍一下NOAA卫星的一些基本参数：<br><strong>美国气象卫星NOAA-18</strong></p>
 <table>
 <thead>
@@ -67,7 +67,7 @@
 </tr>
 <tr>
 <td style="text-align:left">机载设备</td>
-<td style="text-align:left">AVHRR/3，HIRS/4，AMSU-A1，AMSU-A2，/n MHS，SARSAT，SBUV/2，SEM/2，DCS/2</td>
+<td style="text-align:left">AVHRR/3，HIRS/4，AMSU-A1，AMSU-A2，MHS，SARSAT，SBUV/2，SEM/2，DCS/2</td>
 </tr>
 </tbody>
 </table>
@@ -168,6 +168,7 @@
 </tr>
 </tbody>
 </table>
+<p>更多NOAA气象卫星的信息请参阅这里：[NOAA气象卫星专题](<a href="http://rootlee.eu/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/）">http://rootlee.eu/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/）</a></p>
 ]]></content>
     <summary type="html">
     <![CDATA[<p>美国气象卫星NOAA系列迄今为止已经发射了共计15课卫星，现在以NOAA-18为例介绍一下NOAA卫星的一些基本参数：<br><strong>美国气象卫星NOAA-18</strong></p>
