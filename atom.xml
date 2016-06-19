@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://rootlee.eu/"/>
-  <updated>2016-06-19T23:21:18.000Z</updated>
+  <updated>2016-06-19T23:23:39.000Z</updated>
   <id>http://rootlee.eu/</id>
   
   <author>
@@ -19,12 +19,162 @@
     <link href="http://rootlee.eu/NOAA_1_2/"/>
     <id>http://rootlee.eu/NOAA_1_2/</id>
     <published>2016-06-20T02:00:00.000Z</published>
-    <updated>2016-06-19T23:21:18.000Z</updated>
-    <content type="html"><![CDATA[<p>美国气象卫星NOAA系列迄今为止已经发射了共计15课卫星，现在以NOAA-18为例介绍一下NOAA卫星的一些基本参数：<br><strong>美国气象卫星NOAA-18</strong><br>| 参数名称 | 参数值 |<br>| :—– | :—– |<br>| 所属系列 | NOAA |<br>| 发射日期 | 2015年5月20日 |<br>| 计划服役时间 | 不少于2年 |<br>| 重量 | 1457kg |<br>| 轨道类型 | 太阳同步轨道 |<br>| 轨道高度 | 远地点：866km 近地点：845km |<br>| 倾斜角 | 98.74° |<br>| 轨道周期 | 102.12分钟 |<br>| 数据传输速率 | HRPT：665kbit/s APT：9.6kbit/s |<br>| 机载设备 | AVHRR/3，HIRS/4，AMSU-A1，AMSU-A2，MHS，SARSAT，SBUV/2，SEM/2，DCS/2|</p>
-<p>以上为NOAA气象卫星的基本参数，以下表格为NOAA系列卫星的发射、服役以及退役时间表：<br>| 卫星名称 | 发射时间 | 开始服役时间 | 退役时间 |<br>| :—– | :—– | :—– | :—– |<br>| TIROS-N 13 | Oct 1978 | 19 Oct 1978 | 30 Jan 1980 |<br>| NOAA-6 | 27 Jun 1979 | 27 Jun 1979 | 16 Nov 1986 |<br>| NOAA-7 | 23 Jun 1981 | 24 Aug 1981 | 7 Jun 1986 |<br>| NOAA-8 | 28 Mar 1983 | 3 May 1983 | 31 Oct 1985 |<br>| NOAA-9 | 12 Dec 1984 | 25 Feb 1985 | 11 May 1994 |<br>| NOAA-10 | 17 Sep 1986 | 17 Nov 1986 | 28 Jul 2015 |<br>| NOAA-11 | 24 Sep 1988 | 8 Nov 1988 | 13 Sep 1994 |<br>| NOAA-12 | 13 May 1991 | 14 May 1991 | 15 Dec 1994 |<br>| NOAA-14 | 30 Dec 1994 | 30 Dec 1994 | 23 May 2007 |<br>| NOAA-15 | 13 May 1998 | 13 May 1998 | 正在服役 |<br>| NOAA-16 | 21 Sep 2000 | 21 Sep 2000 | 9 Jun 2014 |<br>| NOAA-17 | 24 Jun 2002 | 24 Jun 2002 | 10 April 2013 |<br>| NOAA-18 | 20 May 2005 | 30 Aug 2005 | 正在服役 |<br>| NOAA-19 | 6 Feb 2009 | 2 Jun 2009 | 正在服役 |</p>
+    <updated>2016-06-19T23:23:39.000Z</updated>
+    <content type="html"><![CDATA[<p>美国气象卫星NOAA系列迄今为止已经发射了共计15课卫星，现在以NOAA-18为例介绍一下NOAA卫星的一些基本参数：<br><strong>美国气象卫星NOAA-18</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数名称</th>
+<th style="text-align:left">参数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">所属系列</td>
+<td style="text-align:left">NOAA</td>
+</tr>
+<tr>
+<td style="text-align:left">发射日期</td>
+<td style="text-align:left">2015年5月20日</td>
+</tr>
+<tr>
+<td style="text-align:left">计划服役时间</td>
+<td style="text-align:left">不少于2年</td>
+</tr>
+<tr>
+<td style="text-align:left">重量</td>
+<td style="text-align:left">1457kg</td>
+</tr>
+<tr>
+<td style="text-align:left">轨道类型</td>
+<td style="text-align:left">太阳同步轨道</td>
+</tr>
+<tr>
+<td style="text-align:left">轨道高度</td>
+<td style="text-align:left">远地点：866km 近地点：845km</td>
+</tr>
+<tr>
+<td style="text-align:left">倾斜角</td>
+<td style="text-align:left">98.74°</td>
+</tr>
+<tr>
+<td style="text-align:left">轨道周期</td>
+<td style="text-align:left">102.12分钟</td>
+</tr>
+<tr>
+<td style="text-align:left">数据传输速率</td>
+<td style="text-align:left">HRPT：665kbit/s APT：9.6kbit/s</td>
+</tr>
+<tr>
+<td style="text-align:left">机载设备</td>
+<td style="text-align:left">AVHRR/3，HIRS/4，AMSU-A1，AMSU-A2，MHS，SARSAT，SBUV/2，SEM/2，DCS/2</td>
+</tr>
+</tbody>
+</table>
+<p>以上为NOAA气象卫星的基本参数，以下表格为NOAA系列卫星的发射、服役以及退役时间表：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">卫星名称</th>
+<th style="text-align:left">发射时间</th>
+<th style="text-align:left">开始服役时间</th>
+<th style="text-align:left">退役时间</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">TIROS-N 13</td>
+<td style="text-align:left">Oct 1978</td>
+<td style="text-align:left">19 Oct 1978</td>
+<td style="text-align:left">30 Jan 1980</td>
+</tr>
+<tr>
+<td style="text-align:left">NOAA-6</td>
+<td style="text-align:left">27 Jun 1979</td>
+<td style="text-align:left">27 Jun 1979</td>
+<td style="text-align:left">16 Nov 1986</td>
+</tr>
+<tr>
+<td style="text-align:left">NOAA-7</td>
+<td style="text-align:left">23 Jun 1981</td>
+<td style="text-align:left">24 Aug 1981</td>
+<td style="text-align:left">7 Jun 1986</td>
+</tr>
+<tr>
+<td style="text-align:left">NOAA-8</td>
+<td style="text-align:left">28 Mar 1983</td>
+<td style="text-align:left">3 May 1983</td>
+<td style="text-align:left">31 Oct 1985</td>
+</tr>
+<tr>
+<td style="text-align:left">NOAA-9</td>
+<td style="text-align:left">12 Dec 1984</td>
+<td style="text-align:left">25 Feb 1985</td>
+<td style="text-align:left">11 May 1994</td>
+</tr>
+<tr>
+<td style="text-align:left">NOAA-10</td>
+<td style="text-align:left">17 Sep 1986</td>
+<td style="text-align:left">17 Nov 1986</td>
+<td style="text-align:left">28 Jul 2015</td>
+</tr>
+<tr>
+<td style="text-align:left">NOAA-11</td>
+<td style="text-align:left">24 Sep 1988</td>
+<td style="text-align:left">8 Nov 1988</td>
+<td style="text-align:left">13 Sep 1994</td>
+</tr>
+<tr>
+<td style="text-align:left">NOAA-12</td>
+<td style="text-align:left">13 May 1991</td>
+<td style="text-align:left">14 May 1991</td>
+<td style="text-align:left">15 Dec 1994</td>
+</tr>
+<tr>
+<td style="text-align:left">NOAA-14</td>
+<td style="text-align:left">30 Dec 1994</td>
+<td style="text-align:left">30 Dec 1994</td>
+<td style="text-align:left">23 May 2007</td>
+</tr>
+<tr>
+<td style="text-align:left">NOAA-15</td>
+<td style="text-align:left">13 May 1998</td>
+<td style="text-align:left">13 May 1998</td>
+<td style="text-align:left">正在服役</td>
+</tr>
+<tr>
+<td style="text-align:left">NOAA-16</td>
+<td style="text-align:left">21 Sep 2000</td>
+<td style="text-align:left">21 Sep 2000</td>
+<td style="text-align:left">9 Jun 2014</td>
+</tr>
+<tr>
+<td style="text-align:left">NOAA-17</td>
+<td style="text-align:left">24 Jun 2002</td>
+<td style="text-align:left">24 Jun 2002</td>
+<td style="text-align:left">10 April 2013</td>
+</tr>
+<tr>
+<td style="text-align:left">NOAA-18</td>
+<td style="text-align:left">20 May 2005</td>
+<td style="text-align:left">30 Aug 2005</td>
+<td style="text-align:left">正在服役</td>
+</tr>
+<tr>
+<td style="text-align:left">NOAA-19</td>
+<td style="text-align:left">6 Feb 2009</td>
+<td style="text-align:left">2 Jun 2009</td>
+<td style="text-align:left">正在服役</td>
+</tr>
+</tbody>
+</table>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>美国气象卫星NOAA系列迄今为止已经发射了共计15课卫星，现在以NOAA-18为例介绍一下NOAA卫星的一些基本参数：<br><strong>美国气象卫星NOAA-18</strong><br>| 参数名称 | 参数值 |<br>| :—– | :—– |<br>| 所属系]]>
+    <![CDATA[<p>美国气象卫星NOAA系列迄今为止已经发射了共计15课卫星，现在以NOAA-18为例介绍一下NOAA卫星的一些基本参数：<br><strong>美国气象卫星NOAA-18</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-al]]>
     </summary>
     
       <category term="NOAA" scheme="http://rootlee.eu/tags/NOAA/"/>
