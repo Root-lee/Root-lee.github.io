@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://rootlee.eu/"/>
-  <updated>2016-06-19T23:33:04.000Z</updated>
+  <updated>2016-06-21T18:09:59.000Z</updated>
   <id>http://rootlee.eu/</id>
   
   <author>
@@ -13,6 +13,37 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[乌克兰的芭蕾舞之旅]]></title>
+    <link href="http://rootlee.eu/ballet/"/>
+    <id>http://rootlee.eu/ballet/</id>
+    <published>2016-06-21T20:00:00.000Z</published>
+    <updated>2016-06-21T18:09:59.000Z</updated>
+    <content type="html"><![CDATA[<p>来到欧洲，艺术氛围便强了起来。</p>
+<p>在这里，几乎我去过的每一个城市（利沃夫、敖德萨、基辅）的中心都会有一个壮丽古典的剧院，在喧嚣的市中心遗世独立，这里是整个城市的文化艺术中心，全体市民的精神栖息之所。</p>
+<p>哈尔科夫市中心也有一个大剧院，雄伟、壮观、美丽。墙上略带铜锈的雕塑、门口古典式的喷泉、路上斑驳的石阶……无一不在诉说着大剧院委婉动听的历史故事。</p>
+<p>我们在这里听过音乐会、看过歌剧、欣赏过芭蕾舞，要说我最钟爱的，还是芭蕾舞。</p>
+<p>偏爱芭蕾并不是因为我有什么独特的艺术品味，而只不过是因为我欣赏不了音乐会、听不懂带台词的歌剧。芭蕾舞对我而言是相对容易理解的形式，首先，芭蕾没有台词，所有的剧情全部靠演员的舞蹈来表现出来，所以就剧情理解来说，全世界的人理解都是一样的。其次，芭蕾是“舞大于剧”的艺术，舞蹈是主要的，剧情是次要的，所以每次芭蕾舞演员完成变奏或者双人舞都会在舞台前面一再的谢幕，这看似“出戏”的动作其实正是芭蕾舞“舞大于剧”的表现。</p>
+<p>艺术是世界的，其实应该说只有像芭蕾这样没有“词”的艺术才真正是世界的。</p>
+<p>每一部芭蕾舞剧都会有一个美若天仙的女主角和一个或凄美、或梦幻、或欢快的故事，因为喜欢，就多看了几场，也就想多了解一些这个历史悠久的舞蹈形式。</p>
+<p>芭蕾舞起源于十五到十六世纪的意大利文艺复兴时代的宫廷，是一个在婚礼、庆典之上表演用来祝福和助兴的舞蹈。后来芭蕾舞随着意大利公主凯瑟琳·德·美第奇进入法国宫廷之中，并得到进一步发展。</p>
+<p>“太阳王”路易十四在芭蕾舞的发展历程中起到了至关重要的作用，路易十四青年时是一位活跃的芭蕾舞演员，1661年，路易十四创立了皇家舞蹈学院，专责创立芭蕾舞的舞步标准及承认舞蹈教室的资格。1672年，路易十四任命卢利为巴黎歌剧院的总监，并发展出第一支专业芭蕾舞团，即现在的巴黎歌剧院芭蕾舞团。</p>
+<p>“太阳王”是一个制定规则的人，而芭蕾舞规则只是他制定的无数规则中的其中一个……</p>
+<p>1830年，芭蕾舞在法国步入了衰弱，但却在丹麦、意大利和俄罗斯继续发扬光大。</p>
+<p>俄罗斯的柴可夫斯基是芭蕾舞剧音乐创作大师，他创作的《睡美人》《胡桃夹子》《天鹅湖》等经典作品至今无人可以超越，可以说，柴可夫斯基以一己之力顶起了芭蕾舞大半边天。</p>
+<p>这让我想起了高考前为了应付高考作文，搜集了大量柴可夫斯基创作《天鹅湖》的作文素材，虽然当时关于柴可夫斯基的素材早已烂熟于胸，但直到现在我才真正意识到柴可夫斯基的伟大，并深深折服于他那上帝赐予的才华。</p>
+<p>嗯，看来回国前我还得在看两场芭蕾舞。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>来到欧洲，艺术氛围便强了起来。</p>
+<p>在这里，几乎我去过的每一个城市（利沃夫、敖德萨、基辅）的中心都会有一个壮丽古典的剧院，在喧嚣的市中心遗世独立，这里是整个城市的文化艺术中心，全体市民的精神栖息之所。</p>
+<p>哈尔科夫市中心也有一个大剧院，雄伟、壮观、美丽。]]>
+    </summary>
+    
+      <category term="随笔" scheme="http://rootlee.eu/categories/%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[NOAA气象卫星的基本参数]]></title>
@@ -680,33 +711,6 @@
   </entry>
   
   <entry>
-    <title><![CDATA[Python多线程学习心得]]></title>
-    <link href="http://rootlee.eu/python_thread/"/>
-    <id>http://rootlee.eu/python_thread/</id>
-    <published>2016-03-12T20:00:00.000Z</published>
-    <updated>2016-05-18T21:13:20.000Z</updated>
-    <content type="html"><![CDATA[<p>使用python写程序，并用PyQt创建一个Gui。</p>
-<h1 id="问题描述">问题描述</h1><p>当python程序运行耗费时间过长时，便会阻塞Gui进程，导致Gui无法刷新，从而使得程序出现“未响应”的情况。</p>
-<h1 id="解决办法">解决办法</h1><p>这种情况下便需要使用Python的多线程功能。<br>最常见的线程协同方式：UI主线程+后台线程<br>UI被触发后，对应的主线程创建后台线程，后台线程在后台运行，并通过发信号给主线程，从而间接控制UI的显示。</p>
-<h1 id="例子">例子</h1><p>以下是我编写的一个英雄联盟语音汉化程序（因为在国外，LOL只能玩俄服，俄服的俄语虽然也好听，但终究感觉不如汉语亲切，于是便用python写了这个汉化小程序），程序功能极其简单，就是简单的把汉语语音解压到俄服LOL的安装文件夹语音文件位置，并将其覆盖。但是，解压很耗费时间，如果将解压程序和UI放在一个线程里，就会导致程序长时间的“未响应”状态，这就是因为解压过程阻塞了UI进程。后来使用多线程改进后问题得到解决。以下是部分程序（不完整，程序不太重要的部分被略去了）</p>
-<p>hanhua.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Ui_Dialog</span><span class="params">(QtGui.QWidget)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span>  <span class="title">__init__</span><span class="params">(self, parent = None)</span>:</span></span><br><span class="line">        QtGui.QWidget.__init__(self, parent)</span><br><span class="line">        self.setupUi(self)</span><br><span class="line">        self.retranslateUi(self)</span><br><span class="line">        self.connect(self.pushButton, QtCore.SIGNAL(<span class="string">'clicked()'</span>),self.un_zip)      //点击按钮后进入un_zip函数</span><br><span class="line">        self.setWindowIcon(QtGui.QIcon(<span class="string">'web.png'</span>))</span><br><span class="line">        self.setWindowTitle(_fromUtf8(<span class="string">'LOL俄服汉化'</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setupUi</span><span class="params">(self, Dialog)</span>:</span></span><br><span class="line">        ...  //初始化UI，程序略</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">retranslateUi</span><span class="params">(self, Dialog)</span>:</span></span><br><span class="line">        Dialog.setWindowTitle(_translate(<span class="string">"Dialog"</span>, <span class="string">"Dialog"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.pushButton.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"汉化"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"LOL俄服汉化语音"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label_2.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"--By Root lee"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label_3.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"适用于俄服5.16版"</span>, <span class="keyword">None</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">updateUI</span><span class="params">(self)</span>:</span></span><br><span class="line">        ...   //更新UI，程序略</span><br><span class="line">    <span class="function"><span class="keyword">def</span>  <span class="title">un_zip</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">from</span> threads <span class="keyword">import</span> MyThread   //导入进程类</span><br><span class="line">        self.bwThread = MyThread()   //新建进程对象</span><br><span class="line">        self.connect(self.bwThread.QtCore.SIGNAL(<span class="string">"where"</span>),self.updateUI)   //关联子进程发射过来的信号与updateUI函数</span><br><span class="line">        self.bwThread.start()    //运行子线程</span><br></pre></td></tr></table></figure></p>
-<p>thread.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyThread</span><span class="params">(QtCore.QThread)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,parent = None)</span>:</span></span><br><span class="line">        ...   //初始化，程序略</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        ...   //解压相关代码，略</span><br><span class="line">        self.emit(QtCore.SIGNAL(<span class="string">"where"</span>),j)  //发送<span class="string">"where"</span>信号给UI线程，然后UI线程调用updateUI()函数来更新UI</span><br></pre></td></tr></table></figure></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>使用python写程序，并用PyQt创建一个Gui。</p>
-<h1 id="问题描述">问题描述</h1><p>当python程序运行耗费时间过长时，便会阻塞Gui进程，导致Gui无法刷新，从而使得程序出现“未响应”的情况。</p>
-<h1 id="解决办法">解决办法<]]>
-    </summary>
-    
-      <category term="pyqt" scheme="http://rootlee.eu/tags/pyqt/"/>
-    
-      <category term="python" scheme="http://rootlee.eu/tags/python/"/>
-    
-      <category term="Python" scheme="http://rootlee.eu/categories/Python/"/>
-    
-  </entry>
-  
-  <entry>
     <title><![CDATA[电视剧《大明宫词》观后感及皮影戏《采桑女》戏词]]></title>
     <link href="http://rootlee.eu/caisang/"/>
     <id>http://rootlee.eu/caisang/</id>
@@ -736,6 +740,33 @@
     </summary>
     
       <category term="读后感" scheme="http://rootlee.eu/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Python多线程学习心得]]></title>
+    <link href="http://rootlee.eu/python_thread/"/>
+    <id>http://rootlee.eu/python_thread/</id>
+    <published>2016-03-12T20:00:00.000Z</published>
+    <updated>2016-05-18T21:13:20.000Z</updated>
+    <content type="html"><![CDATA[<p>使用python写程序，并用PyQt创建一个Gui。</p>
+<h1 id="问题描述">问题描述</h1><p>当python程序运行耗费时间过长时，便会阻塞Gui进程，导致Gui无法刷新，从而使得程序出现“未响应”的情况。</p>
+<h1 id="解决办法">解决办法</h1><p>这种情况下便需要使用Python的多线程功能。<br>最常见的线程协同方式：UI主线程+后台线程<br>UI被触发后，对应的主线程创建后台线程，后台线程在后台运行，并通过发信号给主线程，从而间接控制UI的显示。</p>
+<h1 id="例子">例子</h1><p>以下是我编写的一个英雄联盟语音汉化程序（因为在国外，LOL只能玩俄服，俄服的俄语虽然也好听，但终究感觉不如汉语亲切，于是便用python写了这个汉化小程序），程序功能极其简单，就是简单的把汉语语音解压到俄服LOL的安装文件夹语音文件位置，并将其覆盖。但是，解压很耗费时间，如果将解压程序和UI放在一个线程里，就会导致程序长时间的“未响应”状态，这就是因为解压过程阻塞了UI进程。后来使用多线程改进后问题得到解决。以下是部分程序（不完整，程序不太重要的部分被略去了）</p>
+<p>hanhua.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Ui_Dialog</span><span class="params">(QtGui.QWidget)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span>  <span class="title">__init__</span><span class="params">(self, parent = None)</span>:</span></span><br><span class="line">        QtGui.QWidget.__init__(self, parent)</span><br><span class="line">        self.setupUi(self)</span><br><span class="line">        self.retranslateUi(self)</span><br><span class="line">        self.connect(self.pushButton, QtCore.SIGNAL(<span class="string">'clicked()'</span>),self.un_zip)      //点击按钮后进入un_zip函数</span><br><span class="line">        self.setWindowIcon(QtGui.QIcon(<span class="string">'web.png'</span>))</span><br><span class="line">        self.setWindowTitle(_fromUtf8(<span class="string">'LOL俄服汉化'</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setupUi</span><span class="params">(self, Dialog)</span>:</span></span><br><span class="line">        ...  //初始化UI，程序略</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">retranslateUi</span><span class="params">(self, Dialog)</span>:</span></span><br><span class="line">        Dialog.setWindowTitle(_translate(<span class="string">"Dialog"</span>, <span class="string">"Dialog"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.pushButton.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"汉化"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"LOL俄服汉化语音"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label_2.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"--By Root lee"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label_3.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"适用于俄服5.16版"</span>, <span class="keyword">None</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">updateUI</span><span class="params">(self)</span>:</span></span><br><span class="line">        ...   //更新UI，程序略</span><br><span class="line">    <span class="function"><span class="keyword">def</span>  <span class="title">un_zip</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">from</span> threads <span class="keyword">import</span> MyThread   //导入进程类</span><br><span class="line">        self.bwThread = MyThread()   //新建进程对象</span><br><span class="line">        self.connect(self.bwThread.QtCore.SIGNAL(<span class="string">"where"</span>),self.updateUI)   //关联子进程发射过来的信号与updateUI函数</span><br><span class="line">        self.bwThread.start()    //运行子线程</span><br></pre></td></tr></table></figure></p>
+<p>thread.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyThread</span><span class="params">(QtCore.QThread)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,parent = None)</span>:</span></span><br><span class="line">        ...   //初始化，程序略</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        ...   //解压相关代码，略</span><br><span class="line">        self.emit(QtCore.SIGNAL(<span class="string">"where"</span>),j)  //发送<span class="string">"where"</span>信号给UI线程，然后UI线程调用updateUI()函数来更新UI</span><br></pre></td></tr></table></figure></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>使用python写程序，并用PyQt创建一个Gui。</p>
+<h1 id="问题描述">问题描述</h1><p>当python程序运行耗费时间过长时，便会阻塞Gui进程，导致Gui无法刷新，从而使得程序出现“未响应”的情况。</p>
+<h1 id="解决办法">解决办法<]]>
+    </summary>
+    
+      <category term="pyqt" scheme="http://rootlee.eu/tags/pyqt/"/>
+    
+      <category term="python" scheme="http://rootlee.eu/tags/python/"/>
+    
+      <category term="Python" scheme="http://rootlee.eu/categories/Python/"/>
     
   </entry>
   
@@ -858,34 +889,6 @@
 ]]></content>
     <summary type="html">
     <![CDATA[<h2 id="陪你看世界读书会第一期之《平凡的世界》第一部"><em>陪你看世界</em>读书会第一期之《平凡的世界》第一部</h2><p>时隔多年再读《平凡的世界》这本对我影响极大的书，又有了新的感悟、新的思考。虽然这本书的情节已经遗忘的差不多了，重读时却意外地发现孙少平已经]]>
-    </summary>
-    
-      <category term="读后感" scheme="http://rootlee.eu/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[当美好的事物毁灭在你面前————读《巴黎圣母院》有感]]></title>
-    <link href="http://rootlee.eu/review_paris/"/>
-    <id>http://rootlee.eu/review_paris/</id>
-    <published>2016-02-25T23:00:00.000Z</published>
-    <updated>2016-05-18T21:15:18.000Z</updated>
-    <content type="html"><![CDATA[<p><img src="paris.jpg" alt="巴黎圣母院"></p>
-<blockquote>
-<p>悲剧是将人生有价值的东西毁灭给人看    ——鲁迅</p>
-</blockquote>
-<p>今日将维克多-雨果的长篇小说《巴黎圣母院》看完了，真是百感交集，久久不能自已。为格兰古瓦因作品表演失败无家可归驻足河滩的境遇而心生同情，对美丽、纯洁、善良的吉普赛女郎带着金角小山羊街头卖艺的场景而心生爱怜，也为敲钟人加西莫多第一次得到大家关注却是因为被评为了“丑人王”而苦笑，为副主教的种种卑鄙行径而感到愤怒的同时又为他被教会教条和个人欲望撕碎而感到可怜，更为爱斯梅拉达被他心爱的卫队长一步步推进深渊而感到无比的寒心……</p>
-<p>如果按照鲁迅先生对悲剧的定义来看，《巴黎圣母院》真是一个彻头彻尾的悲剧，它几乎将人类所有美好的东西全部毁灭在读者面前：忠诚、爱情、信仰、艺术、纯洁、善良、美丽、母爱、友谊、手足情……真是毁地彻彻底底，毁地干干净净！<br>人总是在失去时才知道珍惜，所以《巴黎圣母院》将这些美好的事物毁灭给你看，诚然，这样的毁灭让人心痛，但只有我们体会并记住这种心痛的感觉，我们才会更加珍惜我们现在所拥有的那些美好。</p>
-<p>爱斯梅拉达善良纯洁、美丽、善良，她在流浪汉手中救下了即将被处死的“哲学家”格兰古瓦，也用一口清水救活了被绑在耻辱柱上加西莫多那几乎死寂的心。多少次，我都似乎看到美丽的爱斯梅拉达在阳光下翩翩起舞，一脸的天真烂漫，旁边还跟着她那惹人喜爱的小山羊加利。这画卷一般的场景却在黑暗的中世纪中被碾压地粉碎……</p>
-<p>加西莫多无疑是丑的，他脸丑、背驼、腿瘸、耳聋、独眼……，即使到最后化为一堆白骨，依然有着弓形的脊椎，长短不一的腿骨……<br>但加西莫多的美是更真是的，无论他对从小收养他的副主教无比忠诚（虽然副主教收养他是因为想增加以后升入天堂的砝码），他对爱斯梅拉达的爱是无私的真诚的，从绞刑架上救下爱斯梅拉达的他是勇敢的，而救下爱的人之后在教堂走廊奔跑的他又是孩子一般天真，为了保护爱人以一人之力抵挡住所有围攻圣母院的流浪汉的他又是机智的，以及死后也要拥抱着爱的人的那份炽热的爱无不让人动容。与加西莫多相比，副主教的卑鄙无耻道貌岸然和卫队长的冷酷无情才是真的丑。</p>
-<p>美丽的心灵才是真的美<br>灵魂的肮脏才是真的丑</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p><img src="paris.jpg" alt="巴黎圣母院"></p>
-<blockquote>
-<p>悲剧是将人生有价值的东西毁灭给人看    ——鲁迅</p>
-</blockquote>
-<p>今日将维克多-雨果的长篇小说《巴黎圣母院》看完了，真是百感交集，久久不能]]>
     </summary>
     
       <category term="读后感" scheme="http://rootlee.eu/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
