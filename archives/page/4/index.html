@@ -180,6 +180,61 @@
                 <div class="post-header">
                     <h1 class="post-title" itemprop="headline">
                         
+                                <a class="link-unstyled" href="/fifo_problem/">Fifo学习中遇到的问题与解决办法</a>
+                        
+                    </h1>
+                    <div class="post-meta">
+    <time  itemprop="datePublished" content="Tue Nov 17 2015 20:00:00 GMT+0000">
+        Nov 17, 2015
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/专业相关/">专业相关</a>
+
+
+    
+</div>
+                </div>
+                <div class="post-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            问题描述第一次写程序判断fifo是否满用的是 full 标志位，这种写法会导致，fifo满的时候，会少写入一个数据,如图：
+发现此处的 109 这个数据并未写入fifo。
+解决办法：将full 标志位换为almost_full标志位即可解决。解决后如下图：这时数据写入读出都没问题了。
+<br>
+                    
+                    
+                        
+                            <a href="/fifo_problem/" class="post-excerpt_link link ">Continue reading</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="post-thumbnailimg">
+                    <img alt="" itemprop="image" src="http://rootlee.eu/fifo_problem/../fifo/fifo.png"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="post post--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="post-wrap">
+                <div class="post-header">
+                    <h1 class="post-title" itemprop="headline">
+                        
                                 <a class="link-unstyled" href="/verilog/">学习Verilog HDL时犯的一些错误</a>
                         
                     </h1>
@@ -643,59 +698,6 @@
             
                 <div class="post-thumbnailimg">
                     <img alt="" itemprop="image" src="http://rootlee.eu/wirereg/vhdl-or-verilog.PNG"/>
-                </div>
-                
-            
-        </article>
-    
-        
-            
-                
-            
-        
-        
-            <article class="post post--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
-        
-            <div class="post-wrap">
-                <div class="post-header">
-                    <h1 class="post-title" itemprop="headline">
-                        
-                                <a class="link-unstyled" href="/VC_compileerror/">VC2008预编译头错误解决办法</a>
-                        
-                    </h1>
-                    <div class="post-meta">
-    <time  itemprop="datePublished" content="Wed Oct 28 2015 20:00:00 GMT+0000">
-        Oct 28, 2015
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/编程/">编程</a>
-
-
-    
-</div>
-                </div>
-                <div class="post-excerpt" itemprop="articleBody">
-                    
-                        <p>
-                            问题症状在运行 Microsoft Visual C++ 2008年编译器来编译文件或生成项目时，您会收到以下错误消息：错误 C1859:头文件的名称意外的预编译的头，只需重新运行编译器可能会解决此问题。但是重新运行编译器并不能解决问题，谷歌搜索之后找到解决办法。
-解决办法步骤/方法右键点击你创建的项目，选择“属性标签”点击属性，弹出“项目属性页”，在左侧找到以下位置  配置属性 –&gt;  C<br>
-                    
-                    
-                        
-                            <a href="/VC_compileerror/" class="post-excerpt_link link ">Continue reading</a>
-                            
-                        
-                    
-                    
-                        </p>
-                    
-                </div>
-            </div>
-            
-                <div class="post-thumbnailimg">
-                    <img alt="" itemprop="image" src="http://rootlee.eu/VC_compileerror/../vc2008/vc.jpg"/>
                 </div>
                 
             
