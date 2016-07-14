@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://rootlee.eu/"/>
-  <updated>2016-06-27T22:10:57.000Z</updated>
+  <updated>2016-07-14T03:53:31.000Z</updated>
   <id>http://rootlee.eu/</id>
   
   <author>
@@ -13,6 +13,75 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[深夜港湾（歌词）]]></title>
+    <link href="http://rootlee.eu/lrc_gangwan/"/>
+    <id>http://rootlee.eu/lrc_gangwan/</id>
+    <published>2016-07-14T12:00:00.000Z</published>
+    <updated>2016-07-14T03:53:31.000Z</updated>
+    <content type="html"><![CDATA[<embed src="http://music.163.com/style/swf/widget.swf?sid=235096&type=2&auto=1&width=320&height=66" width="340" height="86" allownetworking="all">
+
+
+<pre><code><span class="keyword">*</span><span class="keyword">*</span>歌手<span class="keyword">*</span><span class="keyword">*</span> : 关淑怡
+
+<span class="keyword">*</span><span class="keyword">*</span>作曲<span class="keyword">*</span><span class="keyword">*</span> : Masashi Sada
+
+<span class="keyword">*</span><span class="keyword">*</span>作词<span class="keyword">*</span><span class="keyword">*</span> : 潘伟源
+
+夜已在变幻 
+像钻石灿烂 
+但也这么冷
+
+看千串霓虹 
+泛起千串梦 
+映着这港湾
+
+何故泪印凝在眼 
+沉默里 
+终于一声慨叹
+
+你快将消失 
+消失去
+去了未会返
+
+路已是有限
+愿脚步放慢 
+莫太早分散
+
+再请你逗留 
+请将这片梦 
+拥在臂弯
+
+如缺乏你难习惯难习惯 
+身边千般冷眼
+
+听听北风声 
+多么冷 
+快收紧你臂弯
+
+长裙随急风飞舞似浪漫 
+却在别时人渐散
+
+黑色丝巾 
+风中飘满寂寞 
+荡入这港湾
+
+随霓虹千盏风里我独站 
+远望渡轮随浪去
+
+身边的呼呼北风 
+已经不感觉到冷
+
+今晚最冷已是我心间
+</code></pre>]]></content>
+    <summary type="html">
+    <![CDATA[<embed src="http://music.163.com/style/swf/widget.swf?sid=235096&type=2&auto=1&width=320&height=66" width="340" height="86" allownetworking=]]>
+    </summary>
+    
+      <category term="随笔" scheme="http://rootlee.eu/categories/%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[再会，我的哈村]]></title>
@@ -881,40 +950,6 @@
       <category term="pyqt" scheme="http://rootlee.eu/tags/pyqt/"/>
     
       <category term="python" scheme="http://rootlee.eu/tags/python/"/>
-    
-      <category term="Python" scheme="http://rootlee.eu/categories/Python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[南航教务处泄露学生信息漏洞的发现以及关于此事的一些想法]]></title>
-    <link href="http://rootlee.eu/bug_of_nuaa/"/>
-    <id>http://rootlee.eu/bug_of_nuaa/</id>
-    <published>2016-03-08T15:00:00.000Z</published>
-    <updated>2016-05-18T21:02:20.000Z</updated>
-    <content type="html"><![CDATA[<h2 id="发现漏洞">发现漏洞</h2><p>偶然的一个发现，学校教务处网站有一个小小的漏洞，会泄露全校所有学生的学号、姓名、及照片。这个漏洞存在于新版教务处里，当登录教务处之后，点击“学生个人查询”–&gt;“基本查询”，会出现当前登录学生的所有个人资料，同时附带个人的证件照，并且证件照之上附<br>带个人的姓名和学号信息，类似于下图：</p>
-<p><img src="screen1.png" alt="screen1"></p>
-<p>漏洞便在这个照片之上。<br>我们右击图片查看图片属性：</p>
-<p><img src="screen2.png" alt="screen2"></p>
-<p>然后将图片地址粘贴在浏览器的地址栏然后点回车，在浏览器里我们得到了我们的证件照。<br>我们注意到图片的地址是这种形式的：</p>
-<p><em>…/EASys/Controls/ImageHandler.ashx?ImageName=151220101&amp;BinaryType=xh</em></p>
-<p>地址里的有一串代码：</p>
-<p>ImageName=151220701</p>
-<p>后面这串数字就是你的学号。</p>
-<p><strong>下面重点来了：</strong><br>更改这个学号为另一个，比如此处我们将其改成：151220702<br>然后点击回车，你会惊奇的发现现在浏览器里显示的是学号为151220702这名学生的照片！<br>而这张图片不仅仅是证件照，在其左下角还标注着此人的学号和姓名。</p>
-<h2 id="想法">想法</h2><ol>
-<li>每个人的证件照都是心中难灭的伤，可以用python爬虫将全校学生的证件照全部抓取下来，做一套api，开发一个用学号查询证件照的软件。（<a href="https://github.com/Root-lee/spider_photos_nuaa）" target="_blank" rel="external">https://github.com/Root-lee/spider_photos_nuaa）</a></li>
-<li>这个新版的教务处还未正式上线，有机会可以向负责任提交这个漏洞。</li>
-<li>不仅国内的大学，包括国内的一些著名的公司，都不太注重网站的安全，很容易留下漏洞，被别有用心的人利用。尤其是你的数据库里还包含着大量的用户信息时，网站责任人的失责更是会造成极其重大的损失。真诚希望每个组织不论是学校还是公司都能在网站安全方面有所改进。</li>
-</ol>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h2 id="发现漏洞">发现漏洞</h2><p>偶然的一个发现，学校教务处网站有一个小小的漏洞，会泄露全校所有学生的学号、姓名、及照片。这个漏洞存在于新版教务处里，当登录教务处之后，点击“学生个人查询”–&gt;“基本查询”，会出现当前登录学生的所有个人资料，同时附带个人的证]]>
-    </summary>
-    
-      <category term="python" scheme="http://rootlee.eu/tags/python/"/>
-    
-      <category term="爬虫" scheme="http://rootlee.eu/tags/%E7%88%AC%E8%99%AB/"/>
     
       <category term="Python" scheme="http://rootlee.eu/categories/Python/"/>
     
