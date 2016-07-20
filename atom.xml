@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2016-07-15T13:42:21.000Z</updated>
+  <updated>2016-07-20T11:41:58.000Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -13,6 +13,45 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[放在Github上的博客更换域名记]]></title>
+    <link href="http://irootlee.com/change_domin/"/>
+    <id>http://irootlee.com/change_domin/</id>
+    <published>2016-07-20T18:00:00.000Z</published>
+    <updated>2016-07-20T11:41:58.000Z</updated>
+    <content type="html"><![CDATA[<p>这个博客从去年开始写，写到现在也已经差不多一年了，博客里记录了一些自己的心情和感想，可以让自己看到自己思想转变的轨迹，这些文章也是自己非常重要的精神财富。除了读后感和随笔外，博客还记录了一些自己在日常学习中遇到的问题和解决办法，本来是为了便于自己以后遇到类似问题可以有点参考，但从网站的google数据分析来看，博客每天的展示量都有好几百，个别文章获得了很好的关键词排名，吸引了大量人访问，如果我的文章或多或少可以帮助他们解决他们遇到的问题的话，我会感到非常欣慰。</p>
+<p>博客原来的域名是<strong><a href="http://RootLee.Eu" target="_blank" rel="external">http://RootLee.Eu</a></strong> ，域名是在全球老牌域名注册商godaddy注册的，当时没选国内的是因为国内严格的监管和对域名转入转出的限制，注册域名时偶然发现.eu域名只要1.99美元，感觉捡了大便宜，心想首年这么便宜，续费的话应该也不会太贵吧，于是立刻就买下了这个域名。</p>
+<p>前两天突然想到域名还有两三个月就要到期了，应该提前去续费了，但当我登录godaddy点击域名续费时，惊奇的发现，续费一年竟然要100美元/年，大约600多人民币！这对还在读书的我实在是一笔巨资了，根本无法承受。唯一的办法就是换域名了，换成全球普遍使用的.com域名，但是，我原来的域名已经使用了快一年，谷歌收录页面达到一百多条，360搜索也有七八十条，百度虽然少一点，但是收录量也是在稳步上升，正处于收录的关键时期，域名更换了就会导致这所有的努力都会付诸东流。心里一直后悔当时不该贪图小便宜，让自己陷入这个两难的境地，真的是“出来混，迟早要还的。”，现在的我就在“还”债。</p>
+<p>无论如何域名是要更换的，这次就老老实实在中国的域名商万网里面注册了自己网站新的域名：<a href="http://iRootLee.com">http://iRootLee.com</a> ，为了防止以后再出现续费奇高的情况，这次直接注册了五年，五年后的我应该已经工作了，即使域名续费需要更高的费用，应该也能付的起了。</p>
+<p>只是不知道五年后的我是不是还在继续坚持着写我的博客？域名还需不需要继续续费？</p>
+<p>去网上搜索解决办法，发现301页面永久跳转可以传递权重，也就是更换域名后搜索引擎可以将旧域名的权重传递到新域名下，这样的话换域名对网站收录的影响就会小很多。</p>
+<p>但是，如何实现301跳转呢？</p>
+<p>网上的方法不外乎这几类：</p>
+<ol>
+<li>IIS服务器中实现301跳转</li>
+<li>ASP下的301转向</li>
+<li>PHP下的301转向</li>
+<li>ASP.Net下的301转向</li>
+<li>CGI Perl下的301转向</li>
+<li>JSP下的301转向代码</li>
+<li>Apache下301转向（建立.htaccess文件）</li>
+<li>Apache下vhosts.conf中配置301跳转</li>
+<li>Ruby中实现301跳转</li>
+<li>Coldfusion中实现301跳转</li>
+</ol>
+<p>但是这几种方法对我而言都是不可能实现的，首先，我是用Github的gitpages服务搭建的博客，根本没有对服务器的操纵权，所有需要修改服务器配置的方法我都不可能做到；其次，博客是用Hexo生成的静态页面，不是动态网站，所以那些动态语言的方法也不适用。</p>
+<p>如果所有方法都不行，还有一个很笨的方法，那就是把自己网站里的每一个html页面加上301跳转语句，当然，这样也可以解决问题，但是，手动做这些不知道弄到什么时候呢。</p>
+<p>偶然间在一片文章里看到说有的DNS服务商提供URL转发服务，这种服务就是使用的301跳转实现的，于是，我立刻去自己的DNS服务商DNSPod里查看，发现果然有一个显性URL转发选项，赶紧设置转发到我的域名，但系统提示需要验证手机号码，验证完了手机号之后继续设置转发，系统提示域名正常工作30天后才可以设置转发，但我的域名明明早就工作超过30天了，于是我在dnspod提交工单向工作人员反馈这个问题，过了两小时工作人员回复已解决。再次设置转发，系统再次提示，域名转发要经过24小时审核，审核通过才能生效。好吧，那就等24小时吧，第二天下午，DNSPod给我发邮件，我以为是审核通过的通知邮件，点开之后才失望的发现是审核失败，对照审核失败原因，发现最可能的原因是我的新域名因为没绑定博客，所以新域名是访问不了的，无奈，只好把旧域名解除绑定，然后把新域名添加绑定，再次提交转发申请，幸好，第二天审核通过了，自己用工具测试了一下，访问旧域名就会301跳转到新域名。</p>
+<p>做完这些之后去百度站长平台、360站长平台提交网站改版请求，把更换域名规则提交上去，google分析因为墙的原因暂时无法访问，有机会再更改吧，至于对搜索引擎收录的影响，现在还在观察中。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>这个博客从去年开始写，写到现在也已经差不多一年了，博客里记录了一些自己的心情和感想，可以让自己看到自己思想转变的轨迹，这些文章也是自己非常重要的精神财富。除了读后感和随笔外，博客还记录了一些自己在日常学习中遇到的问题和解决办法，本来是为了便于自己以后遇到类似问题可以有点参考]]>
+    </summary>
+    
+      <category term="问题解决记录" scheme="http://irootlee.com/categories/%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E8%AE%B0%E5%BD%95/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[解决Windows7/10系统连接网线后显示“未识别的网络”的问题]]></title>
@@ -944,33 +983,6 @@
     </summary>
     
       <category term="读后感" scheme="http://irootlee.com/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Python多线程学习心得]]></title>
-    <link href="http://irootlee.com/python_thread/"/>
-    <id>http://irootlee.com/python_thread/</id>
-    <published>2016-03-12T20:00:00.000Z</published>
-    <updated>2016-05-18T21:13:20.000Z</updated>
-    <content type="html"><![CDATA[<p>使用python写程序，并用PyQt创建一个Gui。</p>
-<h1 id="问题描述">问题描述</h1><p>当python程序运行耗费时间过长时，便会阻塞Gui进程，导致Gui无法刷新，从而使得程序出现“未响应”的情况。</p>
-<h1 id="解决办法">解决办法</h1><p>这种情况下便需要使用Python的多线程功能。<br>最常见的线程协同方式：UI主线程+后台线程<br>UI被触发后，对应的主线程创建后台线程，后台线程在后台运行，并通过发信号给主线程，从而间接控制UI的显示。</p>
-<h1 id="例子">例子</h1><p>以下是我编写的一个英雄联盟语音汉化程序（因为在国外，LOL只能玩俄服，俄服的俄语虽然也好听，但终究感觉不如汉语亲切，于是便用python写了这个汉化小程序），程序功能极其简单，就是简单的把汉语语音解压到俄服LOL的安装文件夹语音文件位置，并将其覆盖。但是，解压很耗费时间，如果将解压程序和UI放在一个线程里，就会导致程序长时间的“未响应”状态，这就是因为解压过程阻塞了UI进程。后来使用多线程改进后问题得到解决。以下是部分程序（不完整，程序不太重要的部分被略去了）</p>
-<p>hanhua.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Ui_Dialog</span><span class="params">(QtGui.QWidget)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span>  <span class="title">__init__</span><span class="params">(self, parent = None)</span>:</span></span><br><span class="line">        QtGui.QWidget.__init__(self, parent)</span><br><span class="line">        self.setupUi(self)</span><br><span class="line">        self.retranslateUi(self)</span><br><span class="line">        self.connect(self.pushButton, QtCore.SIGNAL(<span class="string">'clicked()'</span>),self.un_zip)      //点击按钮后进入un_zip函数</span><br><span class="line">        self.setWindowIcon(QtGui.QIcon(<span class="string">'web.png'</span>))</span><br><span class="line">        self.setWindowTitle(_fromUtf8(<span class="string">'LOL俄服汉化'</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setupUi</span><span class="params">(self, Dialog)</span>:</span></span><br><span class="line">        ...  //初始化UI，程序略</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">retranslateUi</span><span class="params">(self, Dialog)</span>:</span></span><br><span class="line">        Dialog.setWindowTitle(_translate(<span class="string">"Dialog"</span>, <span class="string">"Dialog"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.pushButton.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"汉化"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"LOL俄服汉化语音"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label_2.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"--By Root lee"</span>, <span class="keyword">None</span>))</span><br><span class="line">        self.label_3.setText(_translate(<span class="string">"Dialog"</span>, <span class="string">"适用于俄服5.16版"</span>, <span class="keyword">None</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">updateUI</span><span class="params">(self)</span>:</span></span><br><span class="line">        ...   //更新UI，程序略</span><br><span class="line">    <span class="function"><span class="keyword">def</span>  <span class="title">un_zip</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">from</span> threads <span class="keyword">import</span> MyThread   //导入进程类</span><br><span class="line">        self.bwThread = MyThread()   //新建进程对象</span><br><span class="line">        self.connect(self.bwThread.QtCore.SIGNAL(<span class="string">"where"</span>),self.updateUI)   //关联子进程发射过来的信号与updateUI函数</span><br><span class="line">        self.bwThread.start()    //运行子线程</span><br></pre></td></tr></table></figure></p>
-<p>thread.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyThread</span><span class="params">(QtCore.QThread)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,parent = None)</span>:</span></span><br><span class="line">        ...   //初始化，程序略</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        ...   //解压相关代码，略</span><br><span class="line">        self.emit(QtCore.SIGNAL(<span class="string">"where"</span>),j)  //发送<span class="string">"where"</span>信号给UI线程，然后UI线程调用updateUI()函数来更新UI</span><br></pre></td></tr></table></figure></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>使用python写程序，并用PyQt创建一个Gui。</p>
-<h1 id="问题描述">问题描述</h1><p>当python程序运行耗费时间过长时，便会阻塞Gui进程，导致Gui无法刷新，从而使得程序出现“未响应”的情况。</p>
-<h1 id="解决办法">解决办法<]]>
-    </summary>
-    
-      <category term="pyqt" scheme="http://irootlee.com/tags/pyqt/"/>
-    
-      <category term="python" scheme="http://irootlee.com/tags/python/"/>
-    
-      <category term="Python" scheme="http://irootlee.com/categories/Python/"/>
     
   </entry>
   
