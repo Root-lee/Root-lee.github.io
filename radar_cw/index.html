@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://irootlee.com/fan.png">
 <meta property="og:image" content="http://irootlee.com/4.png">
 <meta property="og:image" content="http://irootlee.com/5.png">
-<meta property="og:updated_time" content="2016-09-10T14:11:54.000Z">
+<meta property="og:updated_time" content="2016-09-10T14:16:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="自制连续波（CW）雷达测量小风扇的转速">
 <meta name="twitter:description" content="连续波雷达简介连续波雷达就是发射连续波信号的雷达。信号是单一频率的或多频率的，或者频率是经过调制的（频率随时间按一定规律变化）。非调制(单一频率)连续波雷达能对相当距离范围内的具有任何速度的目标进行测速，而脉冲雷达只有采用相当复杂的技术才能具备这一性能。因此，连续波雷达容易区分活动目标，适合于检测单一活动目标。连续波雷达的主要缺点是信号泄漏（发射信号及其噪声直接漏入接收机）和背景干扰（近距离背景的">
@@ -186,8 +186,8 @@
         <h1 class="post-title" itemprop="headline">自制连续波（CW）雷达测量小风扇的转速</h1>
     
     <div class="post-meta">
-    <time  itemprop="datePublished" content="Sun Jul 10 2016 21:00:00 GMT+0000">
-        Jul 10, 2016
+    <time  itemprop="datePublished" content="Sat Sep 10 2016 21:00:00 GMT+0000">
+        Sep 10, 2016
     </time>
     
         <span>in </span>
@@ -217,7 +217,7 @@
 <li>导线杜邦线 – 若干</li>
 </ul>
 <h1 id="搭建雷达平台">搭建雷达平台</h1><p>雷达传感器IPM-165集成了CW雷达的信号发生器、发射天线、接收天线、混频器这些部分，但是若要使CW正常工作，还需要一个滤波放大电路：<br><img src="filter.png" alt="filter"><br>我们根据滤波放大电路的电路图在易派平台的面包板上面搭建好电路，然后把雷达的输出接在滤波放大电路之上，电路最终搭建好是下图这样：<br><img src="line.jpg" alt="line"><br>将易派平台连接到电脑的USB接口，然后用电脑上的易派软件打开电源，打开示波器。<br>至此，雷达平台已经搭建完成。</p>
-<h1 id="测量风扇转速">测量风扇转速</h1><p>我们取桌面上的小台扇作为测量对象，将上一步骤搭建好的CW雷达平台置于小台扇之下，（注意不要将雷达置于风扇正下方，如果置于正下方，风扇扇叶与雷达只有切向速度，没有径向速度，雷达是测不到风扇素的的。）安置正确后，调整示波器，我们即可以看到雷达产生的波形：<br><img src="wave.jpg" alt="wave"><br>连续波雷达测物体运动速度公式：<br><img src="1.png" alt="fomer"><br>式中，fT为发射频率；c为传播速度:3x10^8m/s；Vr为目标对雷达的相对速度（或径向速度）。<br>由(1)式得，物体相对于雷达的运动速度Vr为：<br><img src="2.png" alt="fomer"><br>由示波器结果可以看出，雷达测得的fd=108.84Hz,又已知雷达发射频率fT=2.4GHz，c=3x10^8m/s<br>求得，风扇相对于雷达的径向速度为：<br><img src="3.png" alt="fomer"><br><img src="fan.png" alt="fan"><br>为简化计算，风扇扇叶相对于雷达的速度近似等于风扇的切向速度，又得风扇的半径r=10cm 由此可得风扇的角速度:<br><img src="4.png" alt="fomer"><br>风扇转速：<br><img src="5.png" alt="fomer"><br>从网上搜集资料得到普通风扇的转速范围为500转/分钟—1500转/每分钟，考虑到我们使用的是桌面式的小风扇，转速相应比普通风扇低一些，可以说雷达测得风扇的转速650转/分钟这个结果基本是正确的。</p>
+<h1 id="测量风扇转速">测量风扇转速</h1><p>我们取桌面上的小台扇作为测量对象，将上一步骤搭建好的CW雷达平台置于小台扇之下，（注意不要将雷达置于风扇正下方，如果置于正下方，风扇扇叶与雷达只有切向速度，没有径向速度，雷达是测不到风扇素的的。）安置正确后，调整示波器，我们即可以看到雷达产生的波形：<br><img src="wave.jpg" alt="wave"><br>连续波雷达测物体运动速度公式：<br><img src="1.png" alt="fomer"><br>式中，fT为发射频率；c为传播速度:3x10^8m/s；Vr为目标对雷达的相对速度（或径向速度）。<br>由(1)式得，物体相对于雷达的运动速度Vr为：<br><img src="2.png" alt="fomer"><br>由示波器结果可以看出，雷达测得的fd=108.84Hz,又已知雷达发射频率fT=2.4GHz，c=3x10^8m/s<br>求得，风扇相对于雷达的径向速度为：<br><img src="3.png" alt="fomer"><br><img src="fan.png" alt="fan"><br>为简化计算，风扇扇叶相对于雷达的速度近似等于风扇的切向速度，又已知风扇的半径r=10cm 由此可得风扇的角速度:<br><img src="4.png" alt="fomer"><br>风扇转速：<br><img src="5.png" alt="fomer"><br>从网上搜集资料得到普通风扇的转速范围为500转/分钟—1500转/每分钟，考虑到我们使用的是桌面式的小风扇，转速相应比普通风扇低一些，可以说雷达测得风扇的转速650转/分钟这个结果基本是正确的。</p>
 
         
         
@@ -238,7 +238,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/lrc_gangwan/"  data-tooltip="深夜港湾（歌词）">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -246,7 +246,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/kharkiv/" data-tooltip="再会，我的哈村">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/money/" data-tooltip="赚钱的时候认真赚钱，花钱的时候认真花钱">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -315,7 +315,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/lrc_gangwan/"  data-tooltip="深夜港湾（歌词）">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -323,7 +323,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/kharkiv/" data-tooltip="再会，我的哈村">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/money/" data-tooltip="赚钱的时候认真赚钱，花钱的时候认真花钱">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
