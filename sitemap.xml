@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://irootlee.com/radar_cw/</loc>
+    
+    <lastmod>2016-09-10T14:11:54.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://irootlee.com/money/</loc>
     
     <lastmod>2016-08-23T08:57:03.000Z</lastmod>
@@ -79,6 +86,13 @@
   </url>
   
   <url>
+    <loc>http://irootlee.com/NOAA_1/</loc>
+    
+    <lastmod>2016-06-19T23:34:39.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://irootlee.com/NOAA_0/</loc>
     
     <lastmod>2016-06-19T23:34:39.000Z</lastmod>
@@ -87,13 +101,6 @@
   
   <url>
     <loc>http://irootlee.com/NOAA_1_1/</loc>
-    
-    <lastmod>2016-06-19T23:34:39.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://irootlee.com/NOAA_1/</loc>
     
     <lastmod>2016-06-19T23:34:39.000Z</lastmod>
     
