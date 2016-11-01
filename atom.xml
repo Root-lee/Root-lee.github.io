@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2016-11-01T07:09:53.000Z</updated>
+  <updated>2016-11-01T07:11:56.000Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://irootlee.com/ML_good_weakness/"/>
     <id>http://irootlee.com/ML_good_weakness/</id>
     <published>2016-11-01T14:00:00.000Z</published>
-    <updated>2016-11-01T07:09:53.000Z</updated>
+    <updated>2016-11-01T07:11:56.000Z</updated>
     <content type="html"><![CDATA[<p>最近看完了《集体智慧编程》一书，对常用的机器学习算法有了大体的了解，书中也分析了各个算法的优缺点，并指出了解决不同问题选择不同算法的方法，但是书中所讲太过繁琐，我在此提炼一下相关观点，也当是对自己看完本书作一些记录吧。</p>
 <h1 id="常用的10类机器学习算法：">常用的10类机器学习算法：</h1><ol>
 <li>线性回归</li>
