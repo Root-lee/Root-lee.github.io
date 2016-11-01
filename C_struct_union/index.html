@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="I&#39;m Root lee !">
-    <title>每个人都有最艰难的一年----读《岛上书店》有感 - I&#39;m Root lee !</title>
+    <title>关于C++中结构体和联合体中字节对齐方式我的一个误解 - I&#39;m Root lee !</title>
     <meta name="author" content="Root lee">
     <meta name="description" content="I&#39;m Root lee !">
     
@@ -14,25 +14,20 @@
     
         <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="每个人都有最艰难的一年，将你的人生变得美好而广阔。
-我参加过两次高考。
-2011年夏天，考完数学，我茫然地走出考场。只能恍惚看到周围的人从我身边走过，讨论着议论着刚考完的试，可我却什么都听不清，只感觉到那天异常的闷热，闷热地让人窒息。
-考试前有个同学问了我一道矩阵题目，我给他讲解了一下，也就是这道题让我产生了思维定势，在考试中将及其简单的题目复杂化了，数学附加题，4题40分，一共30分钟，可最简单">
+    <meta name="description" content="前几天遇到这么一个题目：
+1234567891011121314typedef struct&amp;#123;    char flag[3];    short value;&amp;#125; sampleStruct;union&amp;#123;    char flag[3];    short value;&amp;#125; sampleUnion;sizeof(sampleStruct)=?sizeof(sam">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="每个人都有最艰难的一年----读《岛上书店》有感">
-<meta property="og:url" content="http://irootlee.com/review_island/index.html">
+<meta property="og:title" content="关于C++中结构体和联合体中字节对齐方式我的一个误解">
+<meta property="og:url" content="http://irootlee.com/C_struct_union/index.html">
 <meta property="og:site_name" content="I'm Root lee !">
-<meta property="og:description" content="每个人都有最艰难的一年，将你的人生变得美好而广阔。
-我参加过两次高考。
-2011年夏天，考完数学，我茫然地走出考场。只能恍惚看到周围的人从我身边走过，讨论着议论着刚考完的试，可我却什么都听不清，只感觉到那天异常的闷热，闷热地让人窒息。
-考试前有个同学问了我一道矩阵题目，我给他讲解了一下，也就是这道题让我产生了思维定势，在考试中将及其简单的题目复杂化了，数学附加题，4题40分，一共30分钟，可最简单">
-<meta property="og:updated_time" content="2016-05-18T21:14:57.000Z">
+<meta property="og:description" content="前几天遇到这么一个题目：
+1234567891011121314typedef struct&amp;#123;    char flag[3];    short value;&amp;#125; sampleStruct;union&amp;#123;    char flag[3];    short value;&amp;#125; sampleUnion;sizeof(sampleStruct)=?sizeof(sam">
+<meta property="og:image" content="http://irootlee.com/gcc.png">
+<meta property="og:updated_time" content="2016-11-01T08:42:05.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="每个人都有最艰难的一年----读《岛上书店》有感">
-<meta name="twitter:description" content="每个人都有最艰难的一年，将你的人生变得美好而广阔。
-我参加过两次高考。
-2011年夏天，考完数学，我茫然地走出考场。只能恍惚看到周围的人从我身边走过，讨论着议论着刚考完的试，可我却什么都听不清，只感觉到那天异常的闷热，闷热地让人窒息。
-考试前有个同学问了我一道矩阵题目，我给他讲解了一下，也就是这道题让我产生了思维定势，在考试中将及其简单的题目复杂化了，数学附加题，4题40分，一共30分钟，可最简单">
+<meta name="twitter:title" content="关于C++中结构体和联合体中字节对齐方式我的一个误解">
+<meta name="twitter:description" content="前几天遇到这么一个题目：
+1234567891011121314typedef struct&amp;#123;    char flag[3];    short value;&amp;#125; sampleStruct;union&amp;#123;    char flag[3];    short value;&amp;#125; sampleUnion;sizeof(sampleStruct)=?sizeof(sam">
 <meta name="twitter:creator" content="@54rootlee">
     
         <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
@@ -42,8 +37,8 @@
         <meta property="og:image" content="/assets/images/rootlee.jpg"/>
     
     
-        <meta property="og:image" content="/review_island/island.jpg"/>
-        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/review_island/island.jpg" />
+        <meta property="og:image" content="/C_struct_union/cpp.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/C_struct_union/cpp.png" />
     
     
     
@@ -182,16 +177,16 @@
     
         <div class="post-header main-content-wrap">
     
-        <h1 class="post-title" itemprop="headline">每个人都有最艰难的一年----读《岛上书店》有感</h1>
+        <h1 class="post-title" itemprop="headline">关于C++中结构体和联合体中字节对齐方式我的一个误解</h1>
     
     <div class="post-meta">
-    <time  itemprop="datePublished" content="Sun Mar 20 2016 20:00:00 GMT+0000">
-        Mar 20, 2016
+    <time  itemprop="datePublished" content="Tue Nov 01 2016 16:00:00 GMT+0000">
+        Nov 01, 2016
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/读后感/">读后感</a>
+    <a class="category-link" href="/categories/编程/">编程</a>
 
 
     
@@ -200,34 +195,11 @@
     
     <div class="post-content markdown main-content-wrap" itemprop="articleBody">
         
-            <p><em>每个人都有最艰难的一年，将你的人生变得美好而广阔。</em></p>
-<p>我参加过两次高考。</p>
-<p>2011年夏天，考完数学，我茫然地走出考场。只能恍惚看到周围的人从我身边走过，讨论着议论着刚考完的试，可我却什么都听不清，只感觉到那天异常的闷热，闷热地让人窒息。</p>
-<p>考试前有个同学问了我一道矩阵题目，我给他讲解了一下，也就是这道题让我产生了思维定势，在考试中将及其简单的题目复杂化了，数学附加题，4题40分，一共30分钟，可最简单的第一题我却用了二十分钟，我满头大汗，依然没算出结果，回头一看题目才发现是我想法错了，题目给的答题空间早被我错误的答案写满，试卷上已经没有空白让我更改了，时间也来不及了，只得匆匆做了下一题，连最后两题都没来得及看便交了卷。从来没有想过，高考会在平时最有把握的附加题上栽跟头，这40分竟然最高只能得10分。</p>
-<p>感觉完了，这么多年的努力都白费了，我怪自己，却不知道是应该怪自己准备不周还是怪自己运气太差？</p>
-<p>曾经所有的自尊、骄傲瞬间灰飞烟灭……</p>
-<p>我哭着给我妈打电话说我不想继续考了。</p>
-<p>最终我还是坚持考完了剩余的科目。</p>
-<p>整个暑假，都是在不停地叹气中度过的，我不甘心，我不知道为什么会这样，为什么我所努力准备的高考给我的会是这样一个结局？我想不通。</p>
-<p>拿着数学附加题10分的成绩单和南京信息工程大学的录取通知书，老师同学都说二本已经不错了，但我清楚地知道这些不是我想要的。</p>
-<p>我决定复读。</p>
-<p>没想到那么坚定地坚持要去复读的我，看着同学都开始准备即将开始的大学生活，也面对我这前途未卜而又注定艰难的复读之路，在开学的前一天晚上突然退却了。就像雄赳赳去参战的士兵，在打仗前却没有勇气拿起手里的枪。</p>
-<p>怯懦如逃兵。</p>
-<p>曾经我认为我可以不顾任何险阻，而当险阻到了面前，我发现我没我想象的那么坚强，我不敢去面对前方等着我的炼狱般的生活，也看不到未来的任何希望，前方都是迷雾，全都是迷雾。</p>
-<p>是夜，我痛哭。</p>
-<p>卡莱尔说：“没有长夜痛哭过的人，不足语人生。”</p>
-<p>我长夜痛哭过，依然不足语人生，但一次长夜痛哭却可以让我对人生认识更深刻一些。</p>
-<p>每种选择后面都对应着一种人生，既然选择了一种人生，就要去接受去享受这种人生，不论困难还是容易。</p>
-<p>第二天，收拾行李，把往年的课本重新拿出来，我妈送我去学校，一路无言，当我重新走进熟悉的学校大门，回头挥手告别时，分明看到我妈也在流泪。</p>
-<p>单调的高三生活又开始了，每天依然是如山的试卷，不断的模拟考。我记得宿舍的起床铃的旋律，记得每天早晨6点校门口的包子与豆浆的味道，记得从宿舍到教室路旁的自行车修理铺，记得晚上路灯下我慢悠悠骑车回宿舍的身影，记得路旁小卖部里我经常使用的公用电话那老式的造型……</p>
-<p>又是一年高考，我又一次站在了这年轻的战场，这一次的我全副武装，持枪而立，不会后退半步。</p>
-<p>当我查询高考成绩时，握着电话的手止不住的发抖，当那电话里的语音报完我的成绩时，我抱着我妈喜极而泣，像个孩子。</p>
-<p>怎么能说“像”呢，在我妈眼里，我一直是个孩子。</p>
-<p>《岛上书店》里的A.J在妻子出车祸身亡之后逐渐沉沦，像陷入沼泽地一样越挣扎陷得越快，只好等着泥淖逐渐淹没头顶。小女孩玛雅的出现为深陷沼泽的A.J带来了曙光，他逐渐开始注意自己的生活方式，逐渐的拾回对生活的热爱。他说：</p>
-<blockquote>
-<p>一旦一个人在乎一件事，就发现自己不得不开始在乎一切事。<br>深陷泥潭，你需要一根绳子，玛雅就是上帝给A.J的一根绳子。</p>
-</blockquote>
-<p>我现在也偶尔会陷入对未来的焦虑之中无法自拔，感觉前途渺茫，看不到希望，对一切事物都抱有消极态度。想从这种状态里走出来就要努力去在意一件事，这件事可以是读书、健身、甚至是背两个单词，只要你在意了一件事，这件事就是将你从沼泽中拉出来的绳子。当你开始忙起来，一步步去提高自己，一步步去接近遥远的理想，自然就无暇去无谓的焦虑了。</p>
+            <p>前几天遇到这么一个题目：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">char</span> flag[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">short</span> value;</span><br><span class="line">&#125; sampleStruct;</span><br><span class="line"></span><br><span class="line"><span class="keyword">union</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">char</span> flag[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">short</span> value;</span><br><span class="line">&#125; sampleUnion;</span><br><span class="line"></span><br><span class="line"><span class="keyword">sizeof</span>(sampleStruct)=?</span><br><span class="line"><span class="keyword">sizeof</span>(sampleUnion)=?</span><br></pre></td></tr></table></figure>
+<p>当时的想法是:对于stuct类型，对象大小是struct内部所有对象大小的和，当然要考虑字节对齐，char flag[3]对象占三字节，考虑到4字节对齐，后面剩一字节放不下short的2字节，所以short重新占用另外4字节，所以sizeof(sampleStruct)=8。Union类型是union对象里占用字节数最多的那个对象的字节数（在考虑字节对齐的情况下），所以sizeof(sampleUnion)=4。</p>
+<p>当我在g++上编译运行程序时发现程序输出的结果并不是我想的那样：sizeof(sampleStruct)=8，sizeof(sampleUnion)=4，而是下图所示：<br><img src="gcc.png" alt="gcc"><br>sizeof(sampleStruct)=6<br>sizeof(sampleUnion)=4</p>
+<p>那是哪里出错了呢？<br>网上查阅资料发现，自己对C++中的字节对齐原理理解不够透彻，想当然的以为所有的结构体和联合体都是遵循4字节对齐这个规则，这种想法是错误的。<br>正确的字节对齐方式是：先取成员变量中的字节数最大值，这里struct中的short为2，<strong>然后与4字节比较</strong>，取两个中的最小值，这里为short的大小2字节，所以这个结构体的字节对齐方式为2字节对齐，根据2字节对齐方法算出来sizeof(sampleStruct)=6。</p>
 
         
         
@@ -236,12 +208,19 @@
     </div>
     <div class="post-footer main-content-wrap">
         
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/C/">C++</a>
+
+            </div>
+        
         <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/python_mkdir/"  data-tooltip="python使用mkdir函数出现错误WindowsError:[Error 3]的解决办法">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -249,7 +228,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/caisang/" data-tooltip="电视剧《大明宫词》观后感及皮影戏《采桑女》戏词">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/ML_good_weakness/" data-tooltip="机器学习常用算法优缺点对比">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -264,17 +243,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/review_island/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/C_struct_union/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/review_island/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/C_struct_union/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/review_island/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/C_struct_union/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -318,7 +297,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/python_mkdir/"  data-tooltip="python使用mkdir函数出现错误WindowsError:[Error 3]的解决办法">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -326,7 +305,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/caisang/" data-tooltip="电视剧《大明宫词》观后感及皮影戏《采桑女》戏词">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/ML_good_weakness/" data-tooltip="机器学习常用算法优缺点对比">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -341,17 +320,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/review_island/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/C_struct_union/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/review_island/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/C_struct_union/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/review_island/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/C_struct_union/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -375,17 +354,17 @@
                 <div id="share-options-bar" class="share-options-bar" data-behavior="1">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/review_island/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/C_struct_union/">
                 <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/review_island/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/C_struct_union/">
                 <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/review_island/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/C_struct_union/">
                 <i class="fa fa-twitter"></i><span>Share on Twitter</span>
             </a>
         </li>
