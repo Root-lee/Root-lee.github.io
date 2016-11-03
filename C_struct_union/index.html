@@ -23,7 +23,9 @@
 <meta property="og:description" content="前几天遇到这么一个题目：
 1234567891011121314typedef struct&amp;#123;    char flag[3];    short value;&amp;#125; sampleStruct;union&amp;#123;    char flag[3];    short value;&amp;#125; sampleUnion;sizeof(sampleStruct)=?sizeof(sam">
 <meta property="og:image" content="http://irootlee.com/gcc.png">
-<meta property="og:updated_time" content="2016-11-01T08:42:05.000Z">
+<meta property="og:image" content="http://irootlee.com/result_gcc.png">
+<meta property="og:image" content="http://irootlee.com/result_vs.png">
+<meta property="og:updated_time" content="2016-11-03T06:27:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于C++中结构体和联合体中字节对齐方式我的一个误解">
 <meta name="twitter:description" content="前几天遇到这么一个题目：
@@ -200,6 +202,11 @@
 <p>当时的想法是:对于stuct类型，对象大小是struct内部所有对象大小的和，当然要考虑字节对齐，char flag[3]对象占三字节，考虑到4字节对齐，后面剩一字节放不下short的2字节，所以short重新占用另外4字节，所以sizeof(sampleStruct)=8。Union类型是union对象里占用字节数最多的那个对象的字节数（在考虑字节对齐的情况下），所以sizeof(sampleUnion)=4。</p>
 <p>当我在g++上编译运行程序时发现程序输出的结果并不是我想的那样：sizeof(sampleStruct)=8，sizeof(sampleUnion)=4，而是下图所示：<br><img src="gcc.png" alt="gcc"><br>sizeof(sampleStruct)=6<br>sizeof(sampleUnion)=4</p>
 <p>那是哪里出错了呢？<br>网上查阅资料发现，自己对C++中的字节对齐原理理解不够透彻，想当然的以为所有的结构体和联合体都是遵循4字节对齐这个规则，这种想法是错误的。<br>正确的字节对齐方式是：先取成员变量中的字节数最大值，这里struct中的short为2，<strong>然后与4字节比较</strong>，取两个中的最小值，这里为short的大小2字节，所以这个结构体的字节对齐方式为2字节对齐，根据2字节对齐方法算出来sizeof(sampleStruct)=6。</p>
+<p>============================================<br>2016.11.3补充：</p>
+<p>结构体字节对齐的方式，gcc与vs2010的处理细节还有一些小区别,看以下这个程序：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">typedef</span> <span class="keyword">struct</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">double</span> a;</span><br><span class="line">		<span class="keyword">short</span> b;</span><br><span class="line">		<span class="keyword">int</span> c;</span><br><span class="line">		<span class="keyword">char</span> d;</span><br><span class="line">	&#125;sampleStruct;</span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt;<span class="string">"sizeof(sampleStruct)="</span>&lt;&lt;<span class="keyword">sizeof</span>(sampleStruct)&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>此程序在gcc下编译运行后获得结果：<br><img src="result_gcc.png" alt="gcc"><br>而同样一个程序在vs2010上运行结果却是：<br><img src="result_vs.png" alt="vs"></p>
+<p>这里gcc与vs2010的一个区别是：vs2010在结构体对齐中不仅要求4字节对齐，而且还要求结构体最后的大小一定要是结构体中最大对象字节数的整数倍，所以在本程序中，按4字节对齐之后，算出结构体大小是20字节，但是结构体里最大元素是double，占用8字节，结构体大小应该是8的整数倍，所以还需要再补4字节，所以最后vs2010输出结构体大小是24字节。</p>
+<p>在linux里的gcc中没有要求结构体大小是最大对象的整数倍，所以在gcc中输出结构体的大小是20字节。</p>
 
         
         
