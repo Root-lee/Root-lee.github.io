@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="I&#39;m Root lee !">
-    <title>VC2008预编译头错误解决办法 - I&#39;m Root lee !</title>
+    <title>【翻译】Verilog中wire与reg类型的区别 - I&#39;m Root lee !</title>
     <meta name="author" content="Root lee">
     <meta name="description" content="I&#39;m Root lee !">
     
@@ -14,19 +14,31 @@
     
         <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="问题症状在运行 Microsoft Visual C++ 2008年编译器来编译文件或生成项目时，您会收到以下错误消息：错误 C1859:头文件的名称意外的预编译的头，只需重新运行编译器可能会解决此问题。但是重新运行编译器并不能解决问题，谷歌搜索之后找到解决办法。
-解决办法步骤/方法右键点击你创建的项目，选择“属性标签”点击属性，弹出“项目属性页”，在左侧找到以下位置  配置属性 –&amp;gt;  C">
+    <meta name="description" content="介绍以下内容由我翻译自国外一片文章，文章详细描述了在Verilog设计中wire型与reg型的区别，并分别介绍了wire和reg的适用场景。
+wire型 (组合逻辑)在Verilog设计中wire型就是简单的连线（或者是任意宽度的总线），下面是它的一些语法规则：
+
+wire型连线用于将模块实例的输入与输出连接到在你的设计中的其他一些元件。
+在一个模块的声明中wire型被用作输入和输出。
+wire型">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="VC2008预编译头错误解决办法">
-<meta property="og:url" content="http://irootlee.com/VC_compileerror/index.html">
+<meta property="og:title" content="【翻译】Verilog中wire与reg类型的区别">
+<meta property="og:url" content="http://irootlee.com/wirereg_translate/index.html">
 <meta property="og:site_name" content="I'm Root lee !">
-<meta property="og:description" content="问题症状在运行 Microsoft Visual C++ 2008年编译器来编译文件或生成项目时，您会收到以下错误消息：错误 C1859:头文件的名称意外的预编译的头，只需重新运行编译器可能会解决此问题。但是重新运行编译器并不能解决问题，谷歌搜索之后找到解决办法。
-解决办法步骤/方法右键点击你创建的项目，选择“属性标签”点击属性，弹出“项目属性页”，在左侧找到以下位置  配置属性 –&amp;gt;  C">
-<meta property="og:updated_time" content="2016-05-18T21:26:36.000Z">
+<meta property="og:description" content="介绍以下内容由我翻译自国外一片文章，文章详细描述了在Verilog设计中wire型与reg型的区别，并分别介绍了wire和reg的适用场景。
+wire型 (组合逻辑)在Verilog设计中wire型就是简单的连线（或者是任意宽度的总线），下面是它的一些语法规则：
+
+wire型连线用于将模块实例的输入与输出连接到在你的设计中的其他一些元件。
+在一个模块的声明中wire型被用作输入和输出。
+wire型">
+<meta property="og:updated_time" content="2016-11-18T02:19:22.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="VC2008预编译头错误解决办法">
-<meta name="twitter:description" content="问题症状在运行 Microsoft Visual C++ 2008年编译器来编译文件或生成项目时，您会收到以下错误消息：错误 C1859:头文件的名称意外的预编译的头，只需重新运行编译器可能会解决此问题。但是重新运行编译器并不能解决问题，谷歌搜索之后找到解决办法。
-解决办法步骤/方法右键点击你创建的项目，选择“属性标签”点击属性，弹出“项目属性页”，在左侧找到以下位置  配置属性 –&amp;gt;  C">
+<meta name="twitter:title" content="【翻译】Verilog中wire与reg类型的区别">
+<meta name="twitter:description" content="介绍以下内容由我翻译自国外一片文章，文章详细描述了在Verilog设计中wire型与reg型的区别，并分别介绍了wire和reg的适用场景。
+wire型 (组合逻辑)在Verilog设计中wire型就是简单的连线（或者是任意宽度的总线），下面是它的一些语法规则：
+
+wire型连线用于将模块实例的输入与输出连接到在你的设计中的其他一些元件。
+在一个模块的声明中wire型被用作输入和输出。
+wire型">
 <meta name="twitter:creator" content="@54rootlee">
     
         <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
@@ -36,8 +48,8 @@
         <meta property="og:image" content="/assets/images/rootlee.jpg"/>
     
     
-        <meta property="og:image" content="/VC_compileerror/../vc2008/vc.jpg"/>
-        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/VC_compileerror/../vc2008/vc.jpg" />
+        <meta property="og:image" content="/wirereg_translate/../wirereg/vhdl-or-verilog.PNG"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/wirereg_translate/../wirereg/vhdl-or-verilog.PNG" />
     
     
     
@@ -176,16 +188,16 @@
     
         <div class="post-header main-content-wrap">
     
-        <h1 class="post-title" itemprop="headline">VC2008预编译头错误解决办法</h1>
+        <h1 class="post-title" itemprop="headline">【翻译】Verilog中wire与reg类型的区别</h1>
     
     <div class="post-meta">
-    <time  itemprop="datePublished" content="Wed Oct 28 2015 20:00:00 GMT+0000">
-        Oct 28, 2015
+    <time  itemprop="datePublished" content="Fri Nov 18 2016 23:00:00 GMT+0000">
+        Nov 18, 2016
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/编程/">编程</a>
+    <a class="category-link" href="/categories/专业相关/">专业相关</a>
 
 
     
@@ -194,9 +206,37 @@
     
     <div class="post-content markdown main-content-wrap" itemprop="articleBody">
         
-            <h1 id="问题症状">问题症状</h1><p>在运行 Microsoft Visual C++ 2008年编译器来编译文件或生成项目时，您会收到以下错误消息：<br>错误 C1859:头文件的名称意外的预编译的头，只需重新运行编译器可能会解决此问题。<br>但是重新运行编译器并不能解决问题，谷歌搜索之后找到解决办法。</p>
-<h1 id="解决办法">解决办法</h1><p>步骤/方法右键点击你创建的项目，选择“属性标签”点击属性，弹出“项目属性页”，在左侧找到以下位置  配置属性 –&gt;  C/C++  –&gt; 预编译头，并选择它：在右边的菜单中选择 “创建/使用预编译头”中的“不使用预编译头文件”点击“确定”按钮退出即可。</p>
-<h1 id="预编译头文件_*-pch_的作用：">预编译头文件 *.pch 的作用：</h1><p>编译器一般都是以文件为单位进行编译，如果修改了工程中的一个文件，那么将导致所有文件都要从新编译，这样的编译将耗费很长时间。为了提高编译速度，将那些不常被修改，比较稳定，文件单独包含到一个指定的头文件中， 然后生成一个预编译头文件 <em> .pch 。 VC中默认的头文件为stdAfx.h，但光有头文件无法编译，所以还要用到StdAfx.cpp里只包含一句有效代码，这样编译时，通过编译 stdAfx.cpp就把大部分系统头文件编译进来，Debug目录下便会产生一个存储了预编译信息的 </em> .pch 文件。</p>
+            <h1 id="介绍">介绍</h1><p>以下内容由我翻译自国外一片文章，文章详细描述了在Verilog设计中wire型与reg型的区别，并分别介绍了wire和reg的适用场景。</p>
+<h2 id="wire型_(组合逻辑)">wire型 (组合逻辑)</h2><p>在Verilog设计中wire型就是简单的连线（或者是任意宽度的总线），下面是它的一些语法规则：</p>
+<ol>
+<li>wire型连线用于将模块实例的输入与输出连接到在你的设计中的其他一些元件。</li>
+<li>在一个模块的声明中wire型被用作输入和输出。</li>
+<li>wire型必须被其他东西所驱动，并且如果没有被驱动，wire型不能存储值。</li>
+<li>wire型在always@块中不能被用作”=”或”&lt;=”的左值。</li>
+<li>在assign声明中wire型是作为左值唯一合法的类型。</li>
+<li>wire型是连接Verilog设计中两部分的一个无状态的方式。</li>
+<li>wire型只能用于产出组合逻辑模型。<br>程序1展示了wire型的合法使用方法：<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="typename">wire</span> A, B, C, D, E; <span class="comment">// simple 1- bit wide wires</span></span><br><span class="line"><span class="typename">wire</span> [<span class="number">8</span><span class="keyword">:</span><span class="number">0</span>] Wide ; <span class="comment">// a 9- bit wide wire</span></span><br><span class="line"><span class="typename">reg</span> I;</span><br><span class="line"></span><br><span class="line"><span class="keyword">assign</span> A <span class="keyword">=</span> B <span class="keyword">&amp;</span> C; <span class="comment">// using a wire with an assign statement</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> <span class="keyword">@</span>(B <span class="keyword">or</span> C) <span class="keyword">begin</span></span><br><span class="line">I <span class="keyword">=</span> B <span class="keyword">|</span> C; <span class="comment">// using wires on the right - hand side of an always@</span></span><br><span class="line"><span class="comment">// assignment</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">mymodule mymodule_instance (. In (D),</span><br><span class="line"><span class="typename">.Out</span>(E)); <span class="comment">// using a wire as the output of a module</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="reg型_(组合和时序逻辑)">reg型 (组合和时序逻辑)</h2><p>reg型与wire型类似，但是reg型可以像寄存器一样用于存储信息（‘状态’）。下面是使用reg时的一些语法规则：</p>
+<ol>
+<li>reg型可以连接到模块实例的输入端口。</li>
+<li>reg型不能连接到模块实例的输出端口。</li>
+<li>在模块声明内部reg型可以被用作输出。</li>
+<li>在模块声明内部reg型不能被用作输入。</li>
+<li>reg型是在always@块”=”或”&lt;=”的左值的唯一合法类型。</li>
+<li>reg is the only legal type on the left-hand side of an always@ block = or &lt;= sign.</li>
+<li>reg型是initial块中”=”号左值的唯一合法类型。（被用于测试和仿真分析）</li>
+<li>reg型不能被用于assign声明的左值。</li>
+<li>当与always@(posedge Clock)块联合使用时reg型可以被用来创建一个寄存器。</li>
+<li>因此，reg型既可以用来创建组合逻辑也可以用来创建时序逻辑。</li>
+</ol>
+<p>程序2展示了reg型的各种合法用法：<br><figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="typename">wire</span> A, B;</span><br><span class="line"><span class="typename">reg</span> I, J, K; <span class="comment">// simple 1- bit wide reg elements</span></span><br><span class="line"><span class="typename">reg</span> [<span class="number">8</span><span class="keyword">:</span><span class="number">0</span>] Wide ; <span class="comment">// a 9- bit wide reg element</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> <span class="keyword">@</span>(A <span class="keyword">or</span> B) <span class="keyword">begin</span></span><br><span class="line">I <span class="keyword">=</span> A <span class="keyword">|</span> B; <span class="comment">// using a reg as the left - hand side of an always@</span></span><br><span class="line"><span class="comment">// assignment</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">initial</span> <span class="keyword">begin</span> <span class="comment">// using a reg in an initial block</span></span><br><span class="line">J <span class="keyword">=</span> <span class="number">1</span>’b1;</span><br><span class="line"><span class="keyword">#</span><span class="number">1</span></span><br><span class="line">J <span class="keyword">=</span> <span class="number">1</span>’b0;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> <span class="keyword">@</span>( <span class="keyword">posedge</span> Clock ) <span class="keyword">begin</span></span><br><span class="line">K <span class="keyword">&lt;</span><span class="keyword">=</span> I; <span class="comment">// using a reg to create a positive -edge - triggered register</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="wire型与reg型可以互换的情况">wire型与reg型可以互换的情况</h2><p>wire型和reg型在以下情况下可以互换：</p>
+<ol>
+<li>两种类型都作为assign声明及always@块的中”=”or”&lt;=”的右值。</li>
+<li>两种类型都可以连接到模块实例的输入端口。</li>
+</ol>
 
         
         
@@ -208,7 +248,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">TAGGED IN</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/VC/">VC++</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/verilog/">verilog</a>
 
             </div>
         
@@ -217,7 +257,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/ise/"  data-tooltip="Xilinx ISE 14.4 安装与破解">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -225,7 +265,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/vc2008/" data-tooltip="Visual Studio 2008 简体中文专业版下载(附序列号)破解">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/C_struct_union/" data-tooltip="关于C++中结构体和联合体中字节对齐方式我的一个误解">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -240,17 +280,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/VC_compileerror/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/wirereg_translate/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/VC_compileerror/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/wirereg_translate/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/VC_compileerror/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/wirereg_translate/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -294,7 +334,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/ise/"  data-tooltip="Xilinx ISE 14.4 安装与破解">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -302,7 +342,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/vc2008/" data-tooltip="Visual Studio 2008 简体中文专业版下载(附序列号)破解">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/C_struct_union/" data-tooltip="关于C++中结构体和联合体中字节对齐方式我的一个误解">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -317,17 +357,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/VC_compileerror/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/wirereg_translate/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/VC_compileerror/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/wirereg_translate/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/VC_compileerror/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/wirereg_translate/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -351,17 +391,17 @@
                 <div id="share-options-bar" class="share-options-bar" data-behavior="1">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/VC_compileerror/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/wirereg_translate/">
                 <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/VC_compileerror/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/wirereg_translate/">
                 <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/VC_compileerror/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/wirereg_translate/">
                 <i class="fa fa-twitter"></i><span>Share on Twitter</span>
             </a>
         </li>

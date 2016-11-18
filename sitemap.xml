@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://irootlee.com/wirereg/</loc>
+    
+    <lastmod>2016-11-18T02:19:23.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://irootlee.com/wirereg_translate/</loc>
+    
+    <lastmod>2016-11-18T02:19:22.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://irootlee.com/C_struct_union/</loc>
     
     <lastmod>2016-11-03T06:27:44.000Z</lastmod>
@@ -79,14 +93,14 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/review_paris/</loc>
+    <loc>http://irootlee.com/review_pingfan1/</loc>
     
     <lastmod>2016-06-22T18:35:53.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://irootlee.com/review_pingfan1/</loc>
+    <loc>http://irootlee.com/review_paris/</loc>
     
     <lastmod>2016-06-22T18:35:53.000Z</lastmod>
     
@@ -107,14 +121,14 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/NOAA_1/</loc>
+    <loc>http://irootlee.com/NOAA_1_1/</loc>
     
     <lastmod>2016-06-19T23:34:39.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://irootlee.com/NOAA_1_1/</loc>
+    <loc>http://irootlee.com/NOAA_1/</loc>
     
     <lastmod>2016-06-19T23:34:39.000Z</lastmod>
     
@@ -250,13 +264,6 @@
     <loc>http://irootlee.com/xiaoqiang/</loc>
     
     <lastmod>2016-05-18T21:19:49.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://irootlee.com/wirereg/</loc>
-    
-    <lastmod>2016-05-18T21:19:20.000Z</lastmod>
     
   </url>
   

@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2016-11-03T06:27:44.000Z</updated>
+  <updated>2016-11-18T02:19:22.000Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -13,6 +13,55 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[【翻译】Verilog中wire与reg类型的区别]]></title>
+    <link href="http://irootlee.com/wirereg_translate/"/>
+    <id>http://irootlee.com/wirereg_translate/</id>
+    <published>2016-11-18T23:00:00.000Z</published>
+    <updated>2016-11-18T02:19:22.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="介绍">介绍</h1><p>以下内容由我翻译自国外一片文章，文章详细描述了在Verilog设计中wire型与reg型的区别，并分别介绍了wire和reg的适用场景。</p>
+<h2 id="wire型_(组合逻辑)">wire型 (组合逻辑)</h2><p>在Verilog设计中wire型就是简单的连线（或者是任意宽度的总线），下面是它的一些语法规则：</p>
+<ol>
+<li>wire型连线用于将模块实例的输入与输出连接到在你的设计中的其他一些元件。</li>
+<li>在一个模块的声明中wire型被用作输入和输出。</li>
+<li>wire型必须被其他东西所驱动，并且如果没有被驱动，wire型不能存储值。</li>
+<li>wire型在always@块中不能被用作”=”或”&lt;=”的左值。</li>
+<li>在assign声明中wire型是作为左值唯一合法的类型。</li>
+<li>wire型是连接Verilog设计中两部分的一个无状态的方式。</li>
+<li>wire型只能用于产出组合逻辑模型。<br>程序1展示了wire型的合法使用方法：<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="typename">wire</span> A, B, C, D, E; <span class="comment">// simple 1- bit wide wires</span></span><br><span class="line"><span class="typename">wire</span> [<span class="number">8</span><span class="keyword">:</span><span class="number">0</span>] Wide ; <span class="comment">// a 9- bit wide wire</span></span><br><span class="line"><span class="typename">reg</span> I;</span><br><span class="line"></span><br><span class="line"><span class="keyword">assign</span> A <span class="keyword">=</span> B <span class="keyword">&amp;</span> C; <span class="comment">// using a wire with an assign statement</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> <span class="keyword">@</span>(B <span class="keyword">or</span> C) <span class="keyword">begin</span></span><br><span class="line">I <span class="keyword">=</span> B <span class="keyword">|</span> C; <span class="comment">// using wires on the right - hand side of an always@</span></span><br><span class="line"><span class="comment">// assignment</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">mymodule mymodule_instance (. In (D),</span><br><span class="line"><span class="typename">.Out</span>(E)); <span class="comment">// using a wire as the output of a module</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="reg型_(组合和时序逻辑)">reg型 (组合和时序逻辑)</h2><p>reg型与wire型类似，但是reg型可以像寄存器一样用于存储信息（‘状态’）。下面是使用reg时的一些语法规则：</p>
+<ol>
+<li>reg型可以连接到模块实例的输入端口。</li>
+<li>reg型不能连接到模块实例的输出端口。</li>
+<li>在模块声明内部reg型可以被用作输出。</li>
+<li>在模块声明内部reg型不能被用作输入。</li>
+<li>reg型是在always@块”=”或”&lt;=”的左值的唯一合法类型。</li>
+<li>reg is the only legal type on the left-hand side of an always@ block = or &lt;= sign.</li>
+<li>reg型是initial块中”=”号左值的唯一合法类型。（被用于测试和仿真分析）</li>
+<li>reg型不能被用于assign声明的左值。</li>
+<li>当与always@(posedge Clock)块联合使用时reg型可以被用来创建一个寄存器。</li>
+<li>因此，reg型既可以用来创建组合逻辑也可以用来创建时序逻辑。</li>
+</ol>
+<p>程序2展示了reg型的各种合法用法：<br><figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="typename">wire</span> A, B;</span><br><span class="line"><span class="typename">reg</span> I, J, K; <span class="comment">// simple 1- bit wide reg elements</span></span><br><span class="line"><span class="typename">reg</span> [<span class="number">8</span><span class="keyword">:</span><span class="number">0</span>] Wide ; <span class="comment">// a 9- bit wide reg element</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> <span class="keyword">@</span>(A <span class="keyword">or</span> B) <span class="keyword">begin</span></span><br><span class="line">I <span class="keyword">=</span> A <span class="keyword">|</span> B; <span class="comment">// using a reg as the left - hand side of an always@</span></span><br><span class="line"><span class="comment">// assignment</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">initial</span> <span class="keyword">begin</span> <span class="comment">// using a reg in an initial block</span></span><br><span class="line">J <span class="keyword">=</span> <span class="number">1</span>’b1;</span><br><span class="line"><span class="keyword">#</span><span class="number">1</span></span><br><span class="line">J <span class="keyword">=</span> <span class="number">1</span>’b0;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> <span class="keyword">@</span>( <span class="keyword">posedge</span> Clock ) <span class="keyword">begin</span></span><br><span class="line">K <span class="keyword">&lt;</span><span class="keyword">=</span> I; <span class="comment">// using a reg to create a positive -edge - triggered register</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="wire型与reg型可以互换的情况">wire型与reg型可以互换的情况</h2><p>wire型和reg型在以下情况下可以互换：</p>
+<ol>
+<li>两种类型都作为assign声明及always@块的中”=”or”&lt;=”的右值。</li>
+<li>两种类型都可以连接到模块实例的输入端口。</li>
+</ol>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="介绍">介绍</h1><p>以下内容由我翻译自国外一片文章，文章详细描述了在Verilog设计中wire型与reg型的区别，并分别介绍了wire和reg的适用场景。</p>
+<h2 id="wire型_(组合逻辑)">wire型 (组合逻辑)</h2><p>在Ve]]>
+    </summary>
+    
+      <category term="verilog" scheme="http://irootlee.com/tags/verilog/"/>
+    
+      <category term="专业相关" scheme="http://irootlee.com/categories/%E4%B8%93%E4%B8%9A%E7%9B%B8%E5%85%B3/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[关于C++中结构体和联合体中字节对齐方式我的一个误解]]></title>
@@ -525,41 +574,6 @@
   </entry>
   
   <entry>
-    <title><![CDATA[NOAA气象卫星的结构和功能]]></title>
-    <link href="http://irootlee.com/NOAA_1_1/"/>
-    <id>http://irootlee.com/NOAA_1_1/</id>
-    <published>2016-06-20T02:00:00.000Z</published>
-    <updated>2016-06-19T23:34:39.000Z</updated>
-    <content type="html"><![CDATA[<p>美国气象卫星系统NOAA（National Oceanic and Atmospheric Administration）由以下两部分组成：</p>
-<ol>
-<li>地球静止轨道卫星“GOES”，专门用于短程天气预报和监测当前气象状况。</li>
-<li>太阳同步轨道卫星“POES”，用于长距离监测，卫星从800km的高度向地球发送天气信息。</li>
-</ol>
-<p>我们可以根据“POES”卫星和“GOES”卫星传送下来的数据对全球的气象状况进行监测，极轨卫星的数据用于 远距离预报天气、监测气候变化、观察突发天气现象、保证安全飞行（监测火山灰云）以及保证水上运输安全（监测和预报冰层的运动状况）。</p>
-<p>卫星监测到的数据先储存在板载存储器中，然后发送到以下两个地面接收中心：</p>
-<ol>
-<li>费尔班克斯（位于美国阿拉斯加州）</li>
-<li>瓦勒普斯岛（位于美国弗吉尼亚州）</li>
-</ol>
-<p>除此之外，NOAA气象卫星还配备了搜索和救援系统（S&amp;R），到现在为止，已经有两万多人的生命在NOAA气象卫星的帮助下得到了拯救。</p>
-<p>更多NOAA气象卫星的信息请参阅这里：<a href="http://rootlee.eu/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/" target="_blank" rel="external">NOAA气象卫星专题</a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>美国气象卫星系统NOAA（National Oceanic and Atmospheric Administration）由以下两部分组成：</p>
-<ol>
-<li>地球静止轨道卫星“GOES”，专门用于短程天气预报和监测当前气象状况。</li>
-<li>太阳同步轨道卫星]]>
-    </summary>
-    
-      <category term="NOAA" scheme="http://irootlee.com/tags/NOAA/"/>
-    
-      <category term="气象卫星" scheme="http://irootlee.com/tags/%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
-    
-      <category term="NOAA气象卫星" scheme="http://irootlee.com/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
-    
-  </entry>
-  
-  <entry>
     <title><![CDATA[NOAA气象卫星的基本参数]]></title>
     <link href="http://irootlee.com/NOAA_1_2/"/>
     <id>http://irootlee.com/NOAA_1_2/</id>
@@ -721,6 +735,41 @@
 <thead>
 <tr>
 <th style="text-al]]>
+    </summary>
+    
+      <category term="NOAA" scheme="http://irootlee.com/tags/NOAA/"/>
+    
+      <category term="气象卫星" scheme="http://irootlee.com/tags/%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
+    
+      <category term="NOAA气象卫星" scheme="http://irootlee.com/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[NOAA气象卫星的结构和功能]]></title>
+    <link href="http://irootlee.com/NOAA_1_1/"/>
+    <id>http://irootlee.com/NOAA_1_1/</id>
+    <published>2016-06-20T02:00:00.000Z</published>
+    <updated>2016-06-19T23:34:39.000Z</updated>
+    <content type="html"><![CDATA[<p>美国气象卫星系统NOAA（National Oceanic and Atmospheric Administration）由以下两部分组成：</p>
+<ol>
+<li>地球静止轨道卫星“GOES”，专门用于短程天气预报和监测当前气象状况。</li>
+<li>太阳同步轨道卫星“POES”，用于长距离监测，卫星从800km的高度向地球发送天气信息。</li>
+</ol>
+<p>我们可以根据“POES”卫星和“GOES”卫星传送下来的数据对全球的气象状况进行监测，极轨卫星的数据用于 远距离预报天气、监测气候变化、观察突发天气现象、保证安全飞行（监测火山灰云）以及保证水上运输安全（监测和预报冰层的运动状况）。</p>
+<p>卫星监测到的数据先储存在板载存储器中，然后发送到以下两个地面接收中心：</p>
+<ol>
+<li>费尔班克斯（位于美国阿拉斯加州）</li>
+<li>瓦勒普斯岛（位于美国弗吉尼亚州）</li>
+</ol>
+<p>除此之外，NOAA气象卫星还配备了搜索和救援系统（S&amp;R），到现在为止，已经有两万多人的生命在NOAA气象卫星的帮助下得到了拯救。</p>
+<p>更多NOAA气象卫星的信息请参阅这里：<a href="http://rootlee.eu/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/" target="_blank" rel="external">NOAA气象卫星专题</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>美国气象卫星系统NOAA（National Oceanic and Atmospheric Administration）由以下两部分组成：</p>
+<ol>
+<li>地球静止轨道卫星“GOES”，专门用于短程天气预报和监测当前气象状况。</li>
+<li>太阳同步轨道卫星]]>
     </summary>
     
       <category term="NOAA" scheme="http://irootlee.com/tags/NOAA/"/>
@@ -975,40 +1024,6 @@
       <category term="气象卫星" scheme="http://irootlee.com/tags/%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
     
       <category term="NOAA气象卫星" scheme="http://irootlee.com/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[用爱驱散人生路上的迷雾--读《雾都孤儿》有感]]></title>
-    <link href="http://irootlee.com/review_fog_orphan/"/>
-    <id>http://irootlee.com/review_fog_orphan/</id>
-    <published>2016-04-29T20:00:00.000Z</published>
-    <updated>2016-05-18T21:14:22.000Z</updated>
-    <content type="html"><![CDATA[<blockquote>
-<p>忧来无方，窗外下雨，坐沙发，吃巧克力，读狄更斯，心情又会好起来，和世界妥协。  ——托尔斯泰</p>
-</blockquote>
-<p>在一个窗外下雨的日子里把狄更斯的代表作之一《雾都孤儿》看完了，虽然没有沙发，也没有巧克力，手里只有狄更斯也足以让我与这世界妥协。在狄更斯的小说世界里，善良的人终究会有好的结局，而所有恶人最终都会得到应有的惩罚：或被送到绞刑架“荡秋千”、或家破人亡，死于非命。所谓善有善报，恶有恶报，这样的结局是读者们乐于看到的，也是每个人对现实社会实现公平正义的美丽幻想。</p>
-<p>我们都生活在社会中。<br>它经常把我们伤的体无完肤，尽管它让我们体会到它的残酷与冷漠，让我们目睹它的功利与残忍，使得生活在其中的我们每天不得不竭尽全力去对抗它，而狄更斯小说里构造的世界让我们看到了人善良的一面，看到了社会正义的一面，因此我们对我们所生活的世界希望会多一点，对这社会会温柔一点，对身边人的爱会多一点，这大概就是托尔斯泰所谓的“和世界妥协”吧。</p>
-<p>《雾都孤儿》小主人公奥利佛-退斯特是不幸的，母亲刚生下他就去世了，也不知道父亲是谁，在济贫院生活受到百般虐待，怯怯地想多要一碗粥却收到了无尽的奚落与嘲讽，去棺材铺当学徒受到其他学徒和老板娘的排挤，最终不堪忍受逃往了伦敦。在伦敦受到机灵鬼杰克·达金斯的欺骗，被老犹太费金收下训练当小偷，受到自私的哥哥恶意的陷害……</p>
-<p>奥利佛-退斯特又是幸运的，他遇到了好心的布朗罗先生，布朗罗先生将他收留并给他看病，管家贝德温太太无微不至的照顾让可怜的奥利佛-退斯特第一次有了家的温暖感觉，可惜好景不长，费金怕退思特告发他们，所以派了南希趁机将退思特又抓了回来，但南希虽然生活在一群肮脏的人之中，却有着自己的良知，在暗中帮助着退思特，还有后来的梅莱老太太和露丝小姐都待小退思特如家人。在这些美丽心灵的人的无私帮助下，奥利佛退思特才最终没有沦为小偷，并成功了解了自己的身世和继承了应得的遗产。</p>
-<p>一个孤儿，身无分文，孱弱瘦小，在满是雾霭的街道上踽踽独行，工业化的大城市伦敦，周围的人们也像机器一般冷漠。他的人生道路也是迷雾重重，看不到未来，甚至看不到脚下。</p>
-<p>我们又何尝不是那个迷失在“雾都”中的孤儿呢？</p>
-<p>从家乡来到大城市，我们才发现自己是那么的渺小、微不足道，而所谓的梦想，在这里也没有人想听，看着那无时无刻不在攀升的房价，还有越来越严峻的就业形势，我们也迷失了，迷失在了这个城市，迷失在了自己的道路之上。我们拼命往前奔跑，想要逃出这片雾霭，最后却发现，雾霭无处不在，我们想要逃出的尝试只能是徒劳。</p>
-<p>我们恐惧，因为我们孤单。</p>
-<p>但爱可以将我们连结在一起，雾霭中前行，虽然依然看不到远方的道路，但可以看到身边人鼓励的眼神，可以感受到握在一起的爱人的手的温度，可以认清我们一起选择并无怨无悔坚持走下去的路……<br>此时，<br>在我们周围，雾霭不复存在。</p>
-<p>在我们迷茫无助时，家庭是个避风港，父母的爱让我们安心；在我们迷惘不安，不知未来的路怎么走时，师长的爱让我们找到属于自己的道路；当我们失败低落时，朋友的爱能让我们重拾勇气，重新面对新的挑战；当我们自卑没勇气时，恋人的爱会成为我们的铠甲，给予我们无穷的力量去面对、去克服一切阻碍……</p>
-<blockquote>
-<p>如果没有强烈的爱，没有仁爱之心，如果对以慈悲为信条、以博爱一切生灵为最高标志的上帝不知感恩，是绝对得不到幸福的。   ————狄更斯 《雾都孤儿》</p>
-</blockquote>
-]]></content>
-    <summary type="html">
-    <![CDATA[<blockquote>
-<p>忧来无方，窗外下雨，坐沙发，吃巧克力，读狄更斯，心情又会好起来，和世界妥协。  ——托尔斯泰</p>
-</blockquote>
-<p>在一个窗外下雨的日子里把狄更斯的代表作之一《雾都孤儿》看完了，虽然没有沙发，也没有巧克力，手里只有狄更斯也足以让]]>
-    </summary>
-    
-      <category term="读后感" scheme="http://irootlee.com/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
     
   </entry>
   
