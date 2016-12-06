@@ -23,7 +23,7 @@
 <meta property="og:description" content="独热码独热码，在英文文献中称做 one-hot code,直观来说就是有多少个状态就有多少比特，而且只有一个比特为1，其他全为0的一种码制。例如，有6个状态的独热码状态编码为：000001，000010，000100，001000，010000，100000。
 问题最近在做一个根据一个人的信息预测此人人品的机器学习项目：https://github.com/Root-lee/ML_micro_lo">
 <meta property="og:image" content="http://irootlee.com/error_info.png">
-<meta property="og:updated_time" content="2016-12-06T15:08:17.000Z">
+<meta property="og:updated_time" content="2016-12-06T15:15:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="sklearn中调用OneHot编码出现ValueError:X needs to contain only non-negative integers.解决办法">
 <meta name="twitter:description" content="独热码独热码，在英文文献中称做 one-hot code,直观来说就是有多少个状态就有多少比特，而且只有一个比特为1，其他全为0的一种码制。例如，有6个状态的独热码状态编码为：000001，000010，000100，001000，010000，100000。
@@ -196,20 +196,11 @@
     <div class="post-content markdown main-content-wrap" itemprop="articleBody">
         
             <h1 id="独热码">独热码</h1><p>独热码，在英文文献中称做 one-hot code,直观来说就是有多少个状态就有多少比特，而且只有一个比特为1，其他全为0的一种码制。例如，有6个状态的独热码状态编码为：000001，000010，000100，001000，010000，100000。</p>
-<h1 id="问题">问题</h1><p>最近在做一个根据一个人的信息预测此人人品的机器学习项目：<a href="https://github.com/Root-lee/ML_micro_loan" target="_blank" rel="external">https://github.com/Root-lee/ML_micro_loan</a></p>
-<p>在项目中，数据中有上千维的特征，大部分是数值型特征，但是也有93个分类特征，在训练模型时需要将这些分类特征用OneHot编码，使得模型能正确理解这些分类特征。<br>所幸，著名机器学习包已经提供了独热码的编码器：preprocessing.OneHotEncoder()<br>我们只需要直接调用就可以了，于是我写了如下代码编码分类特征：</p>
+<h1 id="问题">问题</h1><p>最近在做一个根据一个人的信息预测此人人品的机器学习项目：<br><a href="https://github.com/Root-lee/ML_micro_loan" target="_blank" rel="external">https://github.com/Root-lee/ML_micro_loan</a><br>在项目中，数据中有上千维的特征，大部分是数值型特征，但是也有93个分类特征，在训练模型时需要将这些分类特征用OneHot编码，使得模型能正确理解这些分类特征。<br>所幸，著名机器学习包已经提供了独热码的编码器：preprocessing.OneHotEncoder()<br>我们只需要直接调用就可以了，于是我写了如下代码编码分类特征：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="comment">#对分类类型的数据进行ONEHOT编码</span></span><br><span class="line">feature_type = pd.read_csv(<span class="string">'G:/Redhat_share/ML_micro/features_type.csv'</span>)</span><br><span class="line">category_feature = list(feature_type[feature_type.type==<span class="string">'category'</span>].feature)</span><br><span class="line">test = pd.read_csv(<span class="string">'G:/Redhat_share/ML_micro/test_x.csv'</span>)</span><br><span class="line">test = test[[<span class="string">'uid'</span>]+category_feature]</span><br><span class="line">train = pd.read_csv(<span class="string">'G:/Redhat_share/ML_micro/train_x.csv'</span>)</span><br><span class="line">train = train[[<span class="string">'uid'</span>]+category_feature]</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> preprocessing</span><br><span class="line">enc = preprocessing.OneHotEncoder()</span><br><span class="line">enc.fit(train)</span><br><span class="line">train= enc.transform(train).toarray()</span><br><span class="line">train_after_oh = pd.DataFrame(train)</span><br><span class="line">train_after_oh[<span class="string">'uid'</span>]=uid</span><br></pre></td></tr></table></figure>
 <p>但是运行程序时却出现了错误：<br><img src="error_info.png" alt="error_info"><br>OneHot编码出现ValueError: X needs to contain only non-negative integers.<br>错误出现在 enc.fit(train) 这一句代码上，根据报错信息，原来scikit-learn库中的onehot编码器要求分类特征是非负整数，但是我们的数据train中的分类特征的值中含有负数，所以会出现错误。</p>
 <h1 id="解决办法">解决办法</h1><p>在调用onehot编码器之前我们需要先对分类特征数据进行一点处理，将所有的值都变为非负数，可以使用如下代码实现目的：</p>
-<pre><code class="python"><span class="comment">#OneHot编码要求特征是非负整数</span>
-<span class="comment">#先把训练数据特征的值变为非负数</span>
-uid = train.uid
-train = train.drop(<span class="string">'uid'</span>,axis=<span class="number">1</span>)
-features = list(train.columns)
-<span class="keyword">for</span> feature <span class="keyword">in</span> features:
-    max_ = train[feature].max()
-    train[feature] = (train[feature] - max_) * (-<span class="number">1</span>)
-</code></pre>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#OneHot编码要求特征是非负整数</span></span><br><span class="line"><span class="preprocessor">#先把训练数据特征的值变为非负数</span></span><br><span class="line">uid = train.uid</span><br><span class="line">train = train.drop(<span class="string">'uid'</span>,axis=<span class="number">1</span>)</span><br><span class="line">features = list(train.columns)</span><br><span class="line"><span class="keyword">for</span> feature <span class="keyword">in</span> features:</span><br><span class="line">    max_ = train[feature].<span class="built_in">max</span>()</span><br><span class="line">    train[feature] = (train[feature] - max_) * (-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
 <p>把上面这段代码放在onehot编码之前，再次运行程序错误即可消失。</p>
 
         
