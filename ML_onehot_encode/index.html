@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="I&#39;m Root lee !">
-    <title>用爱驱散人生路上的迷雾--读《雾都孤儿》有感 - I&#39;m Root lee !</title>
+    <title>sklearn中调用OneHot编码出现ValueError:X needs to contain only non-negative integers.解决办法 - I&#39;m Root lee !</title>
     <meta name="author" content="Root lee">
     <meta name="description" content="I&#39;m Root lee !">
     
@@ -14,22 +14,20 @@
     
         <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="忧来无方，窗外下雨，坐沙发，吃巧克力，读狄更斯，心情又会好起来，和世界妥协。  ——托尔斯泰
-
-在一个窗外下雨的日子里把狄更斯的代表作之一《雾都孤儿》看完了，虽然没有沙发，也没有巧克力，手里只有狄更斯也足以让我与这世界妥协。在狄更斯的小说世界里，善良的人终究会有好的结局，而所有恶人最终都会得到应有的惩罚：或被送到绞刑架“荡秋千”、或家破人亡，死于非命。所谓善有善报，恶有恶报，这样的结局是读者们乐于">
+    <meta name="description" content="独热码独热码，在英文文献中称做 one-hot code,直观来说就是有多少个状态就有多少比特，而且只有一个比特为1，其他全为0的一种码制。例如，有6个状态的独热码状态编码为：000001，000010，000100，001000，010000，100000。
+问题最近在做一个根据一个人的信息预测此人人品的机器学习项目：https://github.com/Root-lee/ML_micro_lo">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="用爱驱散人生路上的迷雾--读《雾都孤儿》有感">
-<meta property="og:url" content="http://irootlee.com/review_fog_orphan/index.html">
+<meta property="og:title" content="sklearn中调用OneHot编码出现ValueError:X needs to contain only non-negative integers.解决办法">
+<meta property="og:url" content="http://irootlee.com/ML_onehot_encode/index.html">
 <meta property="og:site_name" content="I'm Root lee !">
-<meta property="og:description" content="忧来无方，窗外下雨，坐沙发，吃巧克力，读狄更斯，心情又会好起来，和世界妥协。  ——托尔斯泰
-
-在一个窗外下雨的日子里把狄更斯的代表作之一《雾都孤儿》看完了，虽然没有沙发，也没有巧克力，手里只有狄更斯也足以让我与这世界妥协。在狄更斯的小说世界里，善良的人终究会有好的结局，而所有恶人最终都会得到应有的惩罚：或被送到绞刑架“荡秋千”、或家破人亡，死于非命。所谓善有善报，恶有恶报，这样的结局是读者们乐于">
-<meta property="og:updated_time" content="2016-05-18T21:14:22.000Z">
+<meta property="og:description" content="独热码独热码，在英文文献中称做 one-hot code,直观来说就是有多少个状态就有多少比特，而且只有一个比特为1，其他全为0的一种码制。例如，有6个状态的独热码状态编码为：000001，000010，000100，001000，010000，100000。
+问题最近在做一个根据一个人的信息预测此人人品的机器学习项目：https://github.com/Root-lee/ML_micro_lo">
+<meta property="og:image" content="http://irootlee.com/error_info.png">
+<meta property="og:updated_time" content="2016-12-06T15:08:17.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="用爱驱散人生路上的迷雾--读《雾都孤儿》有感">
-<meta name="twitter:description" content="忧来无方，窗外下雨，坐沙发，吃巧克力，读狄更斯，心情又会好起来，和世界妥协。  ——托尔斯泰
-
-在一个窗外下雨的日子里把狄更斯的代表作之一《雾都孤儿》看完了，虽然没有沙发，也没有巧克力，手里只有狄更斯也足以让我与这世界妥协。在狄更斯的小说世界里，善良的人终究会有好的结局，而所有恶人最终都会得到应有的惩罚：或被送到绞刑架“荡秋千”、或家破人亡，死于非命。所谓善有善报，恶有恶报，这样的结局是读者们乐于">
+<meta name="twitter:title" content="sklearn中调用OneHot编码出现ValueError:X needs to contain only non-negative integers.解决办法">
+<meta name="twitter:description" content="独热码独热码，在英文文献中称做 one-hot code,直观来说就是有多少个状态就有多少比特，而且只有一个比特为1，其他全为0的一种码制。例如，有6个状态的独热码状态编码为：000001，000010，000100，001000，010000，100000。
+问题最近在做一个根据一个人的信息预测此人人品的机器学习项目：https://github.com/Root-lee/ML_micro_lo">
 <meta name="twitter:creator" content="@54rootlee">
     
         <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
@@ -39,8 +37,8 @@
         <meta property="og:image" content="/assets/images/rootlee.jpg"/>
     
     
-        <meta property="og:image" content="/review_fog_orphan/orphan.jpg"/>
-        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/review_fog_orphan/orphan.jpg" />
+        <meta property="og:image" content="/ML_onehot_encode/../ML_good_weakness/machine_learning.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/ML_onehot_encode/../ML_good_weakness/machine_learning.png" />
     
     
     
@@ -179,16 +177,16 @@
     
         <div class="post-header main-content-wrap">
     
-        <h1 class="post-title" itemprop="headline">用爱驱散人生路上的迷雾--读《雾都孤儿》有感</h1>
+        <h1 class="post-title" itemprop="headline">sklearn中调用OneHot编码出现ValueError:X needs to contain only non-negative integers.解决办法</h1>
     
     <div class="post-meta">
-    <time  itemprop="datePublished" content="Fri Apr 29 2016 20:00:00 GMT+0000">
-        Apr 29, 2016
+    <time  itemprop="datePublished" content="Tue Dec 06 2016 23:00:00 GMT+0000">
+        Dec 06, 2016
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/读后感/">读后感</a>
+    <a class="category-link" href="/categories/机器学习/">机器学习</a>
 
 
     
@@ -197,22 +195,22 @@
     
     <div class="post-content markdown main-content-wrap" itemprop="articleBody">
         
-            <blockquote>
-<p>忧来无方，窗外下雨，坐沙发，吃巧克力，读狄更斯，心情又会好起来，和世界妥协。  ——托尔斯泰</p>
-</blockquote>
-<p>在一个窗外下雨的日子里把狄更斯的代表作之一《雾都孤儿》看完了，虽然没有沙发，也没有巧克力，手里只有狄更斯也足以让我与这世界妥协。在狄更斯的小说世界里，善良的人终究会有好的结局，而所有恶人最终都会得到应有的惩罚：或被送到绞刑架“荡秋千”、或家破人亡，死于非命。所谓善有善报，恶有恶报，这样的结局是读者们乐于看到的，也是每个人对现实社会实现公平正义的美丽幻想。</p>
-<p>我们都生活在社会中。<br>它经常把我们伤的体无完肤，尽管它让我们体会到它的残酷与冷漠，让我们目睹它的功利与残忍，使得生活在其中的我们每天不得不竭尽全力去对抗它，而狄更斯小说里构造的世界让我们看到了人善良的一面，看到了社会正义的一面，因此我们对我们所生活的世界希望会多一点，对这社会会温柔一点，对身边人的爱会多一点，这大概就是托尔斯泰所谓的“和世界妥协”吧。</p>
-<p>《雾都孤儿》小主人公奥利佛-退斯特是不幸的，母亲刚生下他就去世了，也不知道父亲是谁，在济贫院生活受到百般虐待，怯怯地想多要一碗粥却收到了无尽的奚落与嘲讽，去棺材铺当学徒受到其他学徒和老板娘的排挤，最终不堪忍受逃往了伦敦。在伦敦受到机灵鬼杰克·达金斯的欺骗，被老犹太费金收下训练当小偷，受到自私的哥哥恶意的陷害……</p>
-<p>奥利佛-退斯特又是幸运的，他遇到了好心的布朗罗先生，布朗罗先生将他收留并给他看病，管家贝德温太太无微不至的照顾让可怜的奥利佛-退斯特第一次有了家的温暖感觉，可惜好景不长，费金怕退思特告发他们，所以派了南希趁机将退思特又抓了回来，但南希虽然生活在一群肮脏的人之中，却有着自己的良知，在暗中帮助着退思特，还有后来的梅莱老太太和露丝小姐都待小退思特如家人。在这些美丽心灵的人的无私帮助下，奥利佛退思特才最终没有沦为小偷，并成功了解了自己的身世和继承了应得的遗产。</p>
-<p>一个孤儿，身无分文，孱弱瘦小，在满是雾霭的街道上踽踽独行，工业化的大城市伦敦，周围的人们也像机器一般冷漠。他的人生道路也是迷雾重重，看不到未来，甚至看不到脚下。</p>
-<p>我们又何尝不是那个迷失在“雾都”中的孤儿呢？</p>
-<p>从家乡来到大城市，我们才发现自己是那么的渺小、微不足道，而所谓的梦想，在这里也没有人想听，看着那无时无刻不在攀升的房价，还有越来越严峻的就业形势，我们也迷失了，迷失在了这个城市，迷失在了自己的道路之上。我们拼命往前奔跑，想要逃出这片雾霭，最后却发现，雾霭无处不在，我们想要逃出的尝试只能是徒劳。</p>
-<p>我们恐惧，因为我们孤单。</p>
-<p>但爱可以将我们连结在一起，雾霭中前行，虽然依然看不到远方的道路，但可以看到身边人鼓励的眼神，可以感受到握在一起的爱人的手的温度，可以认清我们一起选择并无怨无悔坚持走下去的路……<br>此时，<br>在我们周围，雾霭不复存在。</p>
-<p>在我们迷茫无助时，家庭是个避风港，父母的爱让我们安心；在我们迷惘不安，不知未来的路怎么走时，师长的爱让我们找到属于自己的道路；当我们失败低落时，朋友的爱能让我们重拾勇气，重新面对新的挑战；当我们自卑没勇气时，恋人的爱会成为我们的铠甲，给予我们无穷的力量去面对、去克服一切阻碍……</p>
-<blockquote>
-<p>如果没有强烈的爱，没有仁爱之心，如果对以慈悲为信条、以博爱一切生灵为最高标志的上帝不知感恩，是绝对得不到幸福的。   ————狄更斯 《雾都孤儿》</p>
-</blockquote>
+            <h1 id="独热码">独热码</h1><p>独热码，在英文文献中称做 one-hot code,直观来说就是有多少个状态就有多少比特，而且只有一个比特为1，其他全为0的一种码制。例如，有6个状态的独热码状态编码为：000001，000010，000100，001000，010000，100000。</p>
+<h1 id="问题">问题</h1><p>最近在做一个根据一个人的信息预测此人人品的机器学习项目：<a href="https://github.com/Root-lee/ML_micro_loan" target="_blank" rel="external">https://github.com/Root-lee/ML_micro_loan</a></p>
+<p>在项目中，数据中有上千维的特征，大部分是数值型特征，但是也有93个分类特征，在训练模型时需要将这些分类特征用OneHot编码，使得模型能正确理解这些分类特征。<br>所幸，著名机器学习包已经提供了独热码的编码器：preprocessing.OneHotEncoder()<br>我们只需要直接调用就可以了，于是我写了如下代码编码分类特征：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="comment">#对分类类型的数据进行ONEHOT编码</span></span><br><span class="line">feature_type = pd.read_csv(<span class="string">'G:/Redhat_share/ML_micro/features_type.csv'</span>)</span><br><span class="line">category_feature = list(feature_type[feature_type.type==<span class="string">'category'</span>].feature)</span><br><span class="line">test = pd.read_csv(<span class="string">'G:/Redhat_share/ML_micro/test_x.csv'</span>)</span><br><span class="line">test = test[[<span class="string">'uid'</span>]+category_feature]</span><br><span class="line">train = pd.read_csv(<span class="string">'G:/Redhat_share/ML_micro/train_x.csv'</span>)</span><br><span class="line">train = train[[<span class="string">'uid'</span>]+category_feature]</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> preprocessing</span><br><span class="line">enc = preprocessing.OneHotEncoder()</span><br><span class="line">enc.fit(train)</span><br><span class="line">train= enc.transform(train).toarray()</span><br><span class="line">train_after_oh = pd.DataFrame(train)</span><br><span class="line">train_after_oh[<span class="string">'uid'</span>]=uid</span><br></pre></td></tr></table></figure>
+<p>但是运行程序时却出现了错误：<br><img src="error_info.png" alt="error_info"><br>OneHot编码出现ValueError: X needs to contain only non-negative integers.<br>错误出现在 enc.fit(train) 这一句代码上，根据报错信息，原来scikit-learn库中的onehot编码器要求分类特征是非负整数，但是我们的数据train中的分类特征的值中含有负数，所以会出现错误。</p>
+<h1 id="解决办法">解决办法</h1><p>在调用onehot编码器之前我们需要先对分类特征数据进行一点处理，将所有的值都变为非负数，可以使用如下代码实现目的：</p>
+<pre><code class="python"><span class="comment">#OneHot编码要求特征是非负整数</span>
+<span class="comment">#先把训练数据特征的值变为非负数</span>
+uid = train.uid
+train = train.drop(<span class="string">'uid'</span>,axis=<span class="number">1</span>)
+features = list(train.columns)
+<span class="keyword">for</span> feature <span class="keyword">in</span> features:
+    max_ = train[feature].max()
+    train[feature] = (train[feature] - max_) * (-<span class="number">1</span>)
+</code></pre>
+<p>把上面这段代码放在onehot编码之前，再次运行程序错误即可消失。</p>
 
         
         
@@ -226,7 +224,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/NOAA_0/"  data-tooltip="气象卫星的作用以及NOAA气象卫星中图像传输系统">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -234,7 +232,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/xiaoqiang/" data-tooltip="那些与小强战斗的日子">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/review_solitude/" data-tooltip="孤独不是孤单而是自由——读《百年孤独》后感">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -249,17 +247,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/review_fog_orphan/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/ML_onehot_encode/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/review_fog_orphan/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/ML_onehot_encode/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/review_fog_orphan/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/ML_onehot_encode/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -303,7 +301,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/NOAA_0/"  data-tooltip="气象卫星的作用以及NOAA气象卫星中图像传输系统">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -311,7 +309,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/xiaoqiang/" data-tooltip="那些与小强战斗的日子">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/review_solitude/" data-tooltip="孤独不是孤单而是自由——读《百年孤独》后感">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -326,17 +324,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/review_fog_orphan/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/ML_onehot_encode/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/review_fog_orphan/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/ML_onehot_encode/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/review_fog_orphan/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/ML_onehot_encode/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -360,17 +358,17 @@
                 <div id="share-options-bar" class="share-options-bar" data-behavior="1">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/review_fog_orphan/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/ML_onehot_encode/">
                 <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/review_fog_orphan/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/ML_onehot_encode/">
                 <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/review_fog_orphan/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/ML_onehot_encode/">
                 <i class="fa fa-twitter"></i><span>Share on Twitter</span>
             </a>
         </li>
