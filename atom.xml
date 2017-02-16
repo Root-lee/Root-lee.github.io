@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2016-12-06T15:15:59.000Z</updated>
+  <updated>2017-02-16T14:12:11.000Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -13,6 +13,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[python中遇到的Windows系统中换行符的一个坑]]></title>
+    <link href="http://irootlee.com/python_CRLF/"/>
+    <id>http://irootlee.com/python_CRLF/</id>
+    <published>2017-02-16T21:00:00.000Z</published>
+    <updated>2017-02-16T14:12:11.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="问题描述">问题描述</h1><p>在项目hex2bin（<a href="https://github.com/Root-lee/hex2bin）中，需要实现将一个txt文本中的十六进制码转换成相应的ascii码符号并写入一个.dat文件中，以用于声纳项目中的幅相校正操作。为了实现功能先在Linux虚拟机中写了一个小的python程序用来测试可行性，代码如下：" target="_blank" rel="external">https://github.com/Root-lee/hex2bin）中，需要实现将一个txt文本中的十六进制码转换成相应的ascii码符号并写入一个.dat文件中，以用于声纳项目中的幅相校正操作。为了实现功能先在Linux虚拟机中写了一个小的python程序用来测试可行性，代码如下：</a><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">input = open(<span class="string">'raw.txt'</span>,<span class="string">'r'</span>)</span><br><span class="line">raw = input.read()</span><br><span class="line">output = open(<span class="string">'bin.dat'</span>,<span class="string">'w+'</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(raw)/<span class="number">2</span>):</span><br><span class="line">    <span class="keyword">print</span> chr(int(raw[<span class="number">2</span>*i:<span class="number">2</span>*i+<span class="number">2</span>],<span class="number">16</span>))</span><br><span class="line">    output.write(chr(int(raw[<span class="number">2</span>*i:<span class="number">2</span>*i+<span class="number">2</span>],<span class="number">16</span>)))</span><br></pre></td></tr></table></figure></p>
+<p>该程序在Linux系统中运行可以得到预期结果，但是在Windows中加上相关GUI，程序经过简单修改之后，运行后得到的结果却有点偏差。</p>
+<h2 id=""><img src="hex_true.png" alt="预期结果"></h2><p><img src="hex_false.png" alt="错误结果"><br>上面两图是用winhex软件打开本软件运行结果.dat文件的情形，第一张图是预期结果的文件结尾，第二张图是得到的错误结果的文件结尾，对比可以发现，Windows下运行最后生成的结果比预期结果多了几位。</p>
+<h1 id="问题分析">问题分析</h1><p>为了找出问题所在，我对错误结果和预期结果进行一位一位仔细比对，发现错误结果比预期结果多出的位数都是”0D”，而且每个多出来的”0D”后面都紧跟着一个”0A”：<br>预期结果：</p>
+<h2 id="-1"><img src="hex2_true.png" alt="预期结果"></h2><p>错误结果：<br><img src="hex2_false.png" alt="错误结果"></p>
+<p>16进制“0D”对应ascii码是13，查询ascii码表得知13对应的是换行符CR，16进制“0A”对应ascii码是10，查询ascii码表得知13对应的是换行符LF，猜测可能与windows系统中的换行符有关：Window系统中的换行符使用\r\n表示，而Linux系统中使用\n表示，所以当写入换行符\n时，windows自动在\n的前面加上一个\r以符合windows系统的换行要求。所以结果中的所有”0A”都被自动换成了”0D0A”。</p>
+<h1 id="解决方法">解决方法</h1><p>Windows 平台上 Python 区分 Binary 和 ASCII 模式。ASCII 模式下换行符会在读写时自动换为 \r\n ，但是Binary模式下却不会自动替换，所以我们只需将文件读写模式由ASCII模式改为Binary模式即可，具体到我们的代码中，我们只需将代码<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">output = open(<span class="string">'bin.dat'</span>,<span class="string">'w+'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>改为：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">output = open(<span class="string">'bin.dat'</span>,<span class="string">'wb+'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>即可解决问题。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="问题描述">问题描述</h1><p>在项目hex2bin（<a href="https://github.com/Root-lee/hex2bin）中，需要实现将一个txt文本中的十六进制码转换成相应的ascii码符号并写入一个.dat文件中，以用于声纳项目中的幅]]>
+    </summary>
+    
+      <category term="python" scheme="http://irootlee.com/tags/python/"/>
+    
+      <category term="python" scheme="http://irootlee.com/categories/python/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[sklearn中调用OneHot编码出现ValueError:X needs to contain only non-negative integers.解决办法]]></title>
@@ -957,39 +983,6 @@
     </summary>
     
       <category term="随笔" scheme="http://irootlee.com/categories/%E9%9A%8F%E7%AC%94/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[爱的到底是真实的你还是我幻想中的你——读《霍乱时期的爱情》有感]]></title>
-    <link href="http://irootlee.com/huoluan_love/"/>
-    <id>http://irootlee.com/huoluan_love/</id>
-    <published>2016-05-17T20:00:00.000Z</published>
-    <updated>2016-05-18T21:05:46.000Z</updated>
-    <content type="html"><![CDATA[<blockquote>
-<p><em>《霍乱时期的爱情》应该读四遍：刚爱上一个人的时候读一遍，失恋时读一遍，结婚后读一遍，老年时再读一遍。    ——我自己说的</em></p>
-</blockquote>
-<p>之所以认为这本书应该读四遍，是因为我觉得从一本书中真正体会到的东西与自己的阅历有关系，也许有时以为为自己当时看懂了，但直到真正经历到一些事情才发现，现在我才是真正懂了。马尔克斯写这本书时已经步入老年，书中充满了对婚姻的思考，对年老的思考，还有那艘永不靠岸的挂着霍乱旗帜的轮船……这些东西，凭我现在的阅历并不能真正看得懂，也许只有经历过这些才会体会到这些，所以我说这本书应该多读几遍，在不同的人生阶段去读、去体会、去思考。</p>
-<p>马尔克斯的最著名的小说就是《百年孤独》，我曾经尝试过两次去读这篇著作，可惜都失败了，第一次看到前言里的长长的错综复杂的家谱就被吓住了，第二次虽然坚持看完了第一章，却发现总是捋不清人物关系，遂再次放弃。前一阵，拿起了马尔克斯的另一部著作《霍乱时期的爱情》，本以为这书会和《百年孤独》一样错综复杂，但后来看下去发现这书并没有太多错综复杂的关系，作者淡淡地描述出来的爱情故事让人感慨、令人动容。</p>
-<p>《霍乱时期的爱情》主要描述了一段跨越半个多世纪的爱情故事，讲述了电报员阿里萨、乌尔比诺医生和富家小姐费尔米纳之间的爱情纠葛。阿里萨通过一次去费尔米纳家里送电报的机会，对费尔米纳一见钟情，每天在费尔米纳必经之路的长椅上看书，借机看一眼心爱的人，后来，他们开始通信，在信中互相表达爱意，他们这种炽热的通信一直持续了两年，并准备不顾费尔米纳父亲的反对而结婚。当费尔米纳从表姐家回来，怀着满心的幸福去集市购买与阿里萨结婚所需的物品时，在“代笔先生门洞”遇到了尾随而来的阿里萨，书里这么描写这段场景：</p>
-<blockquote>
-<p>……<br>这时，她一阵激动，钉子似的鸽立在原地不动了。在她背后，就在她的耳朵跟前响起了一个声音，只有她一个人才能在嘈杂的人声中分辨得清的声音：<br>“对戴王冠的仙女来说，这里可不是什么好地方。”<br>她回过头来一看，在离自己的眼睛两巴掌远的地方，看见了两只冷若冰霜的眼睛，一张苍白的脸，两片因胆怯而咬紧了的嘴唇，就跟那天在望大弥撒时他第一次和她近在咫尺的情况一模一样，有所不同的只是热恋的激情变成了不满的冷峻。一刹那间，她发觉自己上了个天大的当，惊讶地在心里自问，怎么可能让一个如此冷酷无情的魔鬼长年累月地占据了自己的芳心。她仅仅来得及想：”我的上帝哟，真是个可怜虫！”阿里萨勉强一笑，开口想说点什么，试图跟她一起走，但她把手一挥，把他从自己的生活中抹去了：<br>“不必了，”她说，”忘掉吧。”<br>就在这天下午，她父亲睡午觉的时候，她让普拉西迪娜给他送去了一封寥寥数语的信：”今天，看到了您，我如梦初醒，我们之间的事，无非是幻想而已。”女佣把他的电报、情诗、干枯了的山茶花也送去了。<br>……</p>
-</blockquote>
-<p>与阿里萨的再次相遇，让费尔米纳蓦然发现，自己这么多年来爱的只是自己幻想中的阿里萨，完全不是眼前这个真实的阿里萨，并感到自己这么多年的所谓爱情是如此的幼稚与可笑。一句：“不必了，忘掉吧。”她跟这段荒唐的爱情作了告别，也跟自己的幻想作了告别。</p>
-<p>人一旦陷入了爱情，就会或多或少地开始幻想，将对方想象成符合自己幻想的完美的一个人，对对方缺点选择性忽略，只看到自己想看到的优点，看不到的优点便靠自己的想象力脑补出来，这就导致真实的那个人与幻想中的那个人差别越来越大，直至某一时刻忽然发现，面前的这个人并不是自己爱的那个人，自己爱的那个人并不存在在现实中，而只存在于自己的幻想中。因此，爱情世界崩塌，却还在说“你变了”。其实哪里是对方变了，只不过是幻想与现实碰撞下幻想的幻灭罢了。<br>所谓“情人眼里出西施”、“爱情里的人都是盲目的”这些句子大约也就是这个意思吧。</p>
-<p>很多异地恋，在无论多么艰难的日子里，双方都没有放弃，但当好不容易熬到了结束异地恋在一起时，爱情反而破灭的无比迅速。身边的朋友都会感觉难以理解，当初那么苦，那么多没有对方陪伴时的日子都能熬过，为什么最终在一起后却无法忍受了？</p>
-<p>爱情中的人都有幻想，异地恋尤甚。<br>经常见不到对方，对对方的想念都转变成了对对方的幻想，最终真正在一起时，却和费尔米纳一样突然发现：不对，我爱的不是眼前这个现实中的人。</p>
-<p>没有人是完美的，喜欢一个人是喜欢他/她美好的一面，但爱一个人却是爱他/她的一切，你的美好我来欣赏、你的脆弱我来守护、你的缺点我来包容……</p>
-<p>少一分幻想，不要将爱情建立成一个空中楼阁；<br>多一分接受，将爱情大厦的地基打地结结实实。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<blockquote>
-<p><em>《霍乱时期的爱情》应该读四遍：刚爱上一个人的时候读一遍，失恋时读一遍，结婚后读一遍，老年时再读一遍。    ——我自己说的</em></p>
-</blockquote>
-<p>之所以认为这本书应该读四遍，是因为我觉得从一本书中真正体会到的东]]>
-    </summary>
-    
-      <category term="读后感" scheme="http://irootlee.com/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
     
   </entry>
   
