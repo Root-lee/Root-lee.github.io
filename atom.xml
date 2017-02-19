@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2017-02-18T05:08:49.000Z</updated>
+  <updated>2017-02-19T07:34:46.000Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -13,6 +13,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Matlab与ISE联合仿真FPGA程序]]></title>
+    <link href="http://irootlee.com/matlab_ise/"/>
+    <id>http://irootlee.com/matlab_ise/</id>
+    <published>2017-02-19T15:00:00.000Z</published>
+    <updated>2017-02-19T07:34:46.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Matlab与ISE联合仿真">Matlab与ISE联合仿真</h1><p>ISE自带的仿真器只能以数字化形式显示仿真结果，这对我们分析仿真结果的正确性造成极大不便，虽然ISE可以使用Modelsim进行仿真，尽管Modelsim可以以模拟形式显示仿真结果，但对我们信号处理的结果仿真，功能还是略显不足。这时我们便需要Matlab和ISE联合仿真来分析FPGA程序结果。Matlab包含大量函数，图形显示能力也极强，可以用Matlab生成FPGA程序所需数据进行仿真，最后可以将FPGA运行结果导出到Matlab中进行分析。</p>
+<h1 id="Matlab产生数据用于ISE仿真">Matlab产生数据用于ISE仿真</h1><p>下面程序片段是利用Matlab产生一个周期为256点8bit的正弦波数据：<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">N = <span class="number">256</span>;</span><br><span class="line">n = <span class="number">1</span>:<span class="number">256</span>;</span><br><span class="line">x = <span class="built_in">fix</span>(<span class="number">128</span> + (<span class="number">2</span>^<span class="number">7</span> - <span class="number">1</span>) * <span class="built_in">sin</span>(<span class="number">2</span>*<span class="built_in">pi</span>*n/N));</span><br><span class="line">fid = fopen(<span class="string">'sin.txt'</span>,<span class="string">'wt'</span>);</span><br><span class="line">fprintf(fid,<span class="string">'%x\n'</span>,x);</span><br><span class="line">fclose(fid);</span><br></pre></td></tr></table></figure></p>
+<p>上面代码段产生一个sin.txt文件，里面包含256个以16进制存储的数据。</p>
+<h1 id="ISE中testbench读取文件">ISE中testbench读取文件</h1><p>将上面产生的sin.txt文件拷贝到verilog仿真项目下，在testbench文件中添加如下代码读取数据：<br><figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="typename">reg</span> [<span class="number">7</span><span class="keyword">:</span><span class="number">0</span>] data_mem[<span class="number">0</span><span class="keyword">:</span><span class="number">255</span>]; <span class="comment">//定义一个8bit X 256的数组</span></span><br><span class="line"><span class="keyword">initial</span></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    $readmemh(<span class="string">"sin.txt"</span>,data_mem); <span class="comment">//将sin.txt中的数据读入存储器data_mem</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="comment">//将数据读入数组之后，将数据从data_out输出：</span></span><br><span class="line"><span class="keyword">always</span> <span class="keyword">@</span>(<span class="keyword">posedge</span> clk)<span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(rst)</span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        data_out <span class="keyword">&lt;</span><span class="keyword">=</span> <span class="number">8'd0</span>;</span><br><span class="line">        i <span class="keyword">&lt;</span><span class="keyword">=</span> <span class="number">8'd0</span>;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        data_out <span class="keyword">&lt;</span><span class="keyword">=</span> data_mem[i]; <span class="comment">//将存储器中的数据输出</span></span><br><span class="line">        i <span class="keyword">&lt;</span><span class="keyword">=</span> i <span class="keyword">+</span> <span class="number">8'd1</span>;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure></p>
+<p>对程序进行仿真即可得到从文件中导入的数据的波形图：<br><img src="sin.png" alt="sin"></p>
+<h1 id="Matlab对ISE仿真生成的数据进行分析">Matlab对ISE仿真生成的数据进行分析</h1><p>Matlab对Modelsim仿真生成数据的处理也是通过文件读写实现的。即通过Verilog语句，将仿真过程中的某个信号写入文件，然后在Matlab中在把这个文件的数据读出来，就可以在Matlab中进行分析了。<br>下面是Verilog语句实现将仿真数据写入文件的代码：<br><figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="typename">integer</span> w_file;</span><br><span class="line"><span class="keyword">initial</span> w_file <span class="keyword">=</span> $fopen(<span class="string">"data_out.txt"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> <span class="keyword">@</span>(i)</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    $fdisplay(w_file,<span class="string">"%h"</span>,data_out);</span><br><span class="line">    <span class="keyword">if</span>(i <span class="keyword">=</span><span class="keyword">=</span> <span class="number">8'd255</span>)   <span class="comment">//共写入256个数据</span></span><br><span class="line">    $stop;</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure></p>
+<p>下面是Matlab从data_out.txt中读取数据的代码：<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">fid = fopen(<span class="string">'data_out.txt'</span>,<span class="string">'r'</span>);</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span> : <span class="number">256</span>;</span><br><span class="line">    num(<span class="built_in">i</span>) = fscanf(fid, <span class="string">'%x'</span>, <span class="number">1</span>); <span class="comment">%从fid所指的文件以16进制方式读出一个数据。</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">fclose(fid);</span><br><span class="line">plot(num);</span><br></pre></td></tr></table></figure></p>
+<p>以上就是Matlab与ISE联合仿真的基本方法。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Matlab与ISE联合仿真">Matlab与ISE联合仿真</h1><p>ISE自带的仿真器只能以数字化形式显示仿真结果，这对我们分析仿真结果的正确性造成极大不便，虽然ISE可以使用Modelsim进行仿真，尽管Modelsim可以以模拟形式显示仿真结果，但对我]]>
+    </summary>
+    
+      <category term="FPGA" scheme="http://irootlee.com/tags/FPGA/"/>
+    
+      <category term="ISE" scheme="http://irootlee.com/tags/ISE/"/>
+    
+      <category term="matlab" scheme="http://irootlee.com/tags/matlab/"/>
+    
+      <category term="专业相关" scheme="http://irootlee.com/categories/%E4%B8%93%E4%B8%9A%E7%9B%B8%E5%85%B3/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[python中遇到的Windows系统中换行符的一个坑]]></title>
@@ -939,48 +968,6 @@
       <category term="气象卫星" scheme="http://irootlee.com/tags/%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
     
       <category term="NOAA气象卫星" scheme="http://irootlee.com/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[一个猛子扎进英语原著]]></title>
-    <link href="http://irootlee.com/learn_english/"/>
-    <id>http://irootlee.com/learn_english/</id>
-    <published>2016-05-23T02:00:00.000Z</published>
-    <updated>2016-05-23T00:20:40.000Z</updated>
-    <content type="html"><![CDATA[<p>作者：破岩 （第一次用这个笔名呢，好激动……）</p>
-<p>我喜欢读书。</p>
-<p>世界上的书大部分都是用英语写成的，即使那些有价值的其他语言写就的书也必定会有英语译本，但却不一定有汉语译本。世界上最顶尖的技术的文献也都是英语的，如果等着这些书被翻译后再去研读，那就注定永远追不上世界潮流了。<br>由此可见，能像读汉语书一样流畅的去阅读英语原版书是多么必要。</p>
-<p>说来惭愧，进入大学后，英语水平基本没有任何提高，全是靠着高中的那点积累考过了英语四级、六级。曾经也像突然打鸡血一样急切的想去提高英语水平，但都是由于各种原因半途而废。</p>
-<p>近来，想看《了不起的盖茨比》这本书时，发现各个版本的翻译质量都不高，看到网上有人推荐说：直接阅读英文原著，会更加体会到作者优美的文笔和深邃的思想。于是下载了《The Great Gatsby》到心爱的kindle上，开始阅读这本书。<br>想来学了这么多年的英语，看这本书应该不会有太大的困难吧。<br>但是……<br>看了艰难地看完第一章才发现，自己真是“too young，too simple.”。基本上每一页里面都有十个以上的生词存在，手指不停在kindle上点击去查各个单词的意思，直到那时才发现我的词汇量是多么的匮乏，看英文原著真是太困难了。</p>
-<p>后来去专门背了一些单词，才能硬着头皮坚持将这本书读下去，读完后才发现，原版书给人的感觉真好，再好的翻译都不可能完整的表达原著的意思，因为语言之间的差别，有些东西换一种语言是表达不出来的，即使勉强表达出来，也已经丢失了原文的韵味。</p>
-<p>所以对自己有了一个期待，那就是希望自己在未来的某一天，可以拿起任意一本英文原著都可以像读汉语书一样流畅正确快速的去阅读。现在的我看着那些翻译过的著作，就像是看到的是画框里的苍山、茫海，总是少了那么几分气势。只有读到那真正从作者笔下跳出来的文字时，我才可以真正的去攀爬苍苍青山、去遨游茫茫碧海，才能真正体会到书中那种荡气回肠。</p>
-<p>所以，我开始坚持背单词、读原著……</p>
-<p>2016上半年我坚持了两件事：</p>
-<ul>
-<li>练习打字，双拼+盲打。</li>
-<li>坚持健身，两天去一次健身房。</li>
-</ul>
-<p>现在，坚持的这两件事都有了非常好的回报：</p>
-<ul>
-<li>打字：以前想写一篇博客，必须在纸上打草稿，然后，对着草稿，盯着键盘，用“一阳指”把草稿上的字一个一个打到电脑上，效率低下，让人抓狂。而现在我已经可以自由的在电脑上写下自己的感想，而且速度相比以前“一阳指”有了质的飞跃。</li>
-<li>健身：以前身材瘦弱，生活状态也极其不好。现在虽然没有练成大块头，但是胸肌、腹肌、肱二头肌也已隐隐可见，生活状态也改良了许多。</li>
-</ul>
-<p>其实上面这些收获并不是最重要的，最重要的是这两件事使我确信了一个人人都懂的道理：“坚持付出就会有收获”。<br>这个道理，从小就懂，但是以前并不是那么相信。</p>
-<p>所谓“道理都懂，依然过不好这一生”，其实是因为虽然我们懂了这些道理，但我们并不坚信这些道理的正确，自己不信的道理其实还不是真正懂。抱着不真正懂得那些道理又怎么能过好这一生呢？是吧。</p>
-<p>而，现在，我彻底懂了、信了这些道理，也坚持了这些道理，这一生应该不会太差吧？</p>
-<p>坚持付出就会有收获。</p>
-<p>所以，我相信我这次准备学习英语绝不再是“心血来潮”，不会再像以前那样半途而废。</p>
-<p>一个猛子扎进英语原著这个水池里，扑腾几下，呛几口水……</p>
-<p>我终将会游泳。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>作者：破岩 （第一次用这个笔名呢，好激动……）</p>
-<p>我喜欢读书。</p>
-<p>世界上的书大部分都是用英语写成的，即使那些有价值的其他语言写就的书也必定会有英语译本，但却不一定有汉语译本。世界上最顶尖的技术的文献也都是英语的，如果等着这些书被翻译后再去研读，那就注]]>
-    </summary>
-    
-      <category term="随笔" scheme="http://irootlee.com/categories/%E9%9A%8F%E7%AC%94/"/>
     
   </entry>
   
