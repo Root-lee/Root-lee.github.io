@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2017-02-19T07:36:30.000Z</updated>
+  <updated>2017-02-25T07:51:05.000Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -13,6 +13,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[pywin32与多线程：pywintypes.com_error:CoInitialize]]></title>
+    <link href="http://irootlee.com/python_pywin32_thread/"/>
+    <id>http://irootlee.com/python_pywin32_thread/</id>
+    <published>2017-02-25T16:00:00.000Z</published>
+    <updated>2017-02-25T07:51:05.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="问题">问题</h1><p>被pywin32和多线程之间的关系折磨了一上午，终于大体弄懂了，将一些经验记录一下，以备不时之需。<br>在成像声纳幅相校正程序（ <a href="https://github.com/Root-lee/hex2bin" target="_blank" rel="external">https://github.com/Root-lee/hex2bin</a> ）中，软件2.0版本，在原来版本的基础上，通过COM接口调用Matlab程序，将幅相校正的第一步（使用Matlab计算幅相校正系数）也包含在软件之中，为操作人员又省去一个操作步骤。当前版本软件只需选择声纳上位机软件采集到的AD数据之后，即可自动完成计算及转换。<br>实现软件功能时需要在程序中调用pywin32模块中的Dipatch，测试程序如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> win32com.client <span class="keyword">import</span> Dispatch</span><br><span class="line"></span><br><span class="line">h = Dispatch(<span class="string">"Matlab.application"</span>)</span><br><span class="line">h.Visible = <span class="number">0</span></span><br><span class="line">h.Feval(<span class="string">'cd'</span>,<span class="number">0</span>,<span class="number">0</span>,os.getcwd())</span><br><span class="line">path = <span class="string">u'AD自动采集数据_调整noise.dat'</span></span><br><span class="line">h.Feval(<span class="string">'generate'</span>,<span class="number">0</span>,<span class="number">0</span>,path)</span><br></pre></td></tr></table></figure></p>
+<p>程序运行正常。<br>但是当把此程序移植到主程序中，这部分代码放在一个后台线程中，代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">from</span> win32com.client <span class="keyword">import</span> Dispatch</span><br><span class="line"><span class="keyword">import</span> time,os</span><br><span class="line"></span><br><span class="line"><span class="comment">#继承 QThread 类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BigWorkThread</span><span class="params">(QtCore.QThread)</span>:</span></span><br><span class="line">    <span class="string">"""docstring for BigWorkThread"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, file_path = [])</span>:</span></span><br><span class="line">        super(BigWorkThread, self).__init__(<span class="keyword">None</span>)</span><br><span class="line">        self.path = file_path</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span> </span><br><span class="line">        self.gen_txt_file()</span><br><span class="line">        input = open(<span class="string">u'幅相系数记录.txt'</span>,<span class="string">'r'</span>)</span><br><span class="line">        raw = input.read()</span><br><span class="line">        output = open(<span class="string">u'幅相系数记录.dat'</span>,<span class="string">'wb+'</span>)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(raw)/<span class="number">2</span>):</span><br><span class="line">            output.write(chr(int(raw[<span class="number">2</span>*i:<span class="number">2</span>*i+<span class="number">2</span>],<span class="number">16</span>)))</span><br><span class="line">            j = int(<span class="number">2</span>*i/len(raw)*<span class="number">100</span>)</span><br><span class="line">            self.emit(QtCore.SIGNAL(<span class="string">"where"</span>),j)</span><br><span class="line">        self.emit(QtCore.SIGNAL(<span class="string">"finish_show"</span>))</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">gen_txt_file</span><span class="params">(self)</span>:</span></span><br><span class="line">        h = Dispatch(<span class="string">"Matlab.application"</span>)  <span class="comment">#打开Matlab进程</span></span><br><span class="line">        h.Visible = <span class="number">0</span>  <span class="comment">#隐藏Matlab界面</span></span><br><span class="line">        h.Feval(<span class="string">'cd'</span>,<span class="number">0</span>,<span class="number">0</span>,os.getcwd())  <span class="comment">#Matlab工作路径切换到当前软件目录</span></span><br><span class="line">        h.Feval(<span class="string">'generate'</span>,<span class="number">0</span>,<span class="number">0</span>,self.path)  <span class="comment">#调用generate.m中的函数，产生txt格式文件</span></span><br></pre></td></tr></table></figure></p>
+<p>这时，当程序运行到gen_txt_file()函数中的h = Dispatch(“Matlab.application”) 这一句时便会出错：pywintypes.com_error:CoInitialize<br><img src="error.png" alt="error"></p>
+<p>为什么这段代码在主程中可以正常工作，放进多线程中就不能工作了呢？<br>因为COM对象属于一个线程，该线程与当前的线程无法正常通信，所以导致在多线程中调用Dispatch函数会报错。</p>
+<h1 id="解决办法">解决办法</h1><p>我们需要Windows提供的函数Coinitialize来创建一个套间，使得他们可以正常关联和执行，具体方法就是在多线程中调用COM对象代码前面加上pythoncom.CoInitialize()，最后在COM对象调用结束后加上pythoncom.CoUninitialize()释放资源。<br>代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">from</span> win32com.client <span class="keyword">import</span> Dispatch</span><br><span class="line"><span class="keyword">import</span> time,os</span><br><span class="line"><span class="keyword">import</span> pythoncom</span><br><span class="line"></span><br><span class="line"><span class="comment"># 中间代码同上...</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">gen_txt_file</span><span class="params">(self)</span>:</span></span><br><span class="line">        pythoncom.CoInitialize()</span><br><span class="line">        h = Dispatch(<span class="string">"Matlab.application"</span>)  <span class="comment">#打开Matlab进程</span></span><br><span class="line">        h.Visible = <span class="number">0</span>  <span class="comment">#隐藏Matlab界面</span></span><br><span class="line">        h.Feval(<span class="string">'cd'</span>,<span class="number">0</span>,<span class="number">0</span>,os.getcwd())  <span class="comment">#Matlab工作路径切换到当前软件目录</span></span><br><span class="line">        h.Feval(<span class="string">'generate'</span>,<span class="number">0</span>,<span class="number">0</span>,self.path)  <span class="comment">#调用generate.m中的函数，产生txt格式文件</span></span><br><span class="line">        pythoncom.CoUninitialize()</span><br></pre></td></tr></table></figure></p>
+<p>代码经过这样改动之后即可以正常运行。</p>
+<p>其实这个问题还有个更简单的方法，那就是在多线程中添加代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> win32com.client <span class="keyword">import</span> Dispatch</span><br></pre></td></tr></table></figure></p>
+<p>将文件开头的这句代码删除。<br>这样之后在多线程中调用pywin32模块就不会再出问题，即记住：什么时候调用COM对象，什么时候才import win32com。<br>代码可以这样改：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="comment">#from win32com.client import Dispatch</span></span><br><span class="line"><span class="keyword">import</span> time,os</span><br><span class="line"></span><br><span class="line"><span class="comment"># 中间代码同上...</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">gen_txt_file</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">from</span> win32com.client <span class="keyword">import</span> Dispatch</span><br><span class="line">        h = Dispatch(<span class="string">"Matlab.application"</span>)  <span class="comment">#打开Matlab进程</span></span><br><span class="line">        h.Visible = <span class="number">0</span>  <span class="comment">#隐藏Matlab界面</span></span><br><span class="line">        h.Feval(<span class="string">'cd'</span>,<span class="number">0</span>,<span class="number">0</span>,os.getcwd())  <span class="comment">#Matlab工作路径切换到当前软件目录</span></span><br><span class="line">        h.Feval(<span class="string">'generate'</span>,<span class="number">0</span>,<span class="number">0</span>,self.path)  <span class="comment">#调用generate.m中的函数，产生txt格式文件</span></span><br></pre></td></tr></table></figure></p>
+<p>将最上面的from win32com.client import Dispatch移动到gen_txt_file函数中，这样可以保证代码修改量小，而且更容易理解。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="问题">问题</h1><p>被pywin32和多线程之间的关系折磨了一上午，终于大体弄懂了，将一些经验记录一下，以备不时之需。<br>在成像声纳幅相校正程序（ <a href="https://github.com/Root-lee/hex2bin" target]]>
+    </summary>
+    
+      <category term="python" scheme="http://irootlee.com/tags/python/"/>
+    
+      <category term="Python" scheme="http://irootlee.com/categories/Python/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Matlab与ISE联合仿真FPGA程序]]></title>
@@ -48,7 +74,7 @@
     <link href="http://irootlee.com/python_CRLF/"/>
     <id>http://irootlee.com/python_CRLF/</id>
     <published>2017-02-16T21:00:00.000Z</published>
-    <updated>2017-02-18T05:08:49.000Z</updated>
+    <updated>2017-02-19T07:37:45.000Z</updated>
     <content type="html"><![CDATA[<h1 id="问题描述">问题描述</h1><p>在项目hex2bin（ <a href="https://github.com/Root-lee/hex2bin" target="_blank" rel="external">https://github.com/Root-lee/hex2bin</a> ） 中，需要实现将一个txt文本中的十六进制码转换成相应的ascii码符号并写入一个.dat文件中，以用于声纳项目中的幅相校正操作。为了实现功能先在Linux虚拟机中写了一个小的python程序用来测试可行性，代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">input = open(<span class="string">'raw.txt'</span>,<span class="string">'r'</span>)</span><br><span class="line">raw = input.read()</span><br><span class="line">output = open(<span class="string">'bin.dat'</span>,<span class="string">'w+'</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(raw)/<span class="number">2</span>):</span><br><span class="line">    <span class="keyword">print</span> chr(int(raw[<span class="number">2</span>*i:<span class="number">2</span>*i+<span class="number">2</span>],<span class="number">16</span>))</span><br><span class="line">    output.write(chr(int(raw[<span class="number">2</span>*i:<span class="number">2</span>*i+<span class="number">2</span>],<span class="number">16</span>)))</span><br></pre></td></tr></table></figure></p>
 <p>该程序在Linux系统中运行可以得到预期结果，但是在Windows中加上相关GUI，程序经过简单修改之后，运行后得到的结果却有点偏差。<br>预期结果：<br><img src="hex_true.png" alt="预期结果"><br>错误结果：<br><img src="hex_false.png" alt="错误结果"><br>上面两图是用winhex软件打开本软件运行结果.dat文件的情形，第一张图是预期结果的文件结尾，第二张图是得到的错误结果的文件结尾，对比可以发现，Windows下运行最后生成的结果比预期结果多了几位。</p>
 <h1 id="问题分析">问题分析</h1><p>为了找出问题所在，我对错误结果和预期结果进行一位一位仔细比对，发现错误结果比预期结果多出的位数都是”0D”，而且每个多出来的”0D”后面都紧跟着一个”0A”：<br>预期结果：<br><img src="hex2_true.png" alt="预期结果"><br>错误结果：<br><img src="hex2_false.png" alt="错误结果"></p>
@@ -63,7 +89,7 @@
     
       <category term="python" scheme="http://irootlee.com/tags/python/"/>
     
-      <category term="python" scheme="http://irootlee.com/categories/python/"/>
+      <category term="Python" scheme="http://irootlee.com/categories/Python/"/>
     
   </entry>
   
@@ -680,6 +706,41 @@
   </entry>
   
   <entry>
+    <title><![CDATA[NOAA气象卫星的结构和功能]]></title>
+    <link href="http://irootlee.com/NOAA_1_1/"/>
+    <id>http://irootlee.com/NOAA_1_1/</id>
+    <published>2016-06-20T02:00:00.000Z</published>
+    <updated>2016-06-19T23:34:39.000Z</updated>
+    <content type="html"><![CDATA[<p>美国气象卫星系统NOAA（National Oceanic and Atmospheric Administration）由以下两部分组成：</p>
+<ol>
+<li>地球静止轨道卫星“GOES”，专门用于短程天气预报和监测当前气象状况。</li>
+<li>太阳同步轨道卫星“POES”，用于长距离监测，卫星从800km的高度向地球发送天气信息。</li>
+</ol>
+<p>我们可以根据“POES”卫星和“GOES”卫星传送下来的数据对全球的气象状况进行监测，极轨卫星的数据用于 远距离预报天气、监测气候变化、观察突发天气现象、保证安全飞行（监测火山灰云）以及保证水上运输安全（监测和预报冰层的运动状况）。</p>
+<p>卫星监测到的数据先储存在板载存储器中，然后发送到以下两个地面接收中心：</p>
+<ol>
+<li>费尔班克斯（位于美国阿拉斯加州）</li>
+<li>瓦勒普斯岛（位于美国弗吉尼亚州）</li>
+</ol>
+<p>除此之外，NOAA气象卫星还配备了搜索和救援系统（S&amp;R），到现在为止，已经有两万多人的生命在NOAA气象卫星的帮助下得到了拯救。</p>
+<p>更多NOAA气象卫星的信息请参阅这里：<a href="http://rootlee.eu/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/" target="_blank" rel="external">NOAA气象卫星专题</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>美国气象卫星系统NOAA（National Oceanic and Atmospheric Administration）由以下两部分组成：</p>
+<ol>
+<li>地球静止轨道卫星“GOES”，专门用于短程天气预报和监测当前气象状况。</li>
+<li>太阳同步轨道卫星]]>
+    </summary>
+    
+      <category term="NOAA" scheme="http://irootlee.com/tags/NOAA/"/>
+    
+      <category term="气象卫星" scheme="http://irootlee.com/tags/%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
+    
+      <category term="NOAA气象卫星" scheme="http://irootlee.com/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[NOAA气象卫星的基本参数]]></title>
     <link href="http://irootlee.com/NOAA_1_2/"/>
     <id>http://irootlee.com/NOAA_1_2/</id>
@@ -841,126 +902,6 @@
 <thead>
 <tr>
 <th style="text-al]]>
-    </summary>
-    
-      <category term="NOAA" scheme="http://irootlee.com/tags/NOAA/"/>
-    
-      <category term="气象卫星" scheme="http://irootlee.com/tags/%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
-    
-      <category term="NOAA气象卫星" scheme="http://irootlee.com/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[NOAA气象卫星的结构和功能]]></title>
-    <link href="http://irootlee.com/NOAA_1_1/"/>
-    <id>http://irootlee.com/NOAA_1_1/</id>
-    <published>2016-06-20T02:00:00.000Z</published>
-    <updated>2016-06-19T23:34:39.000Z</updated>
-    <content type="html"><![CDATA[<p>美国气象卫星系统NOAA（National Oceanic and Atmospheric Administration）由以下两部分组成：</p>
-<ol>
-<li>地球静止轨道卫星“GOES”，专门用于短程天气预报和监测当前气象状况。</li>
-<li>太阳同步轨道卫星“POES”，用于长距离监测，卫星从800km的高度向地球发送天气信息。</li>
-</ol>
-<p>我们可以根据“POES”卫星和“GOES”卫星传送下来的数据对全球的气象状况进行监测，极轨卫星的数据用于 远距离预报天气、监测气候变化、观察突发天气现象、保证安全飞行（监测火山灰云）以及保证水上运输安全（监测和预报冰层的运动状况）。</p>
-<p>卫星监测到的数据先储存在板载存储器中，然后发送到以下两个地面接收中心：</p>
-<ol>
-<li>费尔班克斯（位于美国阿拉斯加州）</li>
-<li>瓦勒普斯岛（位于美国弗吉尼亚州）</li>
-</ol>
-<p>除此之外，NOAA气象卫星还配备了搜索和救援系统（S&amp;R），到现在为止，已经有两万多人的生命在NOAA气象卫星的帮助下得到了拯救。</p>
-<p>更多NOAA气象卫星的信息请参阅这里：<a href="http://rootlee.eu/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/" target="_blank" rel="external">NOAA气象卫星专题</a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>美国气象卫星系统NOAA（National Oceanic and Atmospheric Administration）由以下两部分组成：</p>
-<ol>
-<li>地球静止轨道卫星“GOES”，专门用于短程天气预报和监测当前气象状况。</li>
-<li>太阳同步轨道卫星]]>
-    </summary>
-    
-      <category term="NOAA" scheme="http://irootlee.com/tags/NOAA/"/>
-    
-      <category term="气象卫星" scheme="http://irootlee.com/tags/%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
-    
-      <category term="NOAA气象卫星" scheme="http://irootlee.com/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[NOAA气象卫星系统简介]]></title>
-    <link href="http://irootlee.com/NOAA_1/"/>
-    <id>http://irootlee.com/NOAA_1/</id>
-    <published>2016-06-18T02:00:00.000Z</published>
-    <updated>2016-06-19T23:34:39.000Z</updated>
-    <content type="html"><![CDATA[<p>NOAA系列气象卫星（National Oceanic and Atmospheric Administration, USA）自从上世纪70年代就飞行在高度为800千米的地球轨道上（这个系列中第一个发射的的是卫星TIROS-M，发射于1970年2月23号）。</p>
-<p>NOAA气象卫星运行在太阳同步轨道，也就是，每一个NOAA气象卫星在每天相同的时间段经过某一地球区域。卫星轨道高度大约在800千米。考虑到视野带宽，为了保证测绘任意一个区域的表面都能取得较好空间分辨率，每昼夜每个NOAA气象卫星至少围绕地球转4圈。不同NOAA气象卫星在不同时间经过某点，以保证任意地点各个卫星的经过有均匀的时间间隔。</p>
-<p>地表遥感图片在频率137MHz上以APT模拟格式进行传输。在NOAA气象卫星中，图像数据被分为两个通道：</p>
-<ol>
-<li>可见光范围（用于白天）</li>
-<li>红外线范围（主要用于夜晚）</li>
-</ol>
-<p>NOAA气象卫星APT图像传输系统的分辨率是4km，卫星扫描区域宽度是大约3000km，周期是每个卫星没天绕地球旋转3-4圈，或者8-12圈，具体圈数取决于当前运行的NOAA气象卫星的数目。APT信号持续的向地球发送信号，只有当卫星处于接收站的可见范围内，接收站才能接收到卫星发送来的图像信号，因此，只有当卫星每天经过接收站上空的时间段内，接收站才能正确接收信号。接收站可接收信号的实际时间最长为15分钟，在这期间，卫星发送的地表图像是沿着卫星运行方向的一段长度约5800km的一段地表的图像。</p>
-<p>在NOAA气象卫星上运行着AVHRR（Advanced Very High Resolution Radiometer）成像仪，该成像仪有五个通道：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">通道编号</th>
-<th style="text-align:left">分辨率</th>
-<th style="text-align:left">波长</th>
-<th style="text-align:left">主要用途</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">1</td>
-<td style="text-align:left">1.09km</td>
-<td style="text-align:left">0.58-0.68 um</td>
-<td style="text-align:left">白天云层和地表成像</td>
-</tr>
-<tr>
-<td style="text-align:left">2</td>
-<td style="text-align:left">1.09km</td>
-<td style="text-align:left">0.725-1.00 um</td>
-<td style="text-align:left">海陆分界线</td>
-</tr>
-<tr>
-<td style="text-align:left">3A</td>
-<td style="text-align:left">1.09km</td>
-<td style="text-align:left">1.58-1.64 um</td>
-<td style="text-align:left">冰雪区域</td>
-</tr>
-<tr>
-<td style="text-align:left">3B</td>
-<td style="text-align:left">1.09km</td>
-<td style="text-align:left">3.55-3.93 um</td>
-<td style="text-align:left">夜晚成像，海洋表面温度</td>
-</tr>
-<tr>
-<td style="text-align:left">4</td>
-<td style="text-align:left">1.09km</td>
-<td style="text-align:left">10.30-11.30 um</td>
-<td style="text-align:left">夜晚成像，海洋表面温度</td>
-</tr>
-<tr>
-<td style="text-align:left">5</td>
-<td style="text-align:left">1.09km</td>
-<td style="text-align:left">11.50-12.50 um</td>
-<td style="text-align:left">海洋表面温度</td>
-</tr>
-</tbody>
-</table>
-<p>AVHRR的空间分辨率是1.1km，扫描带宽度是3000km，APT系统传输所需的地表图像由成像仪AVHRR产生。<br>当前运行的NOAA气象卫星有三个：</p>
-<ul>
-<li>“NOAA-15” （f=137.63 MHz）</li>
-<li>“NOAA-18” （f=137.5 MHz）</li>
-<li>“NOAA-19” （f=137.1 MHz）</li>
-</ul>
-<p>NOAA气象卫星的外观为下图：<br><img src="NOAA.png" alt="NOAA"></p>
-<p>更多NOAA气象卫星的信息请参阅这里：<a href="http://rootlee.eu/categories/NOAA%E6%B0%94%E8%B1%A1%E5%8D%AB%E6%98%9F/" target="_blank" rel="external">NOAA气象卫星专题</a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>NOAA系列气象卫星（National Oceanic and Atmospheric Administration, USA）自从上世纪70年代就飞行在高度为800千米的地球轨道上（这个系列中第一个发射的的是卫星TIROS-M，发射于1970年2月23号）。</p>
-<p]]>
     </summary>
     
       <category term="NOAA" scheme="http://irootlee.com/tags/NOAA/"/>
