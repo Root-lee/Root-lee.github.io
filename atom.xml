@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2017-03-30T14:30:32.000Z</updated>
+  <updated>2017-03-30T14:33:08.000Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://irootlee.com/SDFT/"/>
     <id>http://irootlee.com/SDFT/</id>
     <published>2017-03-30T22:00:00.000Z</published>
-    <updated>2017-03-30T14:30:32.000Z</updated>
+    <updated>2017-03-30T14:33:08.000Z</updated>
     <content type="html"><![CDATA[<h1 id="SDFT的简介">SDFT的简介</h1><p>想必大家对心电图都不陌生，拿到一张心电图，一个有丰富经验的医生可以判断出病人当前的心脏活动状态，但是，对于我们这样的普通人而言，从心电图所能获得的唯一信息只有一个：这个人活着还是死了。<br><img src="ecg.gif" alt="ECG"><br>为了减轻医生的负担，也为了让普通人也可以看懂心电图，频域心电图应运而成。下面是三种不同的心脏活动的时域图：第一个是正常窦性心律，也就是正常人的心跳，第二种是心室纤颤，第三种是心动过速。下面三张图是这三种心脏活动对应的频谱图，可以看出不同心脏活动的频域图区分还是很明显的，所以仪器可以通过频谱自动判别当前病人心脏活动状态。<br><img src="3activity.png" alt="activity"><br>心电图的时域信号是源源不断的输入进来的，可以认为是一个无限长的序列，为了求无限长序列的频谱，我们需要先对信号进行分段，然后再做傅里叶变换。常规方法主要有两种：</p>
 <ul>
 <li>第一种方法是我们每收到一个新的采样点就重新计算一次傅里叶变换，这样可以保证频谱图实时更新，但是这样做计算量过大，仪器成本要上升。</li>
