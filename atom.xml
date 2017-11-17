@@ -45,7 +45,7 @@
     <link href="http://irootlee.com/python_CRLF/"/>
     <id>http://irootlee.com/python_CRLF/</id>
     <published>2017-02-16T21:00:00.000Z</published>
-    <updated>2017-11-17T03:34:15.000Z</updated>
+    <updated>2017-11-17T03:47:58.000Z</updated>
     <content type="html"><![CDATA[<h1 id="问题描述">问题描述</h1><p>在项目hex2bin（ <a href="https://github.com/Root-lee/hex2bin" target="_blank" rel="external">https://github.com/Root-lee/hex2bin</a> ） 中，需要实现将一个txt文本中的十六进制码转换成相应的ascii码符号并写入一个.dat文件中，以用于声纳项目中的幅相校正操作。为了实现功能先在Linux虚拟机中写了一个小的python程序用来测试可行性，代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">input = open(<span class="string">'raw.txt'</span>,<span class="string">'r'</span>)</span><br><span class="line">raw = input.read()</span><br><span class="line">output = open(<span class="string">'bin.dat'</span>,<span class="string">'w+'</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(raw)/<span class="number">2</span>):</span><br><span class="line">    <span class="keyword">print</span> chr(int(raw[<span class="number">2</span>*i:<span class="number">2</span>*i+<span class="number">2</span>],<span class="number">16</span>))</span><br><span class="line">    output.write(chr(int(raw[<span class="number">2</span>*i:<span class="number">2</span>*i+<span class="number">2</span>],<span class="number">16</span>)))</span><br></pre></td></tr></table></figure></p>
 <p>该程序在Linux系统中运行可以得到预期结果，但是在Windows中加上相关GUI，程序经过简单修改之后，运行后得到的结果却有点偏差。<br>预期结果：<br><img src="hex_true.png" alt="预期结果"><br>错误结果：<br><img src="hex_false.png" alt="错误结果"><br>上面两图是用winhex软件打开本软件运行结果.dat文件的情形，第一张图是预期结果的文件结尾，第二张图是得到的错误结果的文件结尾，对比可以发现，Windows下运行最后生成的结果比预期结果多了几位。</p>
 <h1 id="问题分析">问题分析</h1><p>为了找出问题所在，我对错误结果和预期结果进行一位一位仔细比对，发现错误结果比预期结果多出的位数都是”0D”，而且每个多出来的”0D”后面都紧跟着一个”0A”：<br>预期结果：<br><img src="hex2_true.png" alt="预期结果"><br>错误结果：<br><img src="hex2_false.png" alt="错误结果"></p>
@@ -98,7 +98,7 @@ features = list(train.columns)
     <link href="http://irootlee.com/review_solitude/"/>
     <id>http://irootlee.com/review_solitude/</id>
     <published>2016-11-30T14:00:00.000Z</published>
-    <updated>2017-11-17T03:34:19.000Z</updated>
+    <updated>2017-11-17T03:48:02.000Z</updated>
     <content type="html"><![CDATA[<h2 id="一些碎碎念">一些碎碎念</h2><p><em>自从回国后，博客更新明显减少了很多，原因有很多。<br>在国内的浮躁气氛中总感觉自己静不下心，感觉自己总是被人流裹挟着往前走，也看着以前身边的同学工作的工作，结婚的结婚，也在反思自己到底有没有一技之长能让我在这个社会中生活下去。虽然离毕业还早，但就业压力已经如影随形，压力迫使自己不停的学习。<br>研究生生活虽然很短，但是很累很枯燥，每天穿梭于实验室、食堂、宿舍，只有每天晚上顶着寒风回宿舍时，戴上耳机穿过空荡荡的校园时，去想想一些事情，或者不想什么只是听着喜欢的歌，感觉一天中只有这段时间才是真正属于我自己。</em></p>
 <p>虽然看的书不少，但大部分都是专业书籍，文学书籍不多，一本《百年孤独》看了快两周才断断续续看完，今天趁着午休时间想要写点关于这本书的感想。</p>
 <p>这本书以前曾拿起过好多次，但是每次都是看了一两章就放弃了，里面的人名太过相似容易搞混是原因之一，还因为不太适应这种娓娓道来的叙述方式。但自己对这本书始终念念不忘，因为看过马尔克斯的《霍乱时期的爱情》，被里面的透露出的对死亡的思考及爱情的伟大所深深震撼，也是《霍乱时期的爱情》让我逐渐熟悉接收了马尔克斯这种叙述的方式，所以两周前终于下定了决心要读完这本《百年孤独》。</p>
@@ -129,7 +129,7 @@ features = list(train.columns)
     <link href="http://irootlee.com/C_struct_union/"/>
     <id>http://irootlee.com/C_struct_union/</id>
     <published>2016-11-01T16:00:00.000Z</published>
-    <updated>2017-11-17T03:34:10.000Z</updated>
+    <updated>2017-11-17T03:47:52.000Z</updated>
     <content type="html"><![CDATA[<p>前几天遇到这么一个题目：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">char</span> flag[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">short</span> value;</span><br><span class="line">&#125; sampleStruct;</span><br><span class="line"></span><br><span class="line"><span class="keyword">union</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">char</span> flag[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">short</span> value;</span><br><span class="line">&#125; sampleUnion;</span><br><span class="line"></span><br><span class="line"><span class="keyword">sizeof</span>(sampleStruct)=?</span><br><span class="line"><span class="keyword">sizeof</span>(sampleUnion)=?</span><br></pre></td></tr></table></figure>
 <p>当时的想法是:对于stuct类型，对象大小是struct内部所有对象大小的和，当然要考虑字节对齐，char flag[3]对象占三字节，考虑到4字节对齐，后面剩一字节放不下short的2字节，所以short重新占用另外4字节，所以sizeof(sampleStruct)=8。Union类型是union对象里占用字节数最多的那个对象的字节数（在考虑字节对齐的情况下），所以sizeof(sampleUnion)=4。</p>
@@ -157,7 +157,7 @@ features = list(train.columns)
     <link href="http://irootlee.com/ML_good_weakness/"/>
     <id>http://irootlee.com/ML_good_weakness/</id>
     <published>2016-11-01T14:00:00.000Z</published>
-    <updated>2017-11-17T03:34:13.000Z</updated>
+    <updated>2017-11-17T03:47:56.000Z</updated>
     <content type="html"><![CDATA[<p>最近看完了《集体智慧编程》一书，对常用的机器学习算法有了大体的了解，书中也分析了各个算法的优缺点，并指出了解决不同问题选择不同算法的方法，但是书中所讲太过繁琐，我在此提炼一下相关观点，也当是对自己看完本书作一些记录吧。</p>
 <h1 id="常用的10类机器学习算法：">常用的10类机器学习算法：</h1><ol>
 <li>线性回归</li>
@@ -232,7 +232,7 @@ features = list(train.columns)
     <link href="http://irootlee.com/money/"/>
     <id>http://irootlee.com/money/</id>
     <published>2016-08-23T15:00:00.000Z</published>
-    <updated>2017-11-17T03:34:13.000Z</updated>
+    <updated>2017-11-17T03:47:56.000Z</updated>
     <content type="html"><![CDATA[<p>庸俗点说，人的社会生活可以分为两个部分：赚钱与花钱。</p>
 <p>上班族每天按时上班、小贩每天起早贪黑、码农整天与代码中的BUG战斗……<br>这些都是属于“赚钱”这部分社会生活。</p>
 <p>平时去超市购买生活用品、闲暇时坐在咖啡馆享受一个温暖的午后时光、假期去心中向往的城市旅旅游……<br>这些构成了我们的“花钱”这部分生活。</p>
@@ -259,7 +259,7 @@ features = list(train.columns)
     <link href="http://irootlee.com/change_domin/"/>
     <id>http://irootlee.com/change_domin/</id>
     <published>2016-07-20T18:00:00.000Z</published>
-    <updated>2017-11-17T03:34:10.000Z</updated>
+    <updated>2017-11-17T03:47:53.000Z</updated>
     <content type="html"><![CDATA[<p>这个博客从去年开始写，写到现在也已经差不多一年了，博客里记录了一些自己的心情和感想，可以让自己看到自己思想转变的轨迹，这些文章也是自己非常重要的精神财富。除了读后感和随笔外，博客还记录了一些自己在日常学习中遇到的问题和解决办法，本来是为了便于自己以后遇到类似问题可以有点参考，但从网站的google数据分析来看，博客每天的展示量都有好几百，个别文章获得了很好的关键词排名，吸引了大量人访问，如果我的文章或多或少可以帮助他们解决他们遇到的问题的话，我会感到非常欣慰。</p>
 <p>博客原来的域名是<strong><a href="http://RootLee.Eu" target="_blank" rel="external">http://RootLee.Eu</a></strong> ，域名是在全球老牌域名注册商godaddy注册的，当时没选国内的是因为国内严格的监管和对域名转入转出的限制，注册域名时偶然发现.eu域名只要1.99美元，感觉捡了大便宜，心想首年这么便宜，续费的话应该也不会太贵吧，于是立刻就买下了这个域名。</p>
 <p>前两天突然想到域名还有两三个月就要到期了，应该提前去续费了，但当我登录godaddy点击域名续费时，惊奇的发现，续费一年竟然要100美元/年，大约600多人民币！这对还在读书的我实在是一笔巨资了，根本无法承受。唯一的办法就是换域名了，换成全球普遍使用的.com域名，但是，我原来的域名已经使用了快一年，谷歌收录页面达到一百多条，360搜索也有七八十条，百度虽然少一点，但是收录量也是在稳步上升，正处于收录的关键时期，域名更换了就会导致这所有的努力都会付诸东流。心里一直后悔当时不该贪图小便宜，让自己陷入这个两难的境地，真的是“出来混，迟早要还的。”，现在的我就在“还”债。</p>
@@ -304,7 +304,7 @@ features = list(train.columns)
     <link href="http://irootlee.com/win_net_error/"/>
     <id>http://irootlee.com/win_net_error/</id>
     <published>2016-07-15T20:00:00.000Z</published>
-    <updated>2017-11-17T03:34:19.000Z</updated>
+    <updated>2017-11-17T03:48:02.000Z</updated>
     <content type="html"><![CDATA[<h1 id="问题描述">问题描述</h1><p>本科期间使用的是南京航空航天大学的校园网，宿舍里每个人桌子上都有一个网线接口，用网线连接接口和电脑的网线插孔，然后使用校园网账号进行拨号上网。一般情况下这样操作即可以连上互联网，但也有偶然情况：插上网线后，电脑屏幕右下角的网络连接图标一直在那转圈，一直显示“正在识别网络”，当然，最后是识别不出来的，点击右下角的网络图标后发现本地连接是未识别的网络。</p>
 <p>这种状态下是无法拨号上网的，拨号上网会显示错误653，当时只是认为这是校园网抽风，一般等一晚上后重新插网线问题就不会再出现，所以并没有特别关注和研究这个问题。但是昨天这个问题又出现在了我的研究生工作电脑上，工作电脑也是使用的校园网，但是这次运气不那么好，昨天弄了一下午也没弄好，不知道问题在哪，网上的方法也都试了一遍，但都没任何作用。本以为等一晚上，网络就会自动好了，但今天早上打开电脑插上网线发现问题依旧，心情顿时落入谷底……</p>
 <h1 id="尝试解决">尝试解决</h1><ol>
@@ -356,7 +356,7 @@ features = list(train.columns)
     <link href="http://irootlee.com/kharkiv/"/>
     <id>http://irootlee.com/kharkiv/</id>
     <published>2016-06-27T23:00:00.000Z</published>
-    <updated>2017-11-17T03:34:12.000Z</updated>
+    <updated>2017-11-17T03:47:54.000Z</updated>
     <content type="html"><![CDATA[<p><strong>晚上八点半，哈尔科夫剧院：</strong></p>
 <p>看完在哈村的最后一场芭蕾舞剧《一千零一夜》，随着拥挤却有序的人群走出大剧院。</p>
 <p>高纬度地区夏天的白日尤其长，虽已是晚上8点半，却正是夕阳西下的时候，落日的余晖洒在与剧院隔街相望的大教堂的穹顶上，为东正教特有的洋葱头教堂披上了一层薄薄的金纱，增添了几分神圣的色彩。剧院门前的喷泉水已经被放干，几个工人在里面检修着线路管道，维修工具敲打在管道上，叮当，叮当，叮当……</p>
@@ -438,7 +438,7 @@ features = list(train.columns)
     <link href="http://irootlee.com/review_hollow_crown/"/>
     <id>http://irootlee.com/review_hollow_crown/</id>
     <published>2016-06-22T20:00:00.000Z</published>
-    <updated>2017-11-17T03:34:17.000Z</updated>
+    <updated>2017-11-17T03:48:00.000Z</updated>
     <content type="html"><![CDATA[<blockquote>
 <p>戴上你们的帽子，不要用恭敬的样子来讥笑一个血肉之躯，丢开恭敬、惯例、仪式和礼节，你们一向都把我认错了，和你们一样，我也靠面包生活，我也有欲望，懂得悲哀，需要朋友，既然如此，你们怎能对我说我是国王呢？       ——理查二世</p>
 </blockquote>
@@ -471,7 +471,7 @@ features = list(train.columns)
     <link href="http://irootlee.com/ballet/"/>
     <id>http://irootlee.com/ballet/</id>
     <published>2016-06-21T20:00:00.000Z</published>
-    <updated>2017-11-17T03:34:09.000Z</updated>
+    <updated>2017-11-17T03:47:52.000Z</updated>
     <content type="html"><![CDATA[<p>来到欧洲，艺术氛围便强了起来。</p>
 <p>在这里，几乎我去过的每一个城市（利沃夫、敖德萨、基辅）的中心都会有一个壮丽古典的剧院，在喧嚣的市中心遗世独立，这里是整个城市的文化艺术中心，全体市民的精神栖息之所。</p>
 <p>哈尔科夫市中心也有一个大剧院，雄伟、壮观、美丽。墙上略带铜锈的雕塑、门口古典式的喷泉、路上斑驳的石阶……无一不在诉说着大剧院委婉动听的历史故事。</p>
@@ -502,7 +502,7 @@ features = list(train.columns)
     <link href="http://irootlee.com/learn_english/"/>
     <id>http://irootlee.com/learn_english/</id>
     <published>2016-05-23T02:00:00.000Z</published>
-    <updated>2017-11-17T03:34:12.000Z</updated>
+    <updated>2017-11-17T03:47:54.000Z</updated>
     <content type="html"><![CDATA[<p>作者：破岩 （第一次用这个笔名呢，好激动……）</p>
 <p>我喜欢读书。</p>
 <p>世界上的书大部分都是用英语写成的，即使那些有价值的其他语言写就的书也必定会有英语译本，但却不一定有汉语译本。世界上最顶尖的技术的文献也都是英语的，如果等着这些书被翻译后再去研读，那就注定永远追不上世界潮流了。<br>由此可见，能像读汉语书一样流畅的去阅读英语原版书是多么必要。</p>
@@ -544,7 +544,7 @@ features = list(train.columns)
     <link href="http://irootlee.com/huoluan_love/"/>
     <id>http://irootlee.com/huoluan_love/</id>
     <published>2016-05-17T20:00:00.000Z</published>
-    <updated>2017-11-17T03:34:11.000Z</updated>
+    <updated>2017-11-17T03:47:54.000Z</updated>
     <content type="html"><![CDATA[<blockquote>
 <p><em>《霍乱时期的爱情》应该读四遍：刚爱上一个人的时候读一遍，失恋时读一遍，结婚后读一遍，老年时再读一遍。    ——我自己说的</em></p>
 </blockquote>
@@ -607,7 +607,7 @@ features = list(train.columns)
     <link href="http://irootlee.com/review_fog_orphan/"/>
     <id>http://irootlee.com/review_fog_orphan/</id>
     <published>2016-04-29T20:00:00.000Z</published>
-    <updated>2017-11-17T03:34:17.000Z</updated>
+    <updated>2017-11-17T03:48:00.000Z</updated>
     <content type="html"><![CDATA[<blockquote>
 <p>忧来无方，窗外下雨，坐沙发，吃巧克力，读狄更斯，心情又会好起来，和世界妥协。  ——托尔斯泰</p>
 </blockquote>
@@ -641,7 +641,7 @@ features = list(train.columns)
     <link href="http://irootlee.com/xiaoqiang/"/>
     <id>http://irootlee.com/xiaoqiang/</id>
     <published>2016-04-29T20:00:00.000Z</published>
-    <updated>2017-11-17T03:34:19.000Z</updated>
+    <updated>2017-11-17T03:48:03.000Z</updated>
     <content type="html"><![CDATA[<p>今天中午有几个毕业设计上的问题去办公室问一下我毕业设计的指导老师树精（Шульгін В.І.）老头，刚打开电脑，摆出草稿纸，树精刚准备给我讲解问题，突然发现草稿纸上爬着一个蟑螂，并且摆动着两根触须挑衅似的东张西望，老师一脸的震惊，拿着笔的手也停在了半空中，我很淡定地直接将最上面的那张草稿纸快速卷了起来，将这只“好学”的小强包在了草稿纸里，然后将这草稿纸揉成了一团，扔进了垃圾桶，这张A4草稿纸也就成了它的“裹尸布”。<br>看完我这行云流水的操作，树精好像刚从震惊中恢复过来（我想如果不是有老师的身份，他应该会给我鼓掌(^o^)!），如梦初醒的他弱弱地说了一句：“我们办公室没有蟑螂……”。<br>我：“…………，呃，老师，我们来讲题目……”</p>
 <p>很明显，这只“偷师学艺”的蟑螂来自我们宿舍。</p>
 <p>出国之前，就跟从乌克兰毕业回国的学长聊过这边的生活环境，学长说哈航宿舍环境比南航差多了，宿舍里会有小强。当时还不信，因为，我从小到大只是在电影里见过小强，生活中还从来没见过小强，也许见到了我也不认识。</p>
@@ -682,7 +682,7 @@ features = list(train.columns)
     <link href="http://irootlee.com/python_cookie/"/>
     <id>http://irootlee.com/python_cookie/</id>
     <published>2016-04-13T20:00:00.000Z</published>
-    <updated>2017-11-17T03:34:15.000Z</updated>
+    <updated>2017-11-17T03:47:58.000Z</updated>
     <content type="html"><![CDATA[<p>在使用request模块写爬虫爬取教务处信息时，cookie过一段时间便会自动失效，这时爬虫程序就无法继续运行，让人很是无奈。</p>
 <p>我们知道，cookie里面保存着我们的身份信息，网站服务器通过cookie来识别我们的身份，为了安全，一般cookie都会有有效时间，过了这个时间，则cookie会自动失效，此时，服务器便无法识别我们身份，这时如果我们请求一个需要登录才能查看的资源，网站会自动跳转到登录界面。</p>
 <p>刚开始想到的方法是使用服务器返回的url信息判断是否与发送的url相等，如果两个url相等，则说明cookie依然有效，如果两个url不想等则说明发生了跳转，也就是cookie已经失效了，这时我们再次手动输入cookie，通过手动更新cookie可以让程序继续运行，下次失效后则再次手动输入，代码如下：</p>
