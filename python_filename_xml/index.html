@@ -1,5 +1,6 @@
+
 <!DOCTYPE html>
-<html lang="zh-ch">
+<html lang="zh-CN">
     
 <head>
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
@@ -7,7 +8,6 @@
     <meta name="generator" content="I&#39;m Root lee !">
     <title>用python将文件夹里所有文件路径写入xml文件 - I&#39;m Root lee !</title>
     <meta name="author" content="Root lee">
-    <meta name="description" content="I&#39;m Root lee !">
     
         <link rel="icon" href="/assets/images/favicon.ico">
     
@@ -58,117 +58,120 @@
 
     <body>
         <div id="blog">
-            <header id="header" data-behavior="1">
+            <header id="header" data-behavior="3">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <h1 class="header-title">
         <a class="header-title-link" href="/ ">I&#39;m Root lee !</a>
     </h1>
     
-        
-            <a  class="header-right-icon st-search-show-outputs"
-                href="/#search">
-        
-                <i class="fa fa-lg fa-search"></i>
-            </a>
+        <a class="header-right-picture" href="/#about">
+            <img class="header-picture" src="/assets/images/mountietocat.png"/>
+        </a>
     
 </header>
-            <nav id="sidebar" data-behavior="1">
+            <nav id="sidebar" data-behavior="3">
     
-    <div class="sidebar-profile">
-        <a href="/#about">
-            
-            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
-            
-        </a>
-        <span class="sidebar-profile-name">Root lee</span>
-    </div>
+        <div class="sidebar-profile">
+            <a href="/#about">
+                
+                    <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+                
+            </a>
+            <span class="sidebar-profile-name">Root lee</span>
+        </div>
     
     
-    <ul class="sidebar-buttons">
+        <ul class="sidebar-buttons">
         
-        <li class="sidebar-button">
-            
-                <a  class="sidebar-button-link "
-                    href="/ 
-                    ">
-            
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
                     <i class="sidebar-button-icon fa fa-lg fa-home"></i>
                     <span class="sidebar-button-desc">Home</span>
                 </a>
         </li>
         
-        <li class="sidebar-button">
-            
-                <a  class="sidebar-button-link "
-                    href="/all-categories
-                            ">
-            
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
                     <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
                     <span class="sidebar-button-desc">Categories</span>
                 </a>
         </li>
         
-        <li class="sidebar-button">
-            
-                <a  class="sidebar-button-link "
-                    href="/all-tags
-                            ">
-            
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
                     <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
                     <span class="sidebar-button-desc">Tags</span>
                 </a>
         </li>
         
-        <li class="sidebar-button">
-            
-                <a  class="sidebar-button-link "
-                    href="/all-archives
-                            ">
-            
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
                     <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
-                    <span class="sidebar-button-desc">Archives</span>
+                    <span class="sidebar-button-desc">Archive</span>
                 </a>
         </li>
         
-        <li class="sidebar-button">
-            
-                <a  class="sidebar-button-link st-search-show-outputs"
-                    href="/#search
-                            ">
-            
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link st-search-show-outputs"
+                         href="/#search"
+                        
+                    >
+                
                     <i class="sidebar-button-icon fa fa-lg fa-search"></i>
                     <span class="sidebar-button-desc">Search</span>
                 </a>
         </li>
         
-        <li class="sidebar-button">
-            
-                <a  class="sidebar-button-link "
-                    href="/#about
-                            ">
-            
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/#about"
+                        
+                    >
+                
                     <i class="sidebar-button-icon fa fa-lg fa-question"></i>
-                    <span class="sidebar-button-desc">About me</span>
+                    <span class="sidebar-button-desc">About</span>
                 </a>
         </li>
         
     </ul>
     
-    <ul class="sidebar-buttons">
+        <ul class="sidebar-buttons">
         
-        <li class="sidebar-button">
-            
-                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
-            
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+                
                     <i class="sidebar-button-icon fa fa-lg fa-github"></i>
                     <span class="sidebar-button-desc">GitHub</span>
                 </a>
         </li>
         
-        <li class="sidebar-button">
-            
-                <a  class="sidebar-button-link " href="mailto: irootlee@gmail.com" target="_blank">
-            
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="mailto: irootlee@gmail.com" target="_blank">
+                
                     <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
                     <span class="sidebar-button-desc">Mail</span>
                 </a>
@@ -176,18 +179,44 @@
         
     </ul>
     
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
 </nav>
-            <div id="main" data-behavior="1">
+
+            
+            <div id="main" data-behavior="3"
+                 class="
+                        hasCoverMetaIn
+                        ">
                 
 <article class="post" itemscope itemType="http://schema.org/BlogPosting">
     
-        <div class="post-header main-content-wrap">
     
-        <h1 class="post-title" itemprop="headline">用python将文件夹里所有文件路径写入xml文件</h1>
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            用python将文件夹里所有文件路径写入xml文件
+        </h1>
     
     <div class="post-meta">
-    <time  itemprop="datePublished" content="Thu Jun 23 2016 02:00:00 GMT+0000">
-        Jun 23, 2016
+    <time itemprop="datePublished" content="Thu Jun 23 2016 02:00:00 GMT+0000">
+	
+		    6月 23, 2016
+    	
     </time>
     
         <span>in </span>
@@ -199,8 +228,8 @@
 </div>
 </div>
     
-    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
-        
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
             <h1 id="项目实现功能">项目实现功能</h1><p>本项目主要是为简化更新包的数据打包。<br>程序可以批量提取文件夹中的文件名及扩展名，并将结果存储为xml格式，根目录不需要提取。支持所有文件类型。<br>例如：文件：bin/assets/car/granLavida1.swf<br>提取到xml文件为：&lt; file path=”assets/car/granLavida1.swf”  filename=”assets/car/granLavida1.swf” &gt;<br>项目预期生成的xml文件如下图：<br><img src="filename_xml.png" alt="filename_xml"></p>
 <h1 id="项目代码">项目代码</h1><p>本项目由github上<a href="https://github.com/Root-Jane" target="_blank" rel="external">Root_Jane</a>组织成员远程协作完成。<br>代码贡献者：</p>
 <ul>
@@ -218,10 +247,11 @@
 </ul>
 <p>去除根目录路径用到strip函数，strip可以将一个字符串里某个特定的字符串删除，这里我们需要删除path变量代表的值。<br>为保持与linux的文件管理系统相兼容，我们使用replace函数将路径中的“\”替换成“/”。<br>最终结果写入xml文件。</p>
 
-        
-        
             
-        
+                
+
+            
+        </div>
     </div>
     <div class="post-footer main-content-wrap">
         
@@ -290,6 +320,8 @@
         </li>
     </ul>
 </div>
+
+
         
             <div id="disqus_thread">
     <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
@@ -308,7 +340,7 @@
 
             </div>
             
-                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
                     <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
@@ -367,8 +399,10 @@
         </li>
     </ul>
 </div>
+
+
                 </div>
-                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
     <ul class="share-options">
         <li class="share-option">
             <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/python_filename_xml/">
@@ -420,7 +454,8 @@
         
     </div>
 </div>
-        <div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+
+        <div id="cover" style="background-image:url('http://res.cloudinary.com/tranquilpeak-hexo-theme/image/upload/v1438975482/v1.3.0-cover.jpg');"></div>
     </body>
     <!--SCRIPTS-->
 <script src="/assets/js/script.min.js" type="text/javascript"></script>

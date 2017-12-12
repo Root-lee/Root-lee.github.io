@@ -12047,6 +12047,7 @@ return jQuery;
             }
         }
     };
+
     $(document).ready(function() {
         if ($('.post-bottom-bar').length) {
             var postBottomBar = new PostBottomBar();
@@ -12148,11 +12149,11 @@ return jQuery;
         this.$sidebar = $('#sidebar');
         this.$openBtn = $('#btn-open-sidebar');
         // Elements where the user can click to close the sidebar
-        this.$closeBtn = $('#header, #main');
+        this.$closeBtn = $('#header, #main, .post-header-cover');
         // Elements affected by the swipe of the sidebar
         // The `pushed` class is added to each elements
-        // Each element has a different behvior when the sidebar is opened
-        this.$blog     = $('body, .post-bottom-bar, #header, #main');
+        // Each element has a different behavior when the sidebar is opened
+        this.$blog = $('body, .post-bottom-bar, #header, #main, .post-header-cover');
         // If you change value of `mediumScreenWidth`,
         // you have to change value of `$screen-min: (md-min)` too in `source/_css/utils/variables.scss`
         this.mediumScreenWidth = 768;
@@ -12297,16 +12298,15 @@ return jQuery;
         sidebar.run();
     });
 }(jQuery);;+(function($, sr) {
-
     // debouncing function from John Hann
     // http://unscriptable.com/index.php/2009/03/20/debouncing-javascript-methods/
-    var debounce  = function(func, threshold, execAsap) {
+    var debounce = function(func, threshold, execAsap) {
         var timeout;
 
-        return function debounced () {
+        return function debounced() {
             var obj = this, args = arguments;
 
-            function delayed () {
+            function delayed() {
                 if (!execAsap) {
                     func.apply(obj, args);
                 }
@@ -12323,7 +12323,8 @@ return jQuery;
 
             timeout = setTimeout(delayed, threshold || 100);
         };
-    }
+    };
+
     jQuery.fn[sr] = function(fn) {
         return fn ? this.bind('resize', debounce(fn)) : this.trigger(sr);
     };

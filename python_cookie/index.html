@@ -1,5 +1,6 @@
+
 <!DOCTYPE html>
-<html lang="zh-ch">
+<html lang="zh-CN">
     
 <head>
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
@@ -7,7 +8,6 @@
     <meta name="generator" content="I&#39;m Root lee !">
     <title>Python使用request模块写爬虫中保持Cookies一直有效的方法 - I&#39;m Root lee !</title>
     <meta name="author" content="Root lee">
-    <meta name="description" content="I&#39;m Root lee !">
     
         <link rel="icon" href="/assets/images/favicon.ico">
     
@@ -60,117 +60,120 @@
 
     <body>
         <div id="blog">
-            <header id="header" data-behavior="1">
+            <header id="header" data-behavior="3">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <h1 class="header-title">
         <a class="header-title-link" href="/ ">I&#39;m Root lee !</a>
     </h1>
     
-        
-            <a  class="header-right-icon st-search-show-outputs"
-                href="/#search">
-        
-                <i class="fa fa-lg fa-search"></i>
-            </a>
+        <a class="header-right-picture" href="/#about">
+            <img class="header-picture" src="/assets/images/mountietocat.png"/>
+        </a>
     
 </header>
-            <nav id="sidebar" data-behavior="1">
+            <nav id="sidebar" data-behavior="3">
     
-    <div class="sidebar-profile">
-        <a href="/#about">
-            
-            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
-            
-        </a>
-        <span class="sidebar-profile-name">Root lee</span>
-    </div>
+        <div class="sidebar-profile">
+            <a href="/#about">
+                
+                    <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+                
+            </a>
+            <span class="sidebar-profile-name">Root lee</span>
+        </div>
     
     
-    <ul class="sidebar-buttons">
+        <ul class="sidebar-buttons">
         
-        <li class="sidebar-button">
-            
-                <a  class="sidebar-button-link "
-                    href="/ 
-                    ">
-            
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
                     <i class="sidebar-button-icon fa fa-lg fa-home"></i>
                     <span class="sidebar-button-desc">Home</span>
                 </a>
         </li>
         
-        <li class="sidebar-button">
-            
-                <a  class="sidebar-button-link "
-                    href="/all-categories
-                            ">
-            
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
                     <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
                     <span class="sidebar-button-desc">Categories</span>
                 </a>
         </li>
         
-        <li class="sidebar-button">
-            
-                <a  class="sidebar-button-link "
-                    href="/all-tags
-                            ">
-            
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
                     <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
                     <span class="sidebar-button-desc">Tags</span>
                 </a>
         </li>
         
-        <li class="sidebar-button">
-            
-                <a  class="sidebar-button-link "
-                    href="/all-archives
-                            ">
-            
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
                     <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
-                    <span class="sidebar-button-desc">Archives</span>
+                    <span class="sidebar-button-desc">Archive</span>
                 </a>
         </li>
         
-        <li class="sidebar-button">
-            
-                <a  class="sidebar-button-link st-search-show-outputs"
-                    href="/#search
-                            ">
-            
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link st-search-show-outputs"
+                         href="/#search"
+                        
+                    >
+                
                     <i class="sidebar-button-icon fa fa-lg fa-search"></i>
                     <span class="sidebar-button-desc">Search</span>
                 </a>
         </li>
         
-        <li class="sidebar-button">
-            
-                <a  class="sidebar-button-link "
-                    href="/#about
-                            ">
-            
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/#about"
+                        
+                    >
+                
                     <i class="sidebar-button-icon fa fa-lg fa-question"></i>
-                    <span class="sidebar-button-desc">About me</span>
+                    <span class="sidebar-button-desc">About</span>
                 </a>
         </li>
         
     </ul>
     
-    <ul class="sidebar-buttons">
+        <ul class="sidebar-buttons">
         
-        <li class="sidebar-button">
-            
-                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
-            
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+                
                     <i class="sidebar-button-icon fa fa-lg fa-github"></i>
                     <span class="sidebar-button-desc">GitHub</span>
                 </a>
         </li>
         
-        <li class="sidebar-button">
-            
-                <a  class="sidebar-button-link " href="mailto: irootlee@gmail.com" target="_blank">
-            
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="mailto: irootlee@gmail.com" target="_blank">
+                
                     <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
                     <span class="sidebar-button-desc">Mail</span>
                 </a>
@@ -178,18 +181,44 @@
         
     </ul>
     
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
 </nav>
-            <div id="main" data-behavior="1">
+
+            
+            <div id="main" data-behavior="3"
+                 class="
+                        hasCoverMetaIn
+                        ">
                 
 <article class="post" itemscope itemType="http://schema.org/BlogPosting">
     
-        <div class="post-header main-content-wrap">
     
-        <h1 class="post-title" itemprop="headline">Python使用request模块写爬虫中保持Cookies一直有效的方法</h1>
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Python使用request模块写爬虫中保持Cookies一直有效的方法
+        </h1>
     
     <div class="post-meta">
-    <time  itemprop="datePublished" content="Wed Apr 13 2016 20:00:00 GMT+0000">
-        Apr 13, 2016
+    <time itemprop="datePublished" content="Wed Apr 13 2016 20:00:00 GMT+0000">
+	
+		    4月 13, 2016
+    	
     </time>
     
         <span>in </span>
@@ -201,8 +230,8 @@
 </div>
 </div>
     
-    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
-        
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
             <p>在使用request模块写爬虫爬取教务处信息时，cookie过一段时间便会自动失效，这时爬虫程序就无法继续运行，让人很是无奈。</p>
 <p>我们知道，cookie里面保存着我们的身份信息，网站服务器通过cookie来识别我们的身份，为了安全，一般cookie都会有有效时间，过了这个时间，则cookie会自动失效，此时，服务器便无法识别我们身份，这时如果我们请求一个需要登录才能查看的资源，网站会自动跳转到登录界面。</p>
 <p>刚开始想到的方法是使用服务器返回的url信息判断是否与发送的url相等，如果两个url相等，则说明cookie依然有效，如果两个url不想等则说明发生了跳转，也就是cookie已经失效了，这时我们再次手动输入cookie，通过手动更新cookie可以让程序继续运行，下次失效后则再次手动输入，代码如下：</p>
@@ -218,10 +247,11 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">r = s.get(pic_url,timeout=<span class="number">40</span>)   <span class="comment">#GET命令获取图片</span></span><br><span class="line"><span class="keyword">if</span> r.cookies.get_dict():        <span class="comment">#保持cookie有效</span></span><br><span class="line">    s.cookies.update(r.cookies)</span><br></pre></td></tr></table></figure>
 <p>这样cookie即可保持一直有效。<br>关于完整版代码，请查看我github中的<a href="https://github.com/Root-lee/spider_photos_nuaa" target="_blank" rel="external">spider_photos_nuaa</a>项目</p>
 
-        
-        
             
-        
+                
+
+            
+        </div>
     </div>
     <div class="post-footer main-content-wrap">
         
@@ -283,6 +313,8 @@
         </li>
     </ul>
 </div>
+
+
         
             <div id="disqus_thread">
     <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
@@ -301,7 +333,7 @@
 
             </div>
             
-                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
                     <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
@@ -360,8 +392,10 @@
         </li>
     </ul>
 </div>
+
+
                 </div>
-                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
     <ul class="share-options">
         <li class="share-option">
             <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/python_cookie/">
@@ -413,7 +447,8 @@
         
     </div>
 </div>
-        <div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+
+        <div id="cover" style="background-image:url('http://res.cloudinary.com/tranquilpeak-hexo-theme/image/upload/v1438975482/v1.3.0-cover.jpg');"></div>
     </body>
     <!--SCRIPTS-->
 <script src="/assets/js/script.min.js" type="text/javascript"></script>
