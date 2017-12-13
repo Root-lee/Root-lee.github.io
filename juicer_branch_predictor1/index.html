@@ -14,27 +14,30 @@
     
         <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="&amp;lt;!-- excerpt --&amp;gt;
-什么是分支预测器？我们首先看一下维基百科中对分支预测器的定义：
+    <meta name="description" content="什么是分支预测器？我们首先看一下维基百科中对分支预测器的定义：
 
-在电脑架构中，分支预测器（英语：Branch predictor）是一种数字电路，在分支指令执行结束之前猜测哪一路分支将会被运行，以提高处理器的指令流水线的性能。使用分支预测器的目的，在于改善指令管线化的流程。现代使用指令管线化处理器的性能能够提高，分支预测器对于现今的指令流水线微处理器获得高性能是">
+在电脑架构中，分支预测器（英语：Branch predictor）是一种数字电路，在分支指令执行结束之前猜测哪一路分支将会被运行，以提高处理器的指令流水线的性能。使用分支预测器的目的，在于改善指令管线化的流程。现代使用指令管线化处理器的性能能够提高，分支预测器对于现今的指令流水线微处理器获得高性能是非常关键的技术。
+
+　　由定义可以">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="C++性能榨汁机之分支预测器(1)">
 <meta property="og:url" content="http://irootlee.com/juicer_branch_predictor1/index.html">
 <meta property="og:site_name" content="I'm Root lee !">
-<meta property="og:description" content="&amp;lt;!-- excerpt --&amp;gt;
-什么是分支预测器？我们首先看一下维基百科中对分支预测器的定义：
+<meta property="og:description" content="什么是分支预测器？我们首先看一下维基百科中对分支预测器的定义：
 
-在电脑架构中，分支预测器（英语：Branch predictor）是一种数字电路，在分支指令执行结束之前猜测哪一路分支将会被运行，以提高处理器的指令流水线的性能。使用分支预测器的目的，在于改善指令管线化的流程。现代使用指令管线化处理器的性能能够提高，分支预测器对于现今的指令流水线微处理器获得高性能是">
+在电脑架构中，分支预测器（英语：Branch predictor）是一种数字电路，在分支指令执行结束之前猜测哪一路分支将会被运行，以提高处理器的指令流水线的性能。使用分支预测器的目的，在于改善指令管线化的流程。现代使用指令管线化处理器的性能能够提高，分支预测器对于现今的指令流水线微处理器获得高性能是非常关键的技术。
+
+　　由定义可以">
 <meta property="og:image" content="http://irootlee.com/pipline.png">
 <meta property="og:image" content="http://irootlee.com/pipline_bubble.png">
-<meta property="og:updated_time" content="2017-12-12T14:47:27.667Z">
+<meta property="og:updated_time" content="2017-12-13T01:59:42.024Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C++性能榨汁机之分支预测器(1)">
-<meta name="twitter:description" content="&amp;lt;!-- excerpt --&amp;gt;
-什么是分支预测器？我们首先看一下维基百科中对分支预测器的定义：
+<meta name="twitter:description" content="什么是分支预测器？我们首先看一下维基百科中对分支预测器的定义：
 
-在电脑架构中，分支预测器（英语：Branch predictor）是一种数字电路，在分支指令执行结束之前猜测哪一路分支将会被运行，以提高处理器的指令流水线的性能。使用分支预测器的目的，在于改善指令管线化的流程。现代使用指令管线化处理器的性能能够提高，分支预测器对于现今的指令流水线微处理器获得高性能是">
+在电脑架构中，分支预测器（英语：Branch predictor）是一种数字电路，在分支指令执行结束之前猜测哪一路分支将会被运行，以提高处理器的指令流水线的性能。使用分支预测器的目的，在于改善指令管线化的流程。现代使用指令管线化处理器的性能能够提高，分支预测器对于现今的指令流水线微处理器获得高性能是非常关键的技术。
+
+　　由定义可以">
 <meta name="twitter:creator" content="@54rootlee">
     
         <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
@@ -189,22 +192,6 @@
         
     </ul>
     
-        <ul class="sidebar-buttons">
-        
-            <li class="sidebar-button">
-                
-                    <a  class="sidebar-button-link "
-                         href="/atom.xml"
-                        
-                    >
-                
-                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
-                    <span class="sidebar-button-desc">RSS</span>
-                </a>
-        </li>
-        
-    </ul>
-    
 </nav>
 
             
@@ -240,8 +227,7 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <!-- excerpt -->
-<h1 id="什么是分支预测器？">什么是分支预测器？</h1><p>我们首先看一下维基百科中对分支预测器的定义：</p>
+            <h1 id="什么是分支预测器？">什么是分支预测器？</h1><p>我们首先看一下维基百科中对分支预测器的定义：</p>
 <blockquote>
 <p>在电脑架构中，分支预测器（英语：Branch predictor）是一种数字电路，在分支指令执行结束之前猜测哪一路分支将会被运行，以提高处理器的指令流水线的性能。使用分支预测器的目的，在于改善指令管线化的流程。现代使用指令管线化处理器的性能能够提高，分支预测器对于现今的指令流水线微处理器获得高性能是非常关键的技术。</p>
 </blockquote>
@@ -470,7 +456,7 @@
     </div>
 </div>
 
-        <div id="cover" style="background-image:url('http://res.cloudinary.com/tranquilpeak-hexo-theme/image/upload/v1438975482/v1.3.0-cover.jpg');"></div>
+        <div id="cover" style="background-image:url('http://7xo70c.com1.z0.glb.clouddn.com/blue_mon.jpg');"></div>
     </body>
     <!--SCRIPTS-->
 <script src="/assets/js/script.min.js" type="text/javascript"></script>

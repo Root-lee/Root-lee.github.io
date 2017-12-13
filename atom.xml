@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2017-12-12T14:47:27.667Z</updated>
+  <updated>2017-12-13T01:59:42.024Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -19,9 +19,8 @@
     <link href="http://irootlee.com/juicer_branch_predictor1/"/>
     <id>http://irootlee.com/juicer_branch_predictor1/</id>
     <published>2017-12-05T12:00:00.000Z</published>
-    <updated>2017-12-12T14:47:27.667Z</updated>
-    <content type="html"><![CDATA[<!-- excerpt -->
-<h1 id="什么是分支预测器？">什么是分支预测器？</h1><p>我们首先看一下维基百科中对分支预测器的定义：</p>
+    <updated>2017-12-13T01:59:42.024Z</updated>
+    <content type="html"><![CDATA[<h1 id="什么是分支预测器？">什么是分支预测器？</h1><p>我们首先看一下维基百科中对分支预测器的定义：</p>
 <blockquote>
 <p>在电脑架构中，分支预测器（英语：Branch predictor）是一种数字电路，在分支指令执行结束之前猜测哪一路分支将会被运行，以提高处理器的指令流水线的性能。使用分支预测器的目的，在于改善指令管线化的流程。现代使用指令管线化处理器的性能能够提高，分支预测器对于现今的指令流水线微处理器获得高性能是非常关键的技术。</p>
 </blockquote>
@@ -43,10 +42,9 @@
 <h1 id="总结">总结</h1><p>　　在分支预测器预测准确时可以提高CPU流水线的吞吐量，但是如果预测错误导致清空流水线指令，也会导致CPU效率降低。由上面的分析可以看出，分支预测的准确性对CPU执行效率影响很大，提高分支预测器的预测准确度是几十年来学术界及工业界研究的目标，后面的文章我会分析几个典型分支预测器模型的实现原理。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<!-- excerpt -->
-<h1 id="什么是分支预测器？">什么是分支预测器？</h1><p>我们首先看一下维基百科中对分支预测器的定义：</p>
+    <![CDATA[<h1 id="什么是分支预测器？">什么是分支预测器？</h1><p>我们首先看一下维基百科中对分支预测器的定义：</p>
 <blockquote>
-<p>在电脑架构中，分支预测器（英语：Branch predictor）是一种数字电路，在分支]]>
+<p>在电脑架构中，分支预测器（英语：Branch predictor）是一种数字电路，在分支指令执行结束之前猜测哪一路分支将会]]>
     </summary>
     
       <category term="C++" scheme="http://irootlee.com/tags/C/"/>
