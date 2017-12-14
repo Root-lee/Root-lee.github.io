@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="I&#39;m Root lee !">
-    <title>南航教务处泄露学生信息漏洞的发现以及关于此事的一些想法 - I&#39;m Root lee !</title>
+    <title>C++性能榨汁机之分支预测器(2) - I&#39;m Root lee !</title>
     <meta name="author" content="Root lee">
     
         <link rel="icon" href="/assets/images/favicon.ico">
@@ -14,30 +14,21 @@
     
         <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="发现漏洞偶然的一个发现，学校教务处网站有一个小小的漏洞，会泄露全校所有学生的学号、姓名、及照片。这个漏洞存在于新版教务处里，当登录教务处之后，点击“学生个人查询”–&amp;gt;“基本查询”，会出现当前登录学生的所有个人资料，同时附带个人的证件照，并且证件照之上附带个人的姓名和学号信息，类似于下图：
-
-漏洞便在这个照片之上。我们右击图片查看图片属性：
-
-然后将图片地址粘贴在浏览器的地址栏然后点回车，在浏">
+    <meta name="description" content="前言　　在上篇文章中，我们介绍了分支预测器在提高CPU流水线效率上的重要作用，上篇文章最后还提到，分支预测器的预测准确率对CPU执行命令效率有巨大影响，当预测错误时必须将流水线冲刷，然后重新从正确的地址取指，分支预测错误将会产生很大的代价，而且这种代价随着流水线的深度的增加而快速增长。
+　　过去几十年，国内外科研界及工业界提出了多种分支预测模型以提高分支预测的准确率，本篇文章，我们主要挑选部分典型">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="南航教务处泄露学生信息漏洞的发现以及关于此事的一些想法">
-<meta property="og:url" content="http://irootlee.com/bug_of_nuaa/index.html">
+<meta property="og:title" content="C++性能榨汁机之分支预测器(2)">
+<meta property="og:url" content="http://irootlee.com/juicer_branch_predictor2/index.html">
 <meta property="og:site_name" content="I'm Root lee !">
-<meta property="og:description" content="发现漏洞偶然的一个发现，学校教务处网站有一个小小的漏洞，会泄露全校所有学生的学号、姓名、及照片。这个漏洞存在于新版教务处里，当登录教务处之后，点击“学生个人查询”–&amp;gt;“基本查询”，会出现当前登录学生的所有个人资料，同时附带个人的证件照，并且证件照之上附带个人的姓名和学号信息，类似于下图：
-
-漏洞便在这个照片之上。我们右击图片查看图片属性：
-
-然后将图片地址粘贴在浏览器的地址栏然后点回车，在浏">
-<meta property="og:image" content="http://irootlee.com/screen1.png">
-<meta property="og:image" content="http://irootlee.com/screen2.png">
-<meta property="og:updated_time" content="2017-11-17T03:47:52.000Z">
+<meta property="og:description" content="前言　　在上篇文章中，我们介绍了分支预测器在提高CPU流水线效率上的重要作用，上篇文章最后还提到，分支预测器的预测准确率对CPU执行命令效率有巨大影响，当预测错误时必须将流水线冲刷，然后重新从正确的地址取指，分支预测错误将会产生很大的代价，而且这种代价随着流水线的深度的增加而快速增长。
+　　过去几十年，国内外科研界及工业界提出了多种分支预测模型以提高分支预测的准确率，本篇文章，我们主要挑选部分典型">
+<meta property="og:image" content="http://irootlee.com/bimodal.png">
+<meta property="og:image" content="http://irootlee.com/bimodal_student.png">
+<meta property="og:updated_time" content="2017-12-14T08:30:40.421Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="南航教务处泄露学生信息漏洞的发现以及关于此事的一些想法">
-<meta name="twitter:description" content="发现漏洞偶然的一个发现，学校教务处网站有一个小小的漏洞，会泄露全校所有学生的学号、姓名、及照片。这个漏洞存在于新版教务处里，当登录教务处之后，点击“学生个人查询”–&amp;gt;“基本查询”，会出现当前登录学生的所有个人资料，同时附带个人的证件照，并且证件照之上附带个人的姓名和学号信息，类似于下图：
-
-漏洞便在这个照片之上。我们右击图片查看图片属性：
-
-然后将图片地址粘贴在浏览器的地址栏然后点回车，在浏">
+<meta name="twitter:title" content="C++性能榨汁机之分支预测器(2)">
+<meta name="twitter:description" content="前言　　在上篇文章中，我们介绍了分支预测器在提高CPU流水线效率上的重要作用，上篇文章最后还提到，分支预测器的预测准确率对CPU执行命令效率有巨大影响，当预测错误时必须将流水线冲刷，然后重新从正确的地址取指，分支预测错误将会产生很大的代价，而且这种代价随着流水线的深度的增加而快速增长。
+　　过去几十年，国内外科研界及工业界提出了多种分支预测模型以提高分支预测的准确率，本篇文章，我们主要挑选部分典型">
 <meta name="twitter:creator" content="@54rootlee">
     
         <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
@@ -47,8 +38,8 @@
         <meta property="og:image" content="/assets/images/mountietocat.png"/>
     
     
-        <meta property="og:image" content="/bug_of_nuaa/security.jpg"/>
-        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/bug_of_nuaa/security.jpg" />
+        <meta property="og:image" content="/juicer_branch_predictor2/branch_predictor.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/juicer_branch_predictor2/branch_predictor.png" />
     
     
     
@@ -206,19 +197,19 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            南航教务处泄露学生信息漏洞的发现以及关于此事的一些想法
+            C++性能榨汁机之分支预测器(2)
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" content="Tue Mar 08 2016 15:00:00 GMT+0000">
+    <time itemprop="datePublished" content="Thu Dec 14 2017 12:00:00 GMT+0000">
 	
-		    3月 08, 2016
+		    12月 14, 2017
     	
     </time>
     
         <span>分类： </span>
         
-    <a class="category-link" href="/categories/Python/">Python</a>
+    <a class="category-link" href="/categories/C-性能榨汁机系列文章/">C++性能榨汁机系列文章</a>
 
 
     
@@ -227,21 +218,48 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <h2 id="发现漏洞">发现漏洞</h2><p>偶然的一个发现，学校教务处网站有一个小小的漏洞，会泄露全校所有学生的学号、姓名、及照片。这个漏洞存在于新版教务处里，当登录教务处之后，点击“学生个人查询”–&gt;“基本查询”，会出现当前登录学生的所有个人资料，同时附带个人的证件照，并且证件照之上附<br>带个人的姓名和学号信息，类似于下图：</p>
-<p><img src="screen1.png" alt="screen1"></p>
-<p>漏洞便在这个照片之上。<br>我们右击图片查看图片属性：</p>
-<p><img src="screen2.png" alt="screen2"></p>
-<p>然后将图片地址粘贴在浏览器的地址栏然后点回车，在浏览器里我们得到了我们的证件照。<br>我们注意到图片的地址是这种形式的：</p>
-<p><em>…/EASys/Controls/ImageHandler.ashx?ImageName=151220101&amp;BinaryType=xh</em></p>
-<p>地址里的有一串代码：</p>
-<p>ImageName=151220701</p>
-<p>后面这串数字就是你的学号。</p>
-<p><strong>下面重点来了：</strong><br>更改这个学号为另一个，比如此处我们将其改成：151220702<br>然后点击回车，你会惊奇的发现现在浏览器里显示的是学号为151220702这名学生的照片！<br>而这张图片不仅仅是证件照，在其左下角还标注着此人的学号和姓名。</p>
-<h2 id="想法">想法</h2><ol>
-<li>每个人的证件照都是心中难灭的伤，可以用python爬虫将全校学生的证件照全部抓取下来，做一套api，开发一个用学号查询证件照的软件。（<a href="https://github.com/Root-lee/spider_photos_nuaa）" target="_blank" rel="external">https://github.com/Root-lee/spider_photos_nuaa）</a></li>
-<li>这个新版的教务处还未正式上线，有机会可以向负责任提交这个漏洞。</li>
-<li>不仅国内的大学，包括国内的一些著名的公司，都不太注重网站的安全，很容易留下漏洞，被别有用心的人利用。尤其是你的数据库里还包含着大量的用户信息时，网站责任人的失责更是会造成极其重大的损失。真诚希望每个组织不论是学校还是公司都能在网站安全方面有所改进。</li>
+            <h1 id="前言">前言</h1><p>　　在上篇文章中，我们介绍了分支预测器在提高CPU流水线效率上的重要作用，上篇文章最后还提到，分支预测器的预测准确率对CPU执行命令效率有巨大影响，当预测错误时必须将流水线冲刷，然后重新从正确的地址取指，分支预测错误将会产生很大的代价，而且这种代价随着流水线的深度的增加而快速增长。</p>
+<p>　　过去几十年，国内外科研界及工业界提出了多种分支预测模型以提高分支预测的准确率，本篇文章，我们主要挑选部分典型的分支预测模型，探究其分支预测算法。</p>
+<p>　　根据分支预测器利用的信息可以将分支预测器分为静态分支预测器和动态分支预测器。静态分支预测器主要利用静态分支的信息或编译器提供的信息对分支方向进行预测，而动态分支预测器除了利用上述信息外，还会在程序执行过程中动态收集分支历史跳转等信息进行预测。</p>
+<h1 id="静态预测">静态预测</h1><p>　　静态分支预测器一般实现比较简单，在类似于嵌入式处理器这种资源较少的处理器中应用比较多，但是因为静态预测器实现逻辑比较简单，所以预测准确率相应一半也不高。</p>
+<p>　　静态分支预测器的实现算法主要有下面这几种：</p>
+<ol>
+<li><p>所有的分支指令都不跳转，每次CPU都顺序取出下一条命令放入流水线。</p>
+</li>
+<li><p>所有的分支指令都跳转，每次CPU遇到分支判断指令都默认会发生跳转，并从跳转地址取指。</p>
+</li>
+<li><p>某些指令一律跳转，某些指令一律不跳转，此方法是方法1和方法2的结合。</p>
+</li>
+<li><p>与上次跳转结果保持一致，比如，上次该指令发生了跳转，那么本次依旧跳转，如果上次该指令没有跳转，则本次也不跳转。</p>
+</li>
+<li><p>向前的分支会跳转，向后的分支不跳转。该方法主要针对程序中的循环进行的优化。</p>
+</li>
 </ol>
+<p>　　虽然看似在概率上，这些静态方法的预测正确率只有50%，但是由于一般程序中都有大量循环存在，针对循环优化的静态方法一般都有高于70%的正确率。</p>
+<p>　　对于哪些对于预测准确率要求不算太高，且本身资源有限制或者对功耗要求高的场景，静态分支预测器是一个很好的选择。</p>
+<h1 id="动态预测">动态预测</h1><p>　　静态预测70%的准确率虽然看似不低，但是对于拥有非常深流水线的现代处理器，30%的错误率会导致流水线被频繁冲刷（flush），对CPU效率的影响是巨大的。因此，为了进一步提高分支预测器的预测准确度，人们开始研究更为复杂的动态分支预测器。</p>
+<p>　　动态分支预测中最简单的方法就是<strong>双模态预测器</strong>（bimodal predictor），该预测器采用4个状态的状态机对分支跳转进行预测，分支指令执行完毕后根据实际跳转结果更新状态机，用于下次预测，状态机大体流程如下：</p>
+<p><img src="bimodal.png" alt="bimodal predictor"></p>
+<p>　　看状态机机的状态跳转可能不太好理解互相之间的关系，那我们用通俗一点的话来解释一下。想象这么一个场景：在遥远的地方有这么一个班级，为了区分学生优差，按照学习成绩将学生分为了4类：</p>
+<ol>
+<li>优等生（强跳转）</li>
+<li>中等偏上（弱跳转）</li>
+<li>中等偏下（弱不跳转）</li>
+<li>差生（强不跳转）</li>
+</ol>
+<p>学生的等级就靠每次考试成绩区分，考试成绩分为两类：考得好（跳转）、考得差（不跳转），等级按如下规则变化：</p>
+<ol>
+<li>优等生考的好还是优等生，考的差变为中等偏上。</li>
+<li>中等偏上考得好变成优等生，考得差变为中等偏下。</li>
+<li>中等偏下考得好变为中等偏上，考得差变为差生。</li>
+<li>差生考得差还是差生，考得好变为中等偏下。</li>
+</ol>
+<p>　　其中，我们优等生和中等偏上学生我们认为是好学生（预测他下次会考得好），差生和中等偏下学生我们认为是坏学生（预测他下次会考得差）。</p>
+<p>　　这个班级学生状态变化如下图所示：</p>
+<p><img src="bimodal_student.png" alt="student"></p>
+<p>　　当然上面这个班级的例子只是想象出来解释双模态预测器的，我们反对这种将学生只按学习成绩划分三六九等的方法。但上述例子基本原理与双模态预测器的原理是相同的，不知道有没有让读者对双模态预测器了解更透彻一点。</p>
+<h1 id="总结">总结</h1><p>　　上述双模态预测器的预测准确度相对于静态预测器已经有了极大的提高，预测准确度基本可以达到90%以上。但是人们追求分支预测器准确度的脚步是不会停的，后面发展出了两级自适应预测器、局部/全局分支预测器、融合分支预测器、神经分支预测器等等动态分支预测器，将预测准确度进一步提高，此处限于篇幅就不再详细解释了。</p>
+<p>　　这两篇文章解释了分支预测器的意义及常见的简单实现方法，下一篇文章，我将会就分支预测器对我们写程序的指导意义做一些简单的测试与阐述。</p>
 
             
                 
@@ -254,7 +272,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">属于标签</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/python/">python</a> <a class="tag tag--primary tag--small t-link" href="/tags/爬虫/">爬虫</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/C/">C++</a>
 
             </div>
         
@@ -263,7 +281,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/python_thread/"  data-tooltip="Python多线程学习心得">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">前一篇</span>
@@ -271,7 +289,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/mycat/" data-tooltip="我的猫">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_branch_predictor1/" data-tooltip="C++性能榨汁机之分支预测器(1)">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">后一篇</span>
                     <i class="fa fa-angle-right"></i>
@@ -286,17 +304,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/bug_of_nuaa/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_branch_predictor2/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/bug_of_nuaa/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_branch_predictor2/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/bug_of_nuaa/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_branch_predictor2/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -342,7 +360,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/python_thread/"  data-tooltip="Python多线程学习心得">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">前一篇</span>
@@ -350,7 +368,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/mycat/" data-tooltip="我的猫">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_branch_predictor1/" data-tooltip="C++性能榨汁机之分支预测器(1)">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">后一篇</span>
                     <i class="fa fa-angle-right"></i>
@@ -365,17 +383,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/bug_of_nuaa/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_branch_predictor2/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/bug_of_nuaa/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_branch_predictor2/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/bug_of_nuaa/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_branch_predictor2/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -401,17 +419,17 @@
                 <div id="share-options-bar" class="share-options-bar" data-behavior="3">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/bug_of_nuaa/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_branch_predictor2/">
                 <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/bug_of_nuaa/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_branch_predictor2/">
                 <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/bug_of_nuaa/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_branch_predictor2/">
                 <i class="fa fa-twitter"></i><span>Share on Twitter</span>
             </a>
         </li>
