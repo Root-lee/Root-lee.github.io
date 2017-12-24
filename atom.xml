@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2017-12-24T14:50:36.360Z</updated>
+  <updated>2017-12-24T14:52:13.052Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -19,8 +19,8 @@
     <link href="http://irootlee.com/juicer_branch_predictor4/"/>
     <id>http://irootlee.com/juicer_branch_predictor4/</id>
     <published>2017-12-24T22:00:00.000Z</published>
-    <updated>2017-12-24T14:50:36.360Z</updated>
-    <content type="html"><![CDATA[<h1 id="前言">前言</h1><p>　　在<a href="irootlee.com/juicer_branch_predictor3">上篇文章</a>中，我们通过分析一段典型程序的汇编级代码更加清楚的看到了分支预测对程序性能的影响，当数据对分支预测器预测不友好的时候，我们的程序性能下降巨大。那么，怎么才能避免分支预测频繁出错对我们程序运行的不利影响呢？</p>
+    <updated>2017-12-24T14:52:13.052Z</updated>
+    <content type="html"><![CDATA[<h1 id="前言">前言</h1><p>　　在<a href="http://irootlee.com/juicer_branch_predictor3">上篇文章</a>中，我们通过分析一段典型程序的汇编级代码更加清楚的看到了分支预测对程序性能的影响，当数据对分支预测器预测不友好的时候，我们的程序性能下降巨大。那么，怎么才能避免分支预测频繁出错对我们程序运行的不利影响呢？</p>
 <h1 id="用条件传送替代条件控制转移">用条件传送替代条件控制转移</h1><p>　　分支预测对有规律的分支跳转可以实现非常高的预测正确率，比如在循环判断中，在循环终止之前，分支预测都可以基本保证完全的预测正确，预测错误只会出现在最后跳出循环的条件满足时。但是，对于每次跳转结果都不确定的分支判断，分支预测率的预测正确率就很低了，可能只有50%左右，基本相当于每次都随机猜测，这样的情况下，流水线会经常被打断，影响程序性能。对于这种严重依赖于数据的分支跳转命令，最好的替代方法就是条件传送指令。</p>
 <p>　　在使用条件传送的条件下，命令中是没有跳转命令的，也就避免了使用分支预测器去预测一个很难预测的分支。</p>
 <h1 id="如何写条件传送代码？">如何写条件传送代码？</h1><p>　　对于C和C++这样的高级语言是没有提供控制底层实现到底是使用条件控制转移指令还是条件传送指令的功能的，底层命令实现靠编译器实现。但是，我们可以通过我们写代码的具体方法去间接影响编译器生成的汇编代码，从而达到使用条件传送命令替代条件控制转移命令的目的。</p>
@@ -42,7 +42,7 @@
 <p>　　大部分情况下，请<strong>相信处理器、相信编译器！</strong>有在完全确定了程序的性能瓶颈所在的时候再去针对这部分代码做特殊优化，避免提前优化和过度优化。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h1 id="前言">前言</h1><p>　　在<a href="irootlee.com/juicer_branch_predictor3">上篇文章</a>中，我们通过分析一段典型程序的汇编级代码更加清楚的看到了分支预测对程序性能的影响，当数据对分支预测器预测不友好的时候，]]>
+    <![CDATA[<h1 id="前言">前言</h1><p>　　在<a href="http://irootlee.com/juicer_branch_predictor3">上篇文章</a>中，我们通过分析一段典型程序的汇编级代码更加清楚的看到了分支预测对程序性能的影响，当数据对分支预测器预测]]>
     </summary>
     
       <category term="C++" scheme="http://irootlee.com/tags/C/"/>
