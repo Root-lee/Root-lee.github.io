@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2017-12-24T14:52:13.052Z</updated>
+  <updated>2018-01-03T05:30:31.188Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -13,6 +13,41 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[日常踩坑：C++程序中如何正确使用memset()内存初始化函数？]]></title>
+    <link href="http://irootlee.com/cpp_memset/"/>
+    <id>http://irootlee.com/cpp_memset/</id>
+    <published>2018-01-02T23:00:00.000Z</published>
+    <updated>2018-01-03T05:30:31.188Z</updated>
+    <content type="html"><![CDATA[<h1 id="背景">背景</h1><p>　　事情是这样的：在股票的自动化交易软件开发过程中，我们使用了万得的一套股票行情获取API，伴随着API还提供了一个示例程序，我们在开发过程中借用了部分示例程序中的代码，其中就包括一个配置读取类：ConfigSettings，这个类负责从配置文件中读入软件配置参数，并把参数的值保存在成员变量中，以供后面程序进行参数读取。</p>
+<p>　　但是除了原来支持的参数之外，我们又在配置文件中增加了新的配置参数，是股票代码和其初始持仓，我们需要从配置文件中读取股票代码和其初始持仓，于是我们便想到了在原来的配置读取类（ConfigSettings）基础上进行拓展，拓展思路也很简单，在原来的类中增加一个成员变量用于保存股票代码和其对应持仓，我们采用了标准库里的unordered_map（hash table），键就是string类型的股票代码，值就是该股票代码对应的初始持仓，后续程序想要获取持仓信息只需要读取该map即可。</p>
+<p>　　添加上读取股票代码和对应持仓部分的代码后，测试运行时程序却出现了崩溃现象（runtime error），使用断点调试，发现错误出现在向map中添加新的键值对的代码处：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="function"><span class="built_in">istringstream</span> <span class="title">record</span><span class="params">(line)</span></span>;</span><br><span class="line">record &gt;&gt; stockcode;                      <span class="comment">//读取股票代码</span></span><br><span class="line">record &gt;&gt; position;                   <span class="comment">//读取股票对应持仓量</span></span><br><span class="line">mapStockInitialPosition[stockcode] = position; <span class="comment">//atoi(position.c_str());     //初始化持仓量</span></span><br></pre></td></tr></table></figure>
+<p>　　运行完第4行代码后，程序就会崩溃退出，经过反复检查，都没有发现代码有什么逻辑问题，一个很让人摸不着头脑的BUG。</p>
+<h1 id="查找问题">查找问题</h1><p>　　为了确定问题出现在哪里，我们将类的成员mapStockInitialPosition变为static类型并在类外进行初始化，程序编译后运行正常。类的static成员变量与普通成员变量的区别就是存储区域不一样，static成员存储在程序的全局数据区，是类的所有对象共用的变量。既然将普通成员变量换成了static成员变量错误就消失了，说明map作为普通成员变量时遭到了破坏，所以导致了后面对map进行操作时出现了错误。我们检查ConfigSettings类的构造函数，发现了如下代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//配置读取类的构造函数</span></span><br><span class="line">ConfigSettings::ConfigSettings()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">memset</span>(<span class="keyword">this</span>, <span class="number">0</span>, <span class="keyword">sizeof</span>(*<span class="keyword">this</span>));</span><br><span class="line">	RestoreStatus();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　从代码中我们看出，ConfigSettings的构造函数使用了C语言中常用的memset()函数进行类成员的初始化，memset()函数将对象的所有内存都初始化为0，这在ConfigSettings类是一个POD类型（Plain Old Data）时是没有问题的，因为POD类型的二进制内容可以随便复制、移动、重置而不会改变POD类型对象的值。ConfigSettings成员都是POD类型(int,char,float…)，而且ConfigSettings类既不存在虚继承也不存在虚函数，所以可以对ConfigSettings使用memset()函数进行初始化。<em>更多C++ POD类型的相关信息请参考这篇博客：<a href="https://www.cppfans.org/1431.html" target="_blank" rel="external">C++ POD(Plain Old Data)类型</a></em></p>
+<p>　　但是后面我们对ConfigSettings类进行拓展时加入了unordered_map类型的成员变量，但是unordered_map这种标准库容器不是POD类型，这就导致ConfigSettings也不是一个POD类型，所以当使用memset()函数进行初始化时会对对象造成破坏，unordered_map底层是哈希表，其中必然包括各种指针，当使用memeset将对象所有内存初始化为0的时候，unordered_map中的各种指针必然就变成了null_ptr，整个结构已经被完全破坏了，所以会后面对unordered_map进行操作的时候出现崩溃的现象也就不难理解了。</p>
+<h1 id="解决办法">解决办法</h1><ol>
+<li>重新写ConfigSettings的构造函数，避免使用memset()函数初始化对象。</li>
+<li>将成员变量mapStockInitialPosition设置为static类型，可以避免在memset()时被破坏。</li>
+</ol>
+<h1 id="总结">总结</h1><p>　　每次踩坑都要反思和总结，才能避免以后再次掉进同一个坑里，这次这个问题虽然看似不复杂，但是依然耗费了一两个小时去解决它。虽然花费了时间，但是收获也是有的，为了解决这个问题，我对POD类型的理解更深了，也对C语言与C++之间的区别更加了解。为了避免这种错误再次出现，在以后的编程中需要遵循下面的原则：</p>
+<ul>
+<li>在以后自己写C++程序时，初始化对象使用C++语言支持的构造函数进行初始化，避免使用从C语言继承而来的memset()等类似函数进行初始化。</li>
+<li>在修改或者拓展一段别人写的代码时，一定要仔细查看整段代码并大体理解代码运行过程，避免盲目修改源代码，导致后续程序运行错误。</li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="背景">背景</h1><p>　　事情是这样的：在股票的自动化交易软件开发过程中，我们使用了万得的一套股票行情获取API，伴随着API还提供了一个示例程序，我们在开发过程中借用了部分示例程序中的代码，其中就包括一个配置读取类：ConfigSettings，这个类负责]]>
+    </summary>
+    
+      <category term="C++" scheme="http://irootlee.com/tags/C/"/>
+    
+      <category term="编程" scheme="http://irootlee.com/categories/%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[C++性能榨汁机之分支预测器(4)]]></title>
@@ -298,11 +333,11 @@ features = list(train.columns)
   </entry>
   
   <entry>
-    <title><![CDATA[关于C++中结构体和联合体中字节对齐方式我的一个误解]]></title>
+    <title><![CDATA[关于C++中结构体和联合体中字节对齐方式的一个误解]]></title>
     <link href="http://irootlee.com/C_struct_union/"/>
     <id>http://irootlee.com/C_struct_union/</id>
     <published>2016-11-01T16:00:00.000Z</published>
-    <updated>2017-11-17T03:47:52.000Z</updated>
+    <updated>2018-01-03T05:35:11.380Z</updated>
     <content type="html"><![CDATA[<p>前几天遇到这么一个题目：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">char</span> flag[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">short</span> value;</span><br><span class="line">&#125; sampleStruct;</span><br><span class="line"></span><br><span class="line"><span class="keyword">union</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">char</span> flag[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">short</span> value;</span><br><span class="line">&#125; sampleUnion;</span><br><span class="line"></span><br><span class="line"><span class="keyword">sizeof</span>(sampleStruct)=?</span><br><span class="line"><span class="keyword">sizeof</span>(sampleUnion)=?</span><br></pre></td></tr></table></figure>
 <p>当时的想法是:对于stuct类型，对象大小是struct内部所有对象大小的和，当然要考虑字节对齐，char flag[3]对象占三字节，考虑到4字节对齐，后面剩一字节放不下short的2字节，所以short重新占用另外4字节，所以sizeof(sampleStruct)=8。Union类型是union对象里占用字节数最多的那个对象的字节数（在考虑字节对齐的情况下），所以sizeof(sampleUnion)=4。</p>
@@ -432,7 +467,7 @@ features = list(train.columns)
     <link href="http://irootlee.com/change_domin/"/>
     <id>http://irootlee.com/change_domin/</id>
     <published>2016-07-20T18:00:00.000Z</published>
-    <updated>2017-11-17T03:47:53.000Z</updated>
+    <updated>2018-01-03T05:34:55.288Z</updated>
     <content type="html"><![CDATA[<p>这个博客从去年开始写，写到现在也已经差不多一年了，博客里记录了一些自己的心情和感想，可以让自己看到自己思想转变的轨迹，这些文章也是自己非常重要的精神财富。除了读后感和随笔外，博客还记录了一些自己在日常学习中遇到的问题和解决办法，本来是为了便于自己以后遇到类似问题可以有点参考，但从网站的google数据分析来看，博客每天的展示量都有好几百，个别文章获得了很好的关键词排名，吸引了大量人访问，如果我的文章或多或少可以帮助他们解决他们遇到的问题的话，我会感到非常欣慰。</p>
 <p>博客原来的域名是<strong><a href="http://RootLee.Eu" target="_blank" rel="external">http://RootLee.Eu</a></strong> ，域名是在全球老牌域名注册商godaddy注册的，当时没选国内的是因为国内严格的监管和对域名转入转出的限制，注册域名时偶然发现.eu域名只要1.99美元，感觉捡了大便宜，心想首年这么便宜，续费的话应该也不会太贵吧，于是立刻就买下了这个域名。</p>
 <p>前两天突然想到域名还有两三个月就要到期了，应该提前去续费了，但当我登录godaddy点击域名续费时，惊奇的发现，续费一年竟然要100美元/年，大约600多人民币！这对还在读书的我实在是一笔巨资了，根本无法承受。唯一的办法就是换域名了，换成全球普遍使用的.com域名，但是，我原来的域名已经使用了快一年，谷歌收录页面达到一百多条，360搜索也有七八十条，百度虽然少一点，但是收录量也是在稳步上升，正处于收录的关键时期，域名更换了就会导致这所有的努力都会付诸东流。心里一直后悔当时不该贪图小便宜，让自己陷入这个两难的境地，真的是“出来混，迟早要还的。”，现在的我就在“还”债。</p>
@@ -462,7 +497,7 @@ features = list(train.columns)
 <h1 id="Google">Google</h1><p>google搜索不愧是世界上最好的搜索引擎，域名更换并做了301跳转之后，很快就在搜索结果里看到了新网址<a href="http://irootlee.com">http://irootlee.com</a> 的网站索引，经过十来天新网址的索引量已经轻松恢复到原来的水平了，截止到今天为止，google索引了117条结果，效果奇佳。<br>google索引量：<br><img src="google.png" alt="google.png"></p>
 <h1 id="360搜索">360搜索</h1><p>360搜索对站长非常友好，虽然网站改版规则里规定只有网站流量达到一定量的网站才能添加改版记录，但是我添加改域名规则后，360依然通过了审核，所以360搜索的索引量提升也很快。<br>360搜索索引量：<br><img src="360.png" alt="360.png"></p>
 <h1 id="百度搜索">百度搜索</h1><p>百度搜索因为前一阵域名莫名奇妙的抓取失败，导致了索引量上升比较缓慢，也是因为百度索引网页时比较谨慎，所以目前为止只索引了一篇文章，但可以预见，随着时间推移，百度索引也会恢复正常的。<br>百度索引：<br><img src="baidu.png" alt="baidu"></p>
-<h1 id="搜狗">搜狗</h1><p>呵呵，你也配叫搜索引擎？</p>
+<h1 id="搜狗">搜狗</h1><p>呃，收录有点慢…</p>
 ]]></content>
     <summary type="html">
     <![CDATA[<p>这个博客从去年开始写，写到现在也已经差不多一年了，博客里记录了一些自己的心情和感想，可以让自己看到自己思想转变的轨迹，这些文章也是自己非常重要的精神财富。除了读后感和随笔外，博客还记录了一些自己在日常学习中遇到的问题和解决办法，本来是为了便于自己以后遇到类似问题可以有点参考]]>
@@ -742,36 +777,6 @@ features = list(train.columns)
     </summary>
     
       <category term="读后感" scheme="http://irootlee.com/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[MATLAB读取wav文件报错："Incorrect chunk size information in WAV file."解决办法]]></title>
-    <link href="http://irootlee.com/matlab_wav_error/"/>
-    <id>http://irootlee.com/matlab_wav_error/</id>
-    <published>2016-05-12T20:00:00.000Z</published>
-    <updated>2017-11-17T03:47:55.000Z</updated>
-    <content type="html"><![CDATA[<h1 id="问题描述">问题描述</h1><p>在<a href="http://rootlee.eu/categories/%E6%AF%95%E4%B8%9A%E8%AE%BE%E8%AE%A1/" target="_blank" rel="external">毕业设计</a>中，需要用软件<strong>WXtoimg</strong>记录的NOAA发出的APT信号(wav格式),然后用MATLAB读取该wav文件，从而解调出所需要的卫星图，但是在用MATLAB读取该文件时却出现了以下错误：<br><figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Error using ==&gt; wavread</span><br><span class="line">Incorrect chunk <span class="built_in">size</span> information <span class="type">in</span> WAV <span class="keyword">file</span>.</span><br></pre></td></tr></table></figure></p>
-<p>即文件大小信息不正确。</p>
-<h1 id="问题分析">问题分析</h1><p>根据错误信息可知：我们尝试读取的wav文件的结构不正确。<br>在wav文件的文件头信息里，有两个数值与wav文件的大小有关，如果这两个数值与文件的实际大小不相符的话，这个文件就会被认为是无效的文件。从网上找到wav文件的文件头各个字节所代表的意义，如下表：</p>
-<p><img src="wavhead.png" alt="wavhead"></p>
-<p>由表格可以看出：</p>
-<ol>
-<li>在文件头的04H~07H地址的数值代表：<em>从下个地址开始到文件尾的总字节数</em>，数值：filesize - 8 </li>
-<li>在文件头的28H~2BH地址的数值代表：<em>从下个地址开始到文件尾的总字节数</em>，数值：filesize - 44 </li>
-</ol>
-<h1 id="解决办法">解决办法</h1><p>我们已经知道了错误原因和wav文件正确的文件头，现在我们可以修改文件头信息里与文件大小相关的两个数值，使其与文件实际大小相符，即可改正wav文件。<br>新建matlab函数：wavchunksizefix.m<br>以下为修正wav文件的matlab函数：</p>
-<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">wavchunksizefix</span><span class="params">( filename )</span></span></span><br><span class="line">d = dir(filename);                <span class="comment">%取得wav文件信息</span></span><br><span class="line">fileSize = d.bytes;               <span class="comment">%从文件信息里提取出wav文件的实际大小</span></span><br><span class="line">fid=fopen(filename,<span class="string">'r+'</span>,<span class="string">'l'</span>);     <span class="comment">%以读写模式打开wav文件</span></span><br><span class="line">fseek(fid,<span class="number">4</span>,-<span class="number">1</span>);                  <span class="comment">%fseek函数调整位置指针使其指向第一个与文件大小相关的数字</span></span><br><span class="line">fwrite(fid,fileSize-<span class="number">8</span>,<span class="string">'uint32'</span>);  <span class="comment">%将该数字修改成正确的大小，即：fileSize-8</span></span><br><span class="line">fseek(fid,<span class="number">40</span>,-<span class="number">1</span>);                 <span class="comment">%fseek函数调整位置指针使其指向第二个与文件大小相关的数字</span></span><br><span class="line">fwrite(fid,fileSize-<span class="number">44</span>,<span class="string">'uint32'</span>); <span class="comment">%将该数字修改成正确的大小，即：fileSize-44</span></span><br><span class="line">fclose(fid);                      <span class="comment">%关闭文件</span></span><br></pre></td></tr></table></figure>
-<p>将这个wavchunksizefix.m文件放进matlab的执行目录里，然后在命令行里运行如下命令：</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">wavchunksizefix</span><span class="params">( filename )</span></span></span><br></pre></td></tr></table></figure>
-<p>现在wav文件即得到修正，经测试，重新用wavread函数读取该文件不会再报错。</p>
-<h1 id="注意">注意</h1><p>该matlab函数会直接修改wav文件，建议修改wav文件之前先备份wav文件。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h1 id="问题描述">问题描述</h1><p>在<a href="http://rootlee.eu/categories/%E6%AF%95%E4%B8%9A%E8%AE%BE%E8%AE%A1/" target="_blank" rel="external">毕业设计<]]>
-    </summary>
-    
-      <category term="编程" scheme="http://irootlee.com/categories/%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   
