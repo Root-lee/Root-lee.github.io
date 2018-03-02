@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2018-01-03T05:30:31.188Z</updated>
+  <updated>2018-03-02T04:01:11.417Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -15,11 +15,38 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[日常踩坑：C++32位程序申请大内存出现std:bad_alloc]]></title>
+    <link href="http://irootlee.com/cpp_32bit_big_memory/"/>
+    <id>http://irootlee.com/cpp_32bit_big_memory/</id>
+    <published>2018-03-01T23:00:00.000Z</published>
+    <updated>2018-03-02T04:01:11.417Z</updated>
+    <content type="html"><![CDATA[<h1 id="问题背景：">问题背景：</h1><p>　　在开发股票自动化交易软件过程中，我们需要将股票的tick数据（每3s一笔）存储下来，供我们的股票交易策略部分使用。这种情况下首先想到使用MySql这种关系型数据库进行存储，但是我们的股票自动化交易软件对速度的要求极高，可能相差几十毫秒就是赚钱与亏钱的区别，而MySql这种传统数据库的插入与查询是很慢的，无法满足我们的要求。当然我们也可以选择既满足存储数据的要求又能达到我们需要的速度要求的Redis这种内存数据库，但考虑到我们交易软件是日内交易，不需要股票数据持久化到硬盘上，而且经过大概估算，我们服务器的内存远大于股票每日的数据量，所以考虑将股票数据直接保存在内存中，软件运行时直接对内存中的股票数据进行使用即可。</p>
+<h1 id="问题描述：">问题描述：</h1><p>　　我们使用map保存股票的数据，map的key是股票代码（string类型），value是该股票的行情数据（vector类型），然后建立行情类MarketData（单例模式）将map封装起来，并实现线程安全的插入数据和取数据的方法，这样就实现了一个极其简单的“内存数据库”。在MarketData建立后需要初始化股票数据，使用vector的reserve方法为每支股票预先分配足够存储一天数据的内存空间。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">///初始化mapStockData，初始化后该map节点位置不会再变化，避免多线程安全问题</span></span><br><span class="line"><span class="comment">///为vector预先分配内存，避免在程序运行中迭代器失效</span></span><br><span class="line"><span class="keyword">void</span> MarketData::InitStockList(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">set</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>&gt; stockcodes) &#123;</span><br><span class="line">	<span class="keyword">if</span> (stockcodes.empty()) &#123;</span><br><span class="line">		<span class="built_in">cerr</span> &lt;&lt; <span class="string">"未订阅任何股票，请查看ini配置文件！"</span> &lt;&lt; endl;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//为vector预先分配内存，避免在程序运行中迭代器失效</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">auto</span> stockcode : stockcodes) &#123;</span><br><span class="line">		mapStockData_[stockcode].market.reserve(<span class="number">6000</span>);      <span class="comment">//Market数据，每3秒一个数据</span></span><br><span class="line">		mapStockData_[stockcode].transaction.reserve(<span class="number">200000</span>);       <span class="comment">//transaction数据</span></span><br><span class="line">		mapStockData_[stockcode].orderqueue.reserve(<span class="number">12000</span>);       <span class="comment">//orderqueue数据</span></span><br><span class="line">		mapStockData_[stockcode].order.reserve(<span class="number">200000</span>);       <span class="comment">//order数据</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　上述代码在订阅股票数量较少（小于10支）的时候一直工作都很正常，昨天我们添加新的股票交易策略，新的策略需要订阅更多的股票（大概100支股票），这时候这段代码就出现了std::bad_alloc错误，即内存申请失败。</p>
+<p><img src="bad_alloc.png" alt="std::bad_alloc"></p>
+<h1 id="问题分析：">问题分析：</h1><p>　　既然是内存分配错误，那我们就计算一下内存占用，经过计算，每支股票每天的数据量大约48M，一百支股票的占用就是4800M，总的数据量不到5个G，但我们服务器是64G内存，应该不存在内存不够用的情况。后来又推测是不是vector需要申请连续的内存，而恰好服务器内存不存在这么多连续的内存，细想一下这种可能性也不大。</p>
+<p>　　没啥头绪就先把这个问题放下去吃饭了，在去食堂的路上，突然想到我们项目中使用的是x86模式，即我们的程序是32位的程序，虽然服务器是64位，但是32位的程序的寻址空间最大只有4G，所以程序是不会寻址大于4G的内存地址的，所以对我们程序而言，服务器64G的物理内存能用的只有4G，而且这4G也不是进程独占的，对于Linux系统而言，内核空间占用1G，32位程序最大的可利用内存只有3G，对于Windows系统而言，系统空间占用2G，32位程序最大可利用内存只有2G（堆内存1.6G左右）。2G内存只能存储大约40支股票，如果再考虑到内存碎片对vector请求连续内存的影响，可能只能存储20多支股票的数据，所以在我们订阅了100支股票的时候，就会出现内存分配失败的错误。</p>
+<h1 id="问题解决：">问题解决：</h1><p>　　查阅资料得知：Windows操作系统有一个 boot.ini 开关，可以为应用程序提供访问3GB的进程地址空间的权限，从而将内核模式地址空间限定为 1 GB，从而用户模式地址空间可用3GB。这种方法虽然可以将可用内存增加1GB，但对我们上百支股票数据而言仍旧是杯水车薪。</p>
+<p>　　最好的办法就是将应用程序按照x64模式重新编译，编译出来的程序便是64位程序，地址空间远远大于32位程序，此时，对程序分配内存的限制就只有物理内存大小，但我们的物理内存是完全足够的，更改了编译参数之后，上述内存申请失败的错误便不再出现。</p>
+<h1 id="总结：">总结：</h1><p>　　当前，64位CPU和64位操作系统已经完全普及了，基于这些平台开发应用程序的时候，如果没有兼容32位系统的需求，应该优先考虑开发64位的应用程序，对于需要大量内存的程序尤为重要。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="问题背景：">问题背景：</h1><p>　　在开发股票自动化交易软件过程中，我们需要将股票的tick数据（每3s一笔）存储下来，供我们的股票交易策略部分使用。这种情况下首先想到使用MySql这种关系型数据库进行存储，但是我们的股票自动化交易软件对速度的要求极高，可]]>
+    </summary>
+    
+      <category term="C++" scheme="http://irootlee.com/tags/C/"/>
+    
+      <category term="编程" scheme="http://irootlee.com/categories/%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[日常踩坑：C++程序中如何正确使用memset()内存初始化函数？]]></title>
     <link href="http://irootlee.com/cpp_memset/"/>
     <id>http://irootlee.com/cpp_memset/</id>
     <published>2018-01-02T23:00:00.000Z</published>
-    <updated>2018-01-03T05:30:31.188Z</updated>
+    <updated>2018-01-03T05:48:57.464Z</updated>
     <content type="html"><![CDATA[<h1 id="背景">背景</h1><p>　　事情是这样的：在股票的自动化交易软件开发过程中，我们使用了万得的一套股票行情获取API，伴随着API还提供了一个示例程序，我们在开发过程中借用了部分示例程序中的代码，其中就包括一个配置读取类：ConfigSettings，这个类负责从配置文件中读入软件配置参数，并把参数的值保存在成员变量中，以供后面程序进行参数读取。</p>
 <p>　　但是除了原来支持的参数之外，我们又在配置文件中增加了新的配置参数，是股票代码和其初始持仓，我们需要从配置文件中读取股票代码和其初始持仓，于是我们便想到了在原来的配置读取类（ConfigSettings）基础上进行拓展，拓展思路也很简单，在原来的类中增加一个成员变量用于保存股票代码和其对应持仓，我们采用了标准库里的unordered_map（hash table），键就是string类型的股票代码，值就是该股票代码对应的初始持仓，后续程序想要获取持仓信息只需要读取该map即可。</p>
 <p>　　添加上读取股票代码和对应持仓部分的代码后，测试运行时程序却出现了崩溃现象（runtime error），使用断点调试，发现错误出现在向map中添加新的键值对的代码处：</p>
@@ -744,39 +771,6 @@ features = list(train.columns)
     </summary>
     
       <category term="随笔" scheme="http://irootlee.com/categories/%E9%9A%8F%E7%AC%94/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[爱的到底是真实的你还是我幻想中的你——读《霍乱时期的爱情》有感]]></title>
-    <link href="http://irootlee.com/huoluan_love/"/>
-    <id>http://irootlee.com/huoluan_love/</id>
-    <published>2016-05-17T20:00:00.000Z</published>
-    <updated>2017-11-17T03:47:54.000Z</updated>
-    <content type="html"><![CDATA[<blockquote>
-<p><em>《霍乱时期的爱情》应该读四遍：刚爱上一个人的时候读一遍，失恋时读一遍，结婚后读一遍，老年时再读一遍。    ——我自己说的</em></p>
-</blockquote>
-<p>之所以认为这本书应该读四遍，是因为我觉得从一本书中真正体会到的东西与自己的阅历有关系，也许有时以为为自己当时看懂了，但直到真正经历到一些事情才发现，现在我才是真正懂了。马尔克斯写这本书时已经步入老年，书中充满了对婚姻的思考，对年老的思考，还有那艘永不靠岸的挂着霍乱旗帜的轮船……这些东西，凭我现在的阅历并不能真正看得懂，也许只有经历过这些才会体会到这些，所以我说这本书应该多读几遍，在不同的人生阶段去读、去体会、去思考。</p>
-<p>马尔克斯的最著名的小说就是《百年孤独》，我曾经尝试过两次去读这篇著作，可惜都失败了，第一次看到前言里的长长的错综复杂的家谱就被吓住了，第二次虽然坚持看完了第一章，却发现总是捋不清人物关系，遂再次放弃。前一阵，拿起了马尔克斯的另一部著作《霍乱时期的爱情》，本以为这书会和《百年孤独》一样错综复杂，但后来看下去发现这书并没有太多错综复杂的关系，作者淡淡地描述出来的爱情故事让人感慨、令人动容。</p>
-<p>《霍乱时期的爱情》主要描述了一段跨越半个多世纪的爱情故事，讲述了电报员阿里萨、乌尔比诺医生和富家小姐费尔米纳之间的爱情纠葛。阿里萨通过一次去费尔米纳家里送电报的机会，对费尔米纳一见钟情，每天在费尔米纳必经之路的长椅上看书，借机看一眼心爱的人，后来，他们开始通信，在信中互相表达爱意，他们这种炽热的通信一直持续了两年，并准备不顾费尔米纳父亲的反对而结婚。当费尔米纳从表姐家回来，怀着满心的幸福去集市购买与阿里萨结婚所需的物品时，在“代笔先生门洞”遇到了尾随而来的阿里萨，书里这么描写这段场景：</p>
-<blockquote>
-<p>……<br>这时，她一阵激动，钉子似的鸽立在原地不动了。在她背后，就在她的耳朵跟前响起了一个声音，只有她一个人才能在嘈杂的人声中分辨得清的声音：<br>“对戴王冠的仙女来说，这里可不是什么好地方。”<br>她回过头来一看，在离自己的眼睛两巴掌远的地方，看见了两只冷若冰霜的眼睛，一张苍白的脸，两片因胆怯而咬紧了的嘴唇，就跟那天在望大弥撒时他第一次和她近在咫尺的情况一模一样，有所不同的只是热恋的激情变成了不满的冷峻。一刹那间，她发觉自己上了个天大的当，惊讶地在心里自问，怎么可能让一个如此冷酷无情的魔鬼长年累月地占据了自己的芳心。她仅仅来得及想：”我的上帝哟，真是个可怜虫！”阿里萨勉强一笑，开口想说点什么，试图跟她一起走，但她把手一挥，把他从自己的生活中抹去了：<br>“不必了，”她说，”忘掉吧。”<br>就在这天下午，她父亲睡午觉的时候，她让普拉西迪娜给他送去了一封寥寥数语的信：”今天，看到了您，我如梦初醒，我们之间的事，无非是幻想而已。”女佣把他的电报、情诗、干枯了的山茶花也送去了。<br>……</p>
-</blockquote>
-<p>与阿里萨的再次相遇，让费尔米纳蓦然发现，自己这么多年来爱的只是自己幻想中的阿里萨，完全不是眼前这个真实的阿里萨，并感到自己这么多年的所谓爱情是如此的幼稚与可笑。一句：“不必了，忘掉吧。”她跟这段荒唐的爱情作了告别，也跟自己的幻想作了告别。</p>
-<p>人一旦陷入了爱情，就会或多或少地开始幻想，将对方想象成符合自己幻想的完美的一个人，对对方缺点选择性忽略，只看到自己想看到的优点，看不到的优点便靠自己的想象力脑补出来，这就导致真实的那个人与幻想中的那个人差别越来越大，直至某一时刻忽然发现，面前的这个人并不是自己爱的那个人，自己爱的那个人并不存在在现实中，而只存在于自己的幻想中。因此，爱情世界崩塌，却还在说“你变了”。其实哪里是对方变了，只不过是幻想与现实碰撞下幻想的幻灭罢了。<br>所谓“情人眼里出西施”、“爱情里的人都是盲目的”这些句子大约也就是这个意思吧。</p>
-<p>很多异地恋，在无论多么艰难的日子里，双方都没有放弃，但当好不容易熬到了结束异地恋在一起时，爱情反而破灭的无比迅速。身边的朋友都会感觉难以理解，当初那么苦，那么多没有对方陪伴时的日子都能熬过，为什么最终在一起后却无法忍受了？</p>
-<p>爱情中的人都有幻想，异地恋尤甚。<br>经常见不到对方，对对方的想念都转变成了对对方的幻想，最终真正在一起时，却和费尔米纳一样突然发现：不对，我爱的不是眼前这个现实中的人。</p>
-<p>没有人是完美的，喜欢一个人是喜欢他/她美好的一面，但爱一个人却是爱他/她的一切，你的美好我来欣赏、你的脆弱我来守护、你的缺点我来包容……</p>
-<p>少一分幻想，不要将爱情建立成一个空中楼阁；<br>多一分接受，将爱情大厦的地基打地结结实实。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<blockquote>
-<p><em>《霍乱时期的爱情》应该读四遍：刚爱上一个人的时候读一遍，失恋时读一遍，结婚后读一遍，老年时再读一遍。    ——我自己说的</em></p>
-</blockquote>
-<p>之所以认为这本书应该读四遍，是因为我觉得从一本书中真正体会到的东]]>
-    </summary>
-    
-      <category term="读后感" scheme="http://irootlee.com/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
     
   </entry>
   
