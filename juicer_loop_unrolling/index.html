@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="I&#39;m Root lee !">
-    <title>日常踩坑：C++32位程序申请大内存出现std:bad_alloc - I&#39;m Root lee !</title>
+    <title>C++性能榨汁机之循环展开 - I&#39;m Root lee !</title>
     <meta name="author" content="Root lee">
     
         <link rel="icon" href="/assets/images/favicon.ico">
@@ -14,17 +14,22 @@
     
         <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="问题背景：　　在开发股票自动化交易软件过程中，我们需要将股票的tick数据（每3s一笔）存储下来，供我们的股票交易策略部分使用。这种情况下首先想到使用MySql这种关系型数据库进行存储，但是我们的股票自动化交易软件对速度的要求极高，可能相差几十毫秒就是赚钱与亏钱的区别，而MySql这种传统数据库的插入与查询是很慢的，无法满足我们的要求。当然我们也可以选择既满足存储数据的要求又能达到我们需要的速度要">
+    <meta name="description" content="什么是循环展开？　　循环展开，英文中称（Loop unwinding或loop unrolling），是一种牺牲程序的尺寸来加快程序的执行速度的优化方法。可以由程序员完成，也可由编译器自动优化完成。循环展开最常用来降低循环开销，为具有多个功能单元的处理器提供指令级并行。也有利于指令流水线的调度。
+循环展开对程序性能的影响　　我们直接以实际代码向大家展示循环展开的作用，首先看未经过循环展开优化的代码">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="日常踩坑：C++32位程序申请大内存出现std:bad_alloc">
-<meta property="og:url" content="http://irootlee.com/cpp_32bit_big_memory/index.html">
+<meta property="og:title" content="C++性能榨汁机之循环展开">
+<meta property="og:url" content="http://irootlee.com/juicer_loop_unrolling/index.html">
 <meta property="og:site_name" content="I'm Root lee !">
-<meta property="og:description" content="问题背景：　　在开发股票自动化交易软件过程中，我们需要将股票的tick数据（每3s一笔）存储下来，供我们的股票交易策略部分使用。这种情况下首先想到使用MySql这种关系型数据库进行存储，但是我们的股票自动化交易软件对速度的要求极高，可能相差几十毫秒就是赚钱与亏钱的区别，而MySql这种传统数据库的插入与查询是很慢的，无法满足我们的要求。当然我们也可以选择既满足存储数据的要求又能达到我们需要的速度要">
-<meta property="og:image" content="http://irootlee.com/bad_alloc.png">
-<meta property="og:updated_time" content="2018-03-02T04:01:11.417Z">
+<meta property="og:description" content="什么是循环展开？　　循环展开，英文中称（Loop unwinding或loop unrolling），是一种牺牲程序的尺寸来加快程序的执行速度的优化方法。可以由程序员完成，也可由编译器自动优化完成。循环展开最常用来降低循环开销，为具有多个功能单元的处理器提供指令级并行。也有利于指令流水线的调度。
+循环展开对程序性能的影响　　我们直接以实际代码向大家展示循环展开的作用，首先看未经过循环展开优化的代码">
+<meta property="og:image" content="http://irootlee.com/result1.png">
+<meta property="og:image" content="http://irootlee.com/result2.png">
+<meta property="og:image" content="http://irootlee.com/result3.png">
+<meta property="og:updated_time" content="2018-03-04T09:24:11.592Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="日常踩坑：C++32位程序申请大内存出现std:bad_alloc">
-<meta name="twitter:description" content="问题背景：　　在开发股票自动化交易软件过程中，我们需要将股票的tick数据（每3s一笔）存储下来，供我们的股票交易策略部分使用。这种情况下首先想到使用MySql这种关系型数据库进行存储，但是我们的股票自动化交易软件对速度的要求极高，可能相差几十毫秒就是赚钱与亏钱的区别，而MySql这种传统数据库的插入与查询是很慢的，无法满足我们的要求。当然我们也可以选择既满足存储数据的要求又能达到我们需要的速度要">
+<meta name="twitter:title" content="C++性能榨汁机之循环展开">
+<meta name="twitter:description" content="什么是循环展开？　　循环展开，英文中称（Loop unwinding或loop unrolling），是一种牺牲程序的尺寸来加快程序的执行速度的优化方法。可以由程序员完成，也可由编译器自动优化完成。循环展开最常用来降低循环开销，为具有多个功能单元的处理器提供指令级并行。也有利于指令流水线的调度。
+循环展开对程序性能的影响　　我们直接以实际代码向大家展示循环展开的作用，首先看未经过循环展开优化的代码">
 <meta name="twitter:creator" content="@54rootlee">
     
         <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
@@ -34,8 +39,8 @@
         <meta property="og:image" content="/assets/images/mountietocat.png"/>
     
     
-        <meta property="og:image" content="/cpp_32bit_big_memory/cpp.png"/>
-        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/cpp_32bit_big_memory/cpp.png" />
+        <meta property="og:image" content="/juicer_loop_unrolling/juicer_loop_unrolling.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/juicer_loop_unrolling/juicer_loop_unrolling.png" />
     
     
     
@@ -193,19 +198,19 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            日常踩坑：C++32位程序申请大内存出现std:bad_alloc
+            C++性能榨汁机之循环展开
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" content="Thu Mar 01 2018 23:00:00 GMT+0000">
+    <time itemprop="datePublished" content="Sun Mar 04 2018 16:00:00 GMT+0000">
 	
-		    3月 01, 2018
+		    3月 04, 2018
     	
     </time>
     
         <span>分类： </span>
         
-    <a class="category-link" href="/categories/编程/">编程</a>
+    <a class="category-link" href="/categories/C-性能榨汁机系列文章/">C++性能榨汁机系列文章</a>
 
 
     
@@ -214,16 +219,24 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <h1 id="问题背景：">问题背景：</h1><p>　　在开发股票自动化交易软件过程中，我们需要将股票的tick数据（每3s一笔）存储下来，供我们的股票交易策略部分使用。这种情况下首先想到使用MySql这种关系型数据库进行存储，但是我们的股票自动化交易软件对速度的要求极高，可能相差几十毫秒就是赚钱与亏钱的区别，而MySql这种传统数据库的插入与查询是很慢的，无法满足我们的要求。当然我们也可以选择既满足存储数据的要求又能达到我们需要的速度要求的Redis这种内存数据库，但考虑到我们交易软件是日内交易，不需要股票数据持久化到硬盘上，而且经过大概估算，我们服务器的内存远大于股票每日的数据量，所以考虑将股票数据直接保存在内存中，软件运行时直接对内存中的股票数据进行使用即可。</p>
-<h1 id="问题描述：">问题描述：</h1><p>　　我们使用map保存股票的数据，map的key是股票代码（string类型），value是该股票的行情数据（vector类型），然后建立行情类MarketData（单例模式）将map封装起来，并实现线程安全的插入数据和取数据的方法，这样就实现了一个极其简单的“内存数据库”。在MarketData建立后需要初始化股票数据，使用vector的reserve方法为每支股票预先分配足够存储一天数据的内存空间。代码如下：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">///初始化mapStockData，初始化后该map节点位置不会再变化，避免多线程安全问题</span></span><br><span class="line"><span class="comment">///为vector预先分配内存，避免在程序运行中迭代器失效</span></span><br><span class="line"><span class="keyword">void</span> MarketData::InitStockList(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">set</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>&gt; stockcodes) &#123;</span><br><span class="line">	<span class="keyword">if</span> (stockcodes.empty()) &#123;</span><br><span class="line">		<span class="built_in">cerr</span> &lt;&lt; <span class="string">"未订阅任何股票，请查看ini配置文件！"</span> &lt;&lt; endl;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//为vector预先分配内存，避免在程序运行中迭代器失效</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">auto</span> stockcode : stockcodes) &#123;</span><br><span class="line">		mapStockData_[stockcode].market.reserve(<span class="number">6000</span>);      <span class="comment">//Market数据，每3秒一个数据</span></span><br><span class="line">		mapStockData_[stockcode].transaction.reserve(<span class="number">200000</span>);       <span class="comment">//transaction数据</span></span><br><span class="line">		mapStockData_[stockcode].orderqueue.reserve(<span class="number">12000</span>);       <span class="comment">//orderqueue数据</span></span><br><span class="line">		mapStockData_[stockcode].order.reserve(<span class="number">200000</span>);       <span class="comment">//order数据</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>　　上述代码在订阅股票数量较少（小于10支）的时候一直工作都很正常，昨天我们添加新的股票交易策略，新的策略需要订阅更多的股票（大概100支股票），这时候这段代码就出现了std::bad_alloc错误，即内存申请失败。</p>
-<p><img src="bad_alloc.png" alt="std::bad_alloc"></p>
-<h1 id="问题分析：">问题分析：</h1><p>　　既然是内存分配错误，那我们就计算一下内存占用，经过计算，每支股票每天的数据量大约48M，一百支股票的占用就是4800M，总的数据量不到5个G，但我们服务器是64G内存，应该不存在内存不够用的情况。后来又推测是不是vector需要申请连续的内存，而恰好服务器内存不存在这么多连续的内存，细想一下这种可能性也不大。</p>
-<p>　　没啥头绪就先把这个问题放下去吃饭了，在去食堂的路上，突然想到我们项目中使用的是x86模式，即我们的程序是32位的程序，虽然服务器是64位，但是32位的程序的寻址空间最大只有4G，所以程序是不会寻址大于4G的内存地址的，所以对我们程序而言，服务器64G的物理内存能用的只有4G，而且这4G也不是进程独占的，对于Linux系统而言，内核空间占用1G，32位程序最大的可利用内存只有3G，对于Windows系统而言，系统空间占用2G，32位程序最大可利用内存只有2G（堆内存1.6G左右）。2G内存只能存储大约40支股票，如果再考虑到内存碎片对vector请求连续内存的影响，可能只能存储20多支股票的数据，所以在我们订阅了100支股票的时候，就会出现内存分配失败的错误。</p>
-<h1 id="问题解决：">问题解决：</h1><p>　　查阅资料得知：Windows操作系统有一个 boot.ini 开关，可以为应用程序提供访问3GB的进程地址空间的权限，从而将内核模式地址空间限定为 1 GB，从而用户模式地址空间可用3GB。这种方法虽然可以将可用内存增加1GB，但对我们上百支股票数据而言仍旧是杯水车薪。</p>
-<p>　　最好的办法就是将应用程序按照x64模式重新编译，编译出来的程序便是64位程序，地址空间远远大于32位程序，此时，对程序分配内存的限制就只有物理内存大小，但我们的物理内存是完全足够的，更改了编译参数之后，上述内存申请失败的错误便不再出现。</p>
-<h1 id="总结：">总结：</h1><p>　　当前，64位CPU和64位操作系统已经完全普及了，基于这些平台开发应用程序的时候，如果没有兼容32位系统的需求，应该优先考虑开发64位的应用程序，对于需要大量内存的程序尤为重要。</p>
+            <h1 id="什么是循环展开？">什么是循环展开？</h1><p>　　循环展开，英文中称（Loop unwinding或loop unrolling），是一种牺牲程序的尺寸来加快程序的执行速度的优化方法。可以由程序员完成，也可由编译器自动优化完成。循环展开最常用来降低循环开销，为具有多个功能单元的处理器提供指令级并行。也有利于指令流水线的调度。</p>
+<h1 id="循环展开对程序性能的影响">循环展开对程序性能的影响</h1><p>　　我们直接以实际代码向大家展示循环展开的作用，首先看未经过循环展开优化的代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> start = <span class="built_in">std</span>::chrono::system_clock::now();</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">10000</span>;</span><br><span class="line">    <span class="comment">//循环10000次累加</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; count;i++)&#123;  </span><br><span class="line">        sum += i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">auto</span> end = <span class="built_in">std</span>::chrono::system_clock::now();</span><br><span class="line">    <span class="built_in">std</span>::chrono::duration&lt;<span class="keyword">double</span>&gt; dura = end - start;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt;<span class="string">"共耗时："</span>&lt;&lt; dura.count() &lt;&lt; <span class="string">"s"</span> &lt;&lt; <span class="built_in">std</span>::endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　类似于上面的这段代码是我们平常工作中经常见到的，函数目的就是求得1+2+……+9998+9999的累加和，每次循环把i累加到sum变量上，循环次数一共10000次。代码运行结果如下：</p>
+<p><img src="result1.png" alt="result1"></p>
+<p>可以看出代码运行耗时0.0000279秒。</p>
+<p>　　下面我们将循环展开一次，即把上述代码中的循环改为如下代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; count;i += <span class="number">2</span>)&#123;</span><br><span class="line">    sum += i;</span><br><span class="line">    sum += i+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　即每次循环将i和i+1一起累加到sum变量上，这样可以把循环次数从10000次降低到5000次，由于CPU的高度流水线化，连续两个加法指令增加耗时很低，所以此版本代码可以一定程度上提高程序运行速度，运行结果如下：</p>
+<p><img src="result2.png" alt="result2"></p>
+<p>代码运行耗时0.0000159秒，相较于未优化代码速度快了将近一倍。</p>
+<p>　　<em>当然，我们可以继续增加循环展开次数以进一步提高程序运行速度，但是这个增加循环展开次数也是有限度的，当达到了CPU的最高吞吐量之后，继续增加循环展开次数是没有意义的。</em></p>
+<p>　　上述循环展开后的代码依然有进一步优化的空间，那就是消除连续指令的相关性，以达到指令级并行，我们可以看到循环展开后的代码，循环体中有两条语句：sum += i 和 sum += i+1，第二条语句sum += i+1依赖于第一条命来sum += i的执行结果，所以这两条语句只能依次执行，限制了CPU进一步提高性能的可能。如果我们将循环体改为如下代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> sum1=<span class="number">0</span>,sum2=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;count/<span class="number">2</span>;i+=<span class="number">2</span>)&#123;</span><br><span class="line">    sum1 += i;</span><br><span class="line">    sum2 += i+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line">sum = sum1 + sum2;</span><br></pre></td></tr></table></figure>
+<p>　　我们新建了两个变量sum1和sum2用于存储循环展开时两个累加语句的累加结果，最后在循环体外将两部分结果相加得到最终结果。该代码中两个累加语句之间是互不相关的，所以CPU可以并行执行这两条指令，以达到性能的进一步提高。下面是运行结果：</p>
+<p><img src="result3.png" alt="result3"></p>
+<p>代码运行耗时0.0000073秒，相较于只进行循环展开的代码速度又快了将近一倍。</p>
+<h1 id="总结">总结</h1><p>　　由上面三段代码的运行速度对比可以看出，循环展开对程序性能有着很重要的影响，可以减少分支预测错误次数，增加取消数据相关进一步利用并行执行提高速度的机会。但是，<strong>并不建议大家进行手动的循环展开</strong>，在代码中进行循环展开会导致程序的可读性下降，代码膨胀。为了直观感受循环展开对性能的影响，上述代码运行结果均是在不开编译器优化的情况下进行的测试，其实在我们开启了编译器优化的时候，编译器会自动对我们的循环代码进行循环展开，让我们可以在保持了代码可读性的同时，又能享受到循环展开对我们程序性能的提高。</p>
 
             
                 
@@ -245,7 +258,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_loop_unrolling/"  data-tooltip="C++性能榨汁机之循环展开">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">前一篇</span>
@@ -253,7 +266,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_memset/" data-tooltip="日常踩坑：C++程序中如何正确使用memset()内存初始化函数？">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_32bit_big_memory/" data-tooltip="日常踩坑：C++32位程序申请大内存出现std:bad_alloc">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">后一篇</span>
                     <i class="fa fa-angle-right"></i>
@@ -268,17 +281,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/cpp_32bit_big_memory/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_loop_unrolling/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/cpp_32bit_big_memory/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_loop_unrolling/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/cpp_32bit_big_memory/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_loop_unrolling/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -324,7 +337,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_loop_unrolling/"  data-tooltip="C++性能榨汁机之循环展开">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">前一篇</span>
@@ -332,7 +345,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_memset/" data-tooltip="日常踩坑：C++程序中如何正确使用memset()内存初始化函数？">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_32bit_big_memory/" data-tooltip="日常踩坑：C++32位程序申请大内存出现std:bad_alloc">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">后一篇</span>
                     <i class="fa fa-angle-right"></i>
@@ -347,17 +360,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/cpp_32bit_big_memory/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_loop_unrolling/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/cpp_32bit_big_memory/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_loop_unrolling/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/cpp_32bit_big_memory/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_loop_unrolling/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -383,17 +396,17 @@
                 <div id="share-options-bar" class="share-options-bar" data-behavior="1">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/cpp_32bit_big_memory/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_loop_unrolling/">
                 <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/cpp_32bit_big_memory/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_loop_unrolling/">
                 <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/cpp_32bit_big_memory/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_loop_unrolling/">
                 <i class="fa fa-twitter"></i><span>Share on Twitter</span>
             </a>
         </li>

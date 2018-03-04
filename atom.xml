@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2018-03-02T04:01:11.417Z</updated>
+  <updated>2018-03-04T09:24:11.592Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -13,6 +13,41 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[C++性能榨汁机之循环展开]]></title>
+    <link href="http://irootlee.com/juicer_loop_unrolling/"/>
+    <id>http://irootlee.com/juicer_loop_unrolling/</id>
+    <published>2018-03-04T16:00:00.000Z</published>
+    <updated>2018-03-04T09:24:11.592Z</updated>
+    <content type="html"><![CDATA[<h1 id="什么是循环展开？">什么是循环展开？</h1><p>　　循环展开，英文中称（Loop unwinding或loop unrolling），是一种牺牲程序的尺寸来加快程序的执行速度的优化方法。可以由程序员完成，也可由编译器自动优化完成。循环展开最常用来降低循环开销，为具有多个功能单元的处理器提供指令级并行。也有利于指令流水线的调度。</p>
+<h1 id="循环展开对程序性能的影响">循环展开对程序性能的影响</h1><p>　　我们直接以实际代码向大家展示循环展开的作用，首先看未经过循环展开优化的代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> start = <span class="built_in">std</span>::chrono::system_clock::now();</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">10000</span>;</span><br><span class="line">    <span class="comment">//循环10000次累加</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; count;i++)&#123;  </span><br><span class="line">        sum += i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">auto</span> end = <span class="built_in">std</span>::chrono::system_clock::now();</span><br><span class="line">    <span class="built_in">std</span>::chrono::duration&lt;<span class="keyword">double</span>&gt; dura = end - start;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt;<span class="string">"共耗时："</span>&lt;&lt; dura.count() &lt;&lt; <span class="string">"s"</span> &lt;&lt; <span class="built_in">std</span>::endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　类似于上面的这段代码是我们平常工作中经常见到的，函数目的就是求得1+2+……+9998+9999的累加和，每次循环把i累加到sum变量上，循环次数一共10000次。代码运行结果如下：</p>
+<p><img src="result1.png" alt="result1"></p>
+<p>可以看出代码运行耗时0.0000279秒。</p>
+<p>　　下面我们将循环展开一次，即把上述代码中的循环改为如下代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; count;i += <span class="number">2</span>)&#123;</span><br><span class="line">    sum += i;</span><br><span class="line">    sum += i+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　即每次循环将i和i+1一起累加到sum变量上，这样可以把循环次数从10000次降低到5000次，由于CPU的高度流水线化，连续两个加法指令增加耗时很低，所以此版本代码可以一定程度上提高程序运行速度，运行结果如下：</p>
+<p><img src="result2.png" alt="result2"></p>
+<p>代码运行耗时0.0000159秒，相较于未优化代码速度快了将近一倍。</p>
+<p>　　<em>当然，我们可以继续增加循环展开次数以进一步提高程序运行速度，但是这个增加循环展开次数也是有限度的，当达到了CPU的最高吞吐量之后，继续增加循环展开次数是没有意义的。</em></p>
+<p>　　上述循环展开后的代码依然有进一步优化的空间，那就是消除连续指令的相关性，以达到指令级并行，我们可以看到循环展开后的代码，循环体中有两条语句：sum += i 和 sum += i+1，第二条语句sum += i+1依赖于第一条命来sum += i的执行结果，所以这两条语句只能依次执行，限制了CPU进一步提高性能的可能。如果我们将循环体改为如下代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> sum1=<span class="number">0</span>,sum2=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;count/<span class="number">2</span>;i+=<span class="number">2</span>)&#123;</span><br><span class="line">    sum1 += i;</span><br><span class="line">    sum2 += i+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line">sum = sum1 + sum2;</span><br></pre></td></tr></table></figure>
+<p>　　我们新建了两个变量sum1和sum2用于存储循环展开时两个累加语句的累加结果，最后在循环体外将两部分结果相加得到最终结果。该代码中两个累加语句之间是互不相关的，所以CPU可以并行执行这两条指令，以达到性能的进一步提高。下面是运行结果：</p>
+<p><img src="result3.png" alt="result3"></p>
+<p>代码运行耗时0.0000073秒，相较于只进行循环展开的代码速度又快了将近一倍。</p>
+<h1 id="总结">总结</h1><p>　　由上面三段代码的运行速度对比可以看出，循环展开对程序性能有着很重要的影响，可以减少分支预测错误次数，增加取消数据相关进一步利用并行执行提高速度的机会。但是，<strong>并不建议大家进行手动的循环展开</strong>，在代码中进行循环展开会导致程序的可读性下降，代码膨胀。为了直观感受循环展开对性能的影响，上述代码运行结果均是在不开编译器优化的情况下进行的测试，其实在我们开启了编译器优化的时候，编译器会自动对我们的循环代码进行循环展开，让我们可以在保持了代码可读性的同时，又能享受到循环展开对我们程序性能的提高。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="什么是循环展开？">什么是循环展开？</h1><p>　　循环展开，英文中称（Loop unwinding或loop unrolling），是一种牺牲程序的尺寸来加快程序的执行速度的优化方法。可以由程序员完成，也可由编译器自动优化完成。循环展开最常用来降低循环开销，]]>
+    </summary>
+    
+      <category term="C++" scheme="http://irootlee.com/tags/C/"/>
+    
+      <category term="C++性能榨汁机系列文章" scheme="http://irootlee.com/categories/C-%E6%80%A7%E8%83%BD%E6%A6%A8%E6%B1%81%E6%9C%BA%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[日常踩坑：C++32位程序申请大内存出现std:bad_alloc]]></title>
@@ -726,46 +761,6 @@ features = list(train.columns)
     <![CDATA[<p>来到欧洲，艺术氛围便强了起来。</p>
 <p>在这里，几乎我去过的每一个城市（利沃夫、敖德萨、基辅）的中心都会有一个壮丽古典的剧院，在喧嚣的市中心遗世独立，这里是整个城市的文化艺术中心，全体市民的精神栖息之所。</p>
 <p>哈尔科夫市中心也有一个大剧院，雄伟、壮观、美丽。]]>
-    </summary>
-    
-      <category term="随笔" scheme="http://irootlee.com/categories/%E9%9A%8F%E7%AC%94/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[一个猛子扎进英语原著]]></title>
-    <link href="http://irootlee.com/learn_english/"/>
-    <id>http://irootlee.com/learn_english/</id>
-    <published>2016-05-23T02:00:00.000Z</published>
-    <updated>2018-03-02T05:02:17.509Z</updated>
-    <content type="html"><![CDATA[<p>我喜欢读书。</p>
-<p>世界上的书大部分都是用英语写成的，即使那些有价值的其他语言写就的书也必定会有英语译本，但却不一定有汉语译本。世界上最顶尖的技术的文献也都是英语的，如果等着这些书被翻译后再去研读，那就注定永远追不上世界潮流了。<br>由此可见，能像读汉语书一样流畅的去阅读英语原版书是多么必要。</p>
-<p>说来惭愧，进入大学后，英语水平基本没有任何提高，全是靠着高中的那点积累考过了英语四级、六级。曾经也像突然打鸡血一样急切的想去提高英语水平，但都是由于各种原因半途而废。</p>
-<p>近来，想看《了不起的盖茨比》这本书时，发现各个版本的翻译质量都不高，看到网上有人推荐说：直接阅读英文原著，会更加体会到作者优美的文笔和深邃的思想。于是下载了《The Great Gatsby》到心爱的kindle上，开始阅读这本书。<br>想来学了这么多年的英语，看这本书应该不会有太大的困难吧。<br>但是……<br>看了艰难地看完第一章才发现，自己真是“too young，too simple.”。基本上每一页里面都有十个以上的生词存在，手指不停在kindle上点击去查各个单词的意思，直到那时才发现我的词汇量是多么的匮乏，看英文原著真是太困难了。</p>
-<p>后来去专门背了一些单词，才能硬着头皮坚持将这本书读下去，读完后才发现，原版书给人的感觉真好，再好的翻译都不可能完整的表达原著的意思，因为语言之间的差别，有些东西换一种语言是表达不出来的，即使勉强表达出来，也已经丢失了原文的韵味。</p>
-<p>所以对自己有了一个期待，那就是希望自己在未来的某一天，可以拿起任意一本英文原著都可以像读汉语书一样流畅正确快速的去阅读。现在的我看着那些翻译过的著作，就像是看到的是画框里的苍山、茫海，总是少了那么几分气势。只有读到那真正从作者笔下跳出来的文字时，我才可以真正的去攀爬苍苍青山、去遨游茫茫碧海，才能真正体会到书中那种荡气回肠。</p>
-<p>所以，我开始坚持背单词、读原著……</p>
-<p>2016上半年我坚持了两件事：</p>
-<ul>
-<li>练习打字，双拼+盲打。</li>
-<li>坚持健身，两天去一次健身房。</li>
-</ul>
-<p>现在，坚持的这两件事都有了非常好的回报：</p>
-<ul>
-<li>打字：以前想写一篇博客，必须在纸上打草稿，然后，对着草稿，盯着键盘，用“一阳指”把草稿上的字一个一个打到电脑上，效率低下，让人抓狂。而现在我已经可以自由的在电脑上写下自己的感想，而且速度相比以前“一阳指”有了质的飞跃。</li>
-<li>健身：以前身材瘦弱，生活状态也极其不好。现在虽然没有练成大块头，但是胸肌、腹肌、肱二头肌也已隐隐可见，生活状态也改良了许多。</li>
-</ul>
-<p>其实上面这些收获并不是最重要的，最重要的是这两件事使我确信了一个人人都懂的道理：“坚持付出就会有收获”。<br>这个道理，从小就懂，但是以前并不是那么相信。</p>
-<p>所谓“道理都懂，依然过不好这一生”，其实是因为虽然我们懂了这些道理，但我们并不坚信这些道理的正确，自己不信的道理其实还不是真正懂。抱着不真正懂得那些道理又怎么能过好这一生呢？是吧。</p>
-<p>而，现在，我彻底懂了、信了这些道理，也坚持了这些道理，这一生应该不会太差吧？</p>
-<p>坚持付出就会有收获。</p>
-<p>所以，我相信我这次准备学习英语绝不再是“心血来潮”，不会再像以前那样半途而废。</p>
-<p>一个猛子扎进英语原著这个水池里，扑腾几下，呛几口水……</p>
-<p>我终将会游泳。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>我喜欢读书。</p>
-<p>世界上的书大部分都是用英语写成的，即使那些有价值的其他语言写就的书也必定会有英语译本，但却不一定有汉语译本。世界上最顶尖的技术的文献也都是英语的，如果等着这些书被翻译后再去研读，那就注定永远追不上世界潮流了。<br>由此可见，能像读汉语书一样流畅]]>
     </summary>
     
       <category term="随笔" scheme="http://irootlee.com/categories/%E9%9A%8F%E7%AC%94/"/>
