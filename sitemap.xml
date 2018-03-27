@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://irootlee.com/cpp_KMP/</loc>
+    
+    <lastmod>2018-03-27T14:21:22.254Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://irootlee.com/juicer_false_sharing/</loc>
     
     <lastmod>2018-03-27T13:28:05.234Z</lastmod>
@@ -170,7 +177,7 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/python_cookie/</loc>
+    <loc>http://irootlee.com/python_CRLF/</loc>
     
     <lastmod>2017-11-17T03:47:58.000Z</lastmod>
     
@@ -184,14 +191,14 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/python_CRLF/</loc>
+    <loc>http://irootlee.com/python_cookie/</loc>
     
     <lastmod>2017-11-17T03:47:58.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://irootlee.com/py_save_data_of_sun/</loc>
+    <loc>http://irootlee.com/Py2exe/</loc>
     
     <lastmod>2017-11-17T03:47:57.000Z</lastmod>
     
@@ -205,14 +212,14 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/Py2exe/</loc>
+    <loc>http://irootlee.com/py_save_data_of_sun/</loc>
     
     <lastmod>2017-11-17T03:47:57.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://irootlee.com/ML_onehot_encode/</loc>
+    <loc>http://irootlee.com/ML_good_weakness/</loc>
     
     <lastmod>2017-11-17T03:47:56.000Z</lastmod>
     
@@ -226,7 +233,7 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/ML_good_weakness/</loc>
+    <loc>http://irootlee.com/ML_onehot_encode/</loc>
     
     <lastmod>2017-11-17T03:47:56.000Z</lastmod>
     
@@ -254,14 +261,14 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/kharkiv/</loc>
+    <loc>http://irootlee.com/git/</loc>
     
     <lastmod>2017-11-17T03:47:54.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://irootlee.com/git/</loc>
+    <loc>http://irootlee.com/kharkiv/</loc>
     
     <lastmod>2017-11-17T03:47:54.000Z</lastmod>
     

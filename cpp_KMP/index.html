@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="I&#39;m Root lee !">
-    <title>C++性能榨汁机之伪共享 - I&#39;m Root lee !</title>
+    <title>日常踩坑：一场C++实现KMP算法引发的&quot;血案&quot; - I&#39;m Root lee !</title>
     <meta name="author" content="Root lee">
     
         <link rel="icon" href="/assets/images/favicon.ico">
@@ -14,17 +14,23 @@
     
         <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="前言　　在多核并发编程中，如果将互斥锁的争用比作“性能杀手”的话，那么伪共享则相当于“性能刺客”。“杀手”与“刺客”的区别在于杀手是可见的，遇到杀手时我们可以选择战斗、逃跑、绕路、求饶等多种手段去应付，但“刺客”却不同，“刺客”永远隐藏在暗处，伺机给你致命一击，防不胜防。具体到我们的并发编程中，遇到锁争用影响并发性能情况时，我们可以采取多种措施（如缩短临界区，原子操作等等）去提高程序性能，但是伪共">
+    <meta name="description" content="问题背景　　KMP算法是一种优化后的字符串匹配算法，可以将复杂度由暴力匹配的O(m*n)降低到O(m+n)，具体原理就不再赘述，相信几乎任何一本算法书上面都会有KMP算法的详细介绍与实现。以前虽然学习过KMP算法，也清楚知道算法的原理，但是却从来没有完整实现过一次，闲来无事便打开Visual Studio准备使用C++独立实现一下。
+　　代码如下：
+123456789101112131415161">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="C++性能榨汁机之伪共享">
-<meta property="og:url" content="http://irootlee.com/juicer_false_sharing/index.html">
+<meta property="og:title" content="日常踩坑：一场C++实现KMP算法引发的"血案"">
+<meta property="og:url" content="http://irootlee.com/cpp_KMP/index.html">
 <meta property="og:site_name" content="I'm Root lee !">
-<meta property="og:description" content="前言　　在多核并发编程中，如果将互斥锁的争用比作“性能杀手”的话，那么伪共享则相当于“性能刺客”。“杀手”与“刺客”的区别在于杀手是可见的，遇到杀手时我们可以选择战斗、逃跑、绕路、求饶等多种手段去应付，但“刺客”却不同，“刺客”永远隐藏在暗处，伺机给你致命一击，防不胜防。具体到我们的并发编程中，遇到锁争用影响并发性能情况时，我们可以采取多种措施（如缩短临界区，原子操作等等）去提高程序性能，但是伪共">
-<meta property="og:image" content="http://irootlee.com/MESI.png">
-<meta property="og:updated_time" content="2018-03-27T13:28:05.234Z">
+<meta property="og:description" content="问题背景　　KMP算法是一种优化后的字符串匹配算法，可以将复杂度由暴力匹配的O(m*n)降低到O(m+n)，具体原理就不再赘述，相信几乎任何一本算法书上面都会有KMP算法的详细介绍与实现。以前虽然学习过KMP算法，也清楚知道算法的原理，但是却从来没有完整实现过一次，闲来无事便打开Visual Studio准备使用C++独立实现一下。
+　　代码如下：
+123456789101112131415161">
+<meta property="og:image" content="http://irootlee.com/error.png">
+<meta property="og:updated_time" content="2018-03-27T14:21:22.254Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="C++性能榨汁机之伪共享">
-<meta name="twitter:description" content="前言　　在多核并发编程中，如果将互斥锁的争用比作“性能杀手”的话，那么伪共享则相当于“性能刺客”。“杀手”与“刺客”的区别在于杀手是可见的，遇到杀手时我们可以选择战斗、逃跑、绕路、求饶等多种手段去应付，但“刺客”却不同，“刺客”永远隐藏在暗处，伺机给你致命一击，防不胜防。具体到我们的并发编程中，遇到锁争用影响并发性能情况时，我们可以采取多种措施（如缩短临界区，原子操作等等）去提高程序性能，但是伪共">
+<meta name="twitter:title" content="日常踩坑：一场C++实现KMP算法引发的"血案"">
+<meta name="twitter:description" content="问题背景　　KMP算法是一种优化后的字符串匹配算法，可以将复杂度由暴力匹配的O(m*n)降低到O(m+n)，具体原理就不再赘述，相信几乎任何一本算法书上面都会有KMP算法的详细介绍与实现。以前虽然学习过KMP算法，也清楚知道算法的原理，但是却从来没有完整实现过一次，闲来无事便打开Visual Studio准备使用C++独立实现一下。
+　　代码如下：
+123456789101112131415161">
 <meta name="twitter:creator" content="@54rootlee">
     
         <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
@@ -34,8 +40,8 @@
         <meta property="og:image" content="/assets/images/mountietocat.png"/>
     
     
-        <meta property="og:image" content="/juicer_false_sharing/false_sharing.png"/>
-        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/juicer_false_sharing/false_sharing.png" />
+        <meta property="og:image" content="/cpp_KMP/cpp_KMP.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/cpp_KMP/cpp_KMP.png" />
     
     
     
@@ -193,11 +199,11 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            C++性能榨汁机之伪共享
+            日常踩坑：一场C++实现KMP算法引发的&quot;血案&quot;
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" content="Tue Mar 27 2018 22:00:00 GMT+0000">
+    <time itemprop="datePublished" content="Tue Mar 27 2018 23:00:00 GMT+0000">
 	
 		    3月 27, 2018
     	
@@ -205,7 +211,7 @@
     
         <span>分类： </span>
         
-    <a class="category-link" href="/categories/C-性能榨汁机系列文章/">C++性能榨汁机系列文章</a>
+    <a class="category-link" href="/categories/编程/">编程</a>
 
 
     
@@ -214,26 +220,20 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <h1 id="前言">前言</h1><p>　　在多核并发编程中，如果将互斥锁的争用比作“性能杀手”的话，那么伪共享则相当于“性能刺客”。“杀手”与“刺客”的区别在于杀手是可见的，遇到杀手时我们可以选择战斗、逃跑、绕路、求饶等多种手段去应付，但“刺客”却不同，“刺客”永远隐藏在暗处，伺机给你致命一击，防不胜防。具体到我们的并发编程中，遇到锁争用影响并发性能情况时，我们可以采取多种措施（如缩短临界区，原子操作等等）去提高程序性能，但是伪共享却是我们从所写代码中看不出任何蛛丝马迹的，发现不了问题也就无法解决问题，从而导致伪共享在“暗处”严重拖累程序的并发性能，但我们却束手无策。</p>
-<h1 id="缓存行">缓存行</h1><p>　　为了进行下面的讨论，我们需要首先熟悉缓存行的概念，学过操作系统课程存储结构这部分内容的同学应该对存储器层次结构的金字塔模型印象深刻，金字塔从上往下代表存储介质的成本降低、容量变大，从下往上则代表存取速度的提高。位于金字塔模型最上层的是CPU中的寄存器，其次是CPU缓存（L1，L2，L3），再往下是内存，最底层是磁盘，操作系统采用这种存储层次模型主要是为了解决CPU的高速与内存磁盘低速之间的矛盾，CPU将最近使用的数据预先读取到Cache中，下次再访问同样数据的时候，可以直接从速度比较快的CPU缓存中读取，避免从内存或磁盘读取拖慢整体速度。</p>
-<p>　　CPU缓存的最小单位就是缓存行，缓存行大小依据架构不同有不同大小，最常见的有64Byte和32Byte，CPU缓存从内存取数据时以缓存行为单位进行，每一次都取需要读取数据所在的整个缓存行，即使相邻的数据没有被用到也会被缓存到CPU缓存中（这里又涉及到局部性原理，后面文章会进行介绍）。</p>
-<h1 id="缓存一致性">缓存一致性</h1><p>　　在单核CPU情况下，上述方法可以正常工作，可以确保缓存到CPU缓存中的数据永远是“干净”的，因为不会有其他CPU去更改内存中的数据，但是在多核CPU下，情况就变得更加复杂一些。多CPU中，每个CPU都有自己的私有缓存（可能共享L3缓存），当一个CPU1对Cache中缓存数据进行操作时，如果CPU2在此之前更改了该数据，则CPU1中的数据就不再是“干净”的，即应该是失效数据，缓存一致性就是为了保证多CPU之间的缓存一致。</p>
-<p>　　Linux系统中采用MESI协议处理缓存一致性，所谓MESI即是指CPU缓存的四种状态：</p>
-<ul>
-<li>M（修改，Modified）：本地处理器已经修改缓存行，即是脏行，它的内容与内存中的内容不一样，并且此 cache 只有本地一个拷贝(专有)；</li>
-<li>E（专有，Exclusive）：缓存行内容和内存中的一样，而且其它处理器都没有这行数据；</li>
-<li>S（共享，Shared）：缓存行内容和内存中的一样, 有可能其它处理器也存在此缓存行的拷贝；</li>
-<li>I（无效，Invalid）：缓存行失效, 不能使用。</li>
-</ul>
-<p><img src="MESI.png" alt="MESI"></p>
-<p>　　每个CPU缓存行都在四个状态之间互相转换，以此决定CPU缓存是否失效，比如CPU1对一个缓存行执行了写入操作，则此操作会导致其他CPU的该缓存行进入Invalid无效状态，CPU需要使用该缓存行的时候需要从内存中重新读取。由此就解决了多CPU之间的缓存一致性问题。</p>
-<h1 id="伪共享">伪共享</h1><p>　　何谓伪共享？上面我们提过CPU的缓存是<strong>以缓存行为单位</strong>进行的，即除了本身所需读写的数据之外还会缓存与该数据在同一缓存行的数据，假设缓存行大小是32字节，内存中有“abcdefgh”八个int型数据，当CPU读取“d”这个数据时，CPU会将“abcdefgh”八个int数据组成一个缓存行加入到CPU缓存中。假设计算机有两个CPU：CPU1和CPU2，CPU1只对“a”这个数据进行频繁读写，CPU2只对“b”这个数据进行频繁读写，按理说这两个CPU读写数据没有任何关联，也就不会产生任何竞争，不会有性能问题，但是由于CPU缓存是以缓存行为单位进行存取的，也是以缓存行为单位失效的，即使CPU1只更改了缓存行中“a”数据，也会导致CPU2中该缓存行完全失效，同理，CPU2对“b”的改动也会导致CPU1中该缓存行失效，由此引发了该缓存行在两个CPU之间“乒乓”，缓存行频繁失效，最终导致程序性能下降，这就是伪共享。</p>
-<h1 id="如何避免伪共享">如何避免伪共享</h1><p>　　避免伪共享主要有以下两种方式：</p>
-<ol>
-<li>缓存行填充（Padding）：为了避免伪共享就需要将可能造成伪共享的多个变量处于不同的缓存行中，可以采用在变量后面填充字节的方式达到该目的。</li>
-<li>使用某些语言或编译器中强制变量对齐，将变量都对齐到缓存行大小，避免伪共享发生。</li>
-</ol>
-<h1 id="总结">总结</h1><p>　　一般伪共享都很隐蔽，很难被发现，当伪共享真正构成性能瓶颈的时候，我们有必要去努力找到并解决它，但是在大部分对性能追求没有那么高的应用中，伪共享的存在对程序的危害很小，有时并不值得耗费精力和额外的内存空间（缓存行填充）去查找系统存在的伪共享。还是那句我一直以来遵循的话“<strong>不要过度优化，不要提前优化。</strong>”。</p>
+            <h1 id="问题背景">问题背景</h1><p>　　KMP算法是一种优化后的字符串匹配算法，可以将复杂度由暴力匹配的O(m*n)降低到O(m+n)，具体原理就不再赘述，相信几乎任何一本算法书上面都会有KMP算法的详细介绍与实现。以前虽然学习过KMP算法，也清楚知道算法的原理，但是却从来没有完整实现过一次，闲来无事便打开Visual Studio准备使用C++独立实现一下。</p>
+<p>　　代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//生成模式串对应的next数组</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_next</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> &amp;p, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;next)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> j = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> k = -<span class="number">1</span>;</span><br><span class="line">	next[j] = k;</span><br><span class="line">	<span class="keyword">while</span> (j &lt; p.length() - <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (k == -<span class="number">1</span> || p[k] == p[j]) &#123;</span><br><span class="line">			next[++j] = ++k;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			k = next[k];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//KMP算法实现查找子串</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">KMP</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> &amp;str, <span class="keyword">const</span> <span class="built_in">string</span> &amp;p)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; next(p.length(), <span class="number">0</span>);</span><br><span class="line">	get_next(p, next);</span><br><span class="line">	<span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span> (i &lt; str.length() &amp;&amp; j &lt; p.length()) &#123;</span><br><span class="line">		<span class="keyword">if</span> (j == -<span class="number">1</span> || str[i] == p[j]) &#123;</span><br><span class="line">			i++;</span><br><span class="line">			j++;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			j = next[j];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> (j == len_p) ? i - j : -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们使用如下代码对上述KMP算法正确性进行验证：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	<span class="built_in">string</span> str = <span class="string">"aabaacg"</span>;</span><br><span class="line">	<span class="built_in">string</span> p = <span class="string">"aac"</span>;</span><br><span class="line">	<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; next(p.size(), <span class="number">0</span>);</span><br><span class="line">	get_next(p,next);</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; KMP(str, p);</span><br><span class="line">	system(<span class="string">"pause"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以看到字符串”aac”是包含在”aabaacg”中的，KMP函数应该返回匹配点位置3，但是程序运行后却得到如下结果：</p>
+<p><img src="error.png" alt="error"></p>
+<p>KMP函数返回值为-1，即没有在”aabaacg”中找到子串”aac”，显然这个结果并不正确。</p>
+<h1 id="问题查找">问题查找</h1><p>　　为了找到问题所在，我们单步执行跟踪函数的运行，跟踪结果表明，KMP函数中的循环（代码第25行）在k==-1的情况下退出了，显然这并不符合逻辑。在这个地方仔细想一下就能发现问题出现的原因，我们判断退出条件时使用了vector的成员函数length()获得字符串长度，length()函数返回值为size_t，也就是一个unsigned int类型的值，k的类型却为int，当int与unsigned int比较时，编译器会将int类型转换为unsigned int类型，所以当k==-1时就被转换为了最大的无符号整数INT_MAX，所以k&lt;p.length()条件就不再满足，导致循环提前退出，最终导致函数逻辑出现错误。</p>
+<p>　　问题解决办法为在循环前面定义两个int变量len_str和len_p，并将str和p的大小赋值给这两个变量，在循环中使用len_str和len_p替换str.length()和p.length()即可。</p>
+<h1 id="总结">总结</h1><p>这个错误完全是因为编码习惯不够严谨导致的，在C++中随手就会写出这种循环：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; p.length(); i++)&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种代码在 i &gt;= 0 的时候可以运行良好，但是一旦出现i &lt; 0的情况，就会导致意想不到的事情发生。</p>
+<p>后面一定要改善自己的编码习惯，对于不同类型之间运算一定要仔细考虑默认类型转换，同时对编译器发出的”waring”引起足够的重视，虽然”waring”不会引起语法错误，但是可能会引起错误代价更大的逻辑错误。</p>
 
             
                 
@@ -255,7 +255,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_KMP/"  data-tooltip="日常踩坑：一场C++实现KMP算法引发的&quot;血案&quot;">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">前一篇</span>
@@ -263,7 +263,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_loop_unrolling/" data-tooltip="C++性能榨汁机之循环展开">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_false_sharing/" data-tooltip="C++性能榨汁机之伪共享">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">后一篇</span>
                     <i class="fa fa-angle-right"></i>
@@ -278,17 +278,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_false_sharing/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/cpp_KMP/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_false_sharing/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/cpp_KMP/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_false_sharing/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/cpp_KMP/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -334,7 +334,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_KMP/"  data-tooltip="日常踩坑：一场C++实现KMP算法引发的&quot;血案&quot;">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">前一篇</span>
@@ -342,7 +342,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_loop_unrolling/" data-tooltip="C++性能榨汁机之循环展开">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_false_sharing/" data-tooltip="C++性能榨汁机之伪共享">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">后一篇</span>
                     <i class="fa fa-angle-right"></i>
@@ -357,17 +357,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_false_sharing/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/cpp_KMP/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_false_sharing/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/cpp_KMP/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_false_sharing/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/cpp_KMP/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -393,17 +393,17 @@
                 <div id="share-options-bar" class="share-options-bar" data-behavior="1">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_false_sharing/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/cpp_KMP/">
                 <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_false_sharing/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/cpp_KMP/">
                 <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_false_sharing/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/cpp_KMP/">
                 <i class="fa fa-twitter"></i><span>Share on Twitter</span>
             </a>
         </li>

@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2018-03-27T13:28:05.234Z</updated>
+  <updated>2018-03-27T14:21:22.254Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -13,6 +13,37 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[日常踩坑：一场C++实现KMP算法引发的"血案"]]></title>
+    <link href="http://irootlee.com/cpp_KMP/"/>
+    <id>http://irootlee.com/cpp_KMP/</id>
+    <published>2018-03-27T23:00:00.000Z</published>
+    <updated>2018-03-27T14:21:22.254Z</updated>
+    <content type="html"><![CDATA[<h1 id="问题背景">问题背景</h1><p>　　KMP算法是一种优化后的字符串匹配算法，可以将复杂度由暴力匹配的O(m*n)降低到O(m+n)，具体原理就不再赘述，相信几乎任何一本算法书上面都会有KMP算法的详细介绍与实现。以前虽然学习过KMP算法，也清楚知道算法的原理，但是却从来没有完整实现过一次，闲来无事便打开Visual Studio准备使用C++独立实现一下。</p>
+<p>　　代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//生成模式串对应的next数组</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_next</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> &amp;p, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;next)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> j = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> k = -<span class="number">1</span>;</span><br><span class="line">	next[j] = k;</span><br><span class="line">	<span class="keyword">while</span> (j &lt; p.length() - <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (k == -<span class="number">1</span> || p[k] == p[j]) &#123;</span><br><span class="line">			next[++j] = ++k;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			k = next[k];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//KMP算法实现查找子串</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">KMP</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> &amp;str, <span class="keyword">const</span> <span class="built_in">string</span> &amp;p)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; next(p.length(), <span class="number">0</span>);</span><br><span class="line">	get_next(p, next);</span><br><span class="line">	<span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span> (i &lt; str.length() &amp;&amp; j &lt; p.length()) &#123;</span><br><span class="line">		<span class="keyword">if</span> (j == -<span class="number">1</span> || str[i] == p[j]) &#123;</span><br><span class="line">			i++;</span><br><span class="line">			j++;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			j = next[j];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> (j == len_p) ? i - j : -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们使用如下代码对上述KMP算法正确性进行验证：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	<span class="built_in">string</span> str = <span class="string">"aabaacg"</span>;</span><br><span class="line">	<span class="built_in">string</span> p = <span class="string">"aac"</span>;</span><br><span class="line">	<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; next(p.size(), <span class="number">0</span>);</span><br><span class="line">	get_next(p,next);</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; KMP(str, p);</span><br><span class="line">	system(<span class="string">"pause"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以看到字符串”aac”是包含在”aabaacg”中的，KMP函数应该返回匹配点位置3，但是程序运行后却得到如下结果：</p>
+<p><img src="error.png" alt="error"></p>
+<p>KMP函数返回值为-1，即没有在”aabaacg”中找到子串”aac”，显然这个结果并不正确。</p>
+<h1 id="问题查找">问题查找</h1><p>　　为了找到问题所在，我们单步执行跟踪函数的运行，跟踪结果表明，KMP函数中的循环（代码第25行）在k==-1的情况下退出了，显然这并不符合逻辑。在这个地方仔细想一下就能发现问题出现的原因，我们判断退出条件时使用了vector的成员函数length()获得字符串长度，length()函数返回值为size_t，也就是一个unsigned int类型的值，k的类型却为int，当int与unsigned int比较时，编译器会将int类型转换为unsigned int类型，所以当k==-1时就被转换为了最大的无符号整数INT_MAX，所以k&lt;p.length()条件就不再满足，导致循环提前退出，最终导致函数逻辑出现错误。</p>
+<p>　　问题解决办法为在循环前面定义两个int变量len_str和len_p，并将str和p的大小赋值给这两个变量，在循环中使用len_str和len_p替换str.length()和p.length()即可。</p>
+<h1 id="总结">总结</h1><p>这个错误完全是因为编码习惯不够严谨导致的，在C++中随手就会写出这种循环：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; p.length(); i++)&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种代码在 i &gt;= 0 的时候可以运行良好，但是一旦出现i &lt; 0的情况，就会导致意想不到的事情发生。</p>
+<p>后面一定要改善自己的编码习惯，对于不同类型之间运算一定要仔细考虑默认类型转换，同时对编译器发出的”waring”引起足够的重视，虽然”waring”不会引起语法错误，但是可能会引起错误代价更大的逻辑错误。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="问题背景">问题背景</h1><p>　　KMP算法是一种优化后的字符串匹配算法，可以将复杂度由暴力匹配的O(m*n)降低到O(m+n)，具体原理就不再赘述，相信几乎任何一本算法书上面都会有KMP算法的详细介绍与实现。以前虽然学习过KMP算法，也清楚知道算法的原理，]]>
+    </summary>
+    
+      <category term="C++" scheme="http://irootlee.com/tags/C/"/>
+    
+      <category term="编程" scheme="http://irootlee.com/categories/%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[C++性能榨汁机之伪共享]]></title>
@@ -737,39 +768,6 @@ features = list(train.columns)
       <category term="xml" scheme="http://irootlee.com/tags/xml/"/>
     
       <category term="Python" scheme="http://irootlee.com/categories/Python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[我的身份地位是不是真正的我？——观《空王冠》后感]]></title>
-    <link href="http://irootlee.com/review_hollow_crown/"/>
-    <id>http://irootlee.com/review_hollow_crown/</id>
-    <published>2016-06-22T20:00:00.000Z</published>
-    <updated>2017-11-17T03:48:00.000Z</updated>
-    <content type="html"><![CDATA[<blockquote>
-<p>戴上你们的帽子，不要用恭敬的样子来讥笑一个血肉之躯，丢开恭敬、惯例、仪式和礼节，你们一向都把我认错了，和你们一样，我也靠面包生活，我也有欲望，懂得悲哀，需要朋友，既然如此，你们怎能对我说我是国王呢？       ——理查二世</p>
-</blockquote>
-<p>说来惭愧，读书这么多年都没认真接触过莎士比亚的作品，与莎翁的第一次接触竟是在BBC拍摄的英剧《空王冠》中，所幸，此剧精美的制作和演员精彩的表演并没有辱没了莎翁。</p>
-<p>空王冠第一季的第一集主要讲述了英国国王理查二世因骄横傲慢而被推翻的故事。当他头戴王冠、手持权杖时，他是高贵的、骄傲的、受到上天眷顾的上帝之子；当王冠滚落在地，权杖分崩离析时，他却成了众叛亲离、遭人唾弃的阶下之囚。</p>
-<p>让人不禁想，为何一顶空洞的王冠却可以决定一个人的命运？头戴王冠高高在上的理查二世和王冠滚落匍匐在地的理查二世，哪一个才是真正的他？亦或是这两个都不是真正的他？</p>
-<p>王冠是身份地位的象征。</p>
-<p>人生活在社会上，都有属于自己的身份地位，或是权倾一时的官员、或是富甲一方的商人、或是学富五车的学者、亦或是每天为生计奔波的普通人……可当剥去我们各种各样的身份时，什么才是真正的我？</p>
-<p>官员在位时，他的身份地位给了他调用无数资源去呼风唤雨的权利，给了他一个自己无所不能、有别于其他普通人的幻觉，可当有朝一日权力不再，才发现，除去了身份地位，以前唾手可得的资源已经遥不可及，自己也只不过是一个普普通通的人，也会为家庭琐事所扰，为柴米油盐所困。更遑论自古至今无数的商人巨贾一朝破败，恍然一梦。</p>
-<p>哲学永久的追问就是一句话：我是谁？</p>
-<p>也许我们可以回答：我是官员、我是商人、我是教授、我是警察、我是医生、我是……<br>但是这些形形色色的身份真的是我们吗？<br>并不是。</p>
-<p>那你要问：那我到底是谁？</p>
-<p>对不起，我不知道。</p>
-<p>但是，至少我知道真正的我是与我的身份地位无关的。</p>
-<p>下面是《空王冠》里理查二世远征回国后发现家园已被敌人所占、王冠已被兄弟窃取时说的一段话：</p>
-<p><em>讲些关于国王们的死亡的悲惨的故事，有些是被废黜的，有些是在战场上阵亡的，有些是被他们废黜的鬼魂缠绕着的，有些是被他们的妻子所毒毙的，有些是在睡梦中被杀的，全都不得善终，因为围绕在凡世国王头上的这顶空洞的王冠，正是死神驻节的宫廷，妖魔高坐在里面，揶揄他的尊严，姗笑他的荣华，准他一个瞬间，小小的场面，让他称孤道寡，受尽众人的敬畏，以眼色杀人，把妄自尊大的思想灌注他的心头，仿佛这包藏着我们生命的血肉的皮囊像一堵铜墙铁壁一样。当他这样志得意满，末日却近在眼前，一枚小小的针就可以刺破他的壁垒，<br>再会吧<br>国王</em></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<blockquote>
-<p>戴上你们的帽子，不要用恭敬的样子来讥笑一个血肉之躯，丢开恭敬、惯例、仪式和礼节，你们一向都把我认错了，和你们一样，我也靠面包生活，我也有欲望，懂得悲哀，需要朋友，既然如此，你们怎能对我说我是国王呢？       ——理查二世</p>
-</block]]>
-    </summary>
-    
-      <category term="读后感" scheme="http://irootlee.com/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
     
   </entry>
   
