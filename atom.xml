@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2018-03-27T14:21:22.254Z</updated>
+  <updated>2018-03-27T14:31:40.806Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -19,8 +19,8 @@
     <link href="http://irootlee.com/cpp_KMP/"/>
     <id>http://irootlee.com/cpp_KMP/</id>
     <published>2018-03-27T23:00:00.000Z</published>
-    <updated>2018-03-27T14:21:22.254Z</updated>
-    <content type="html"><![CDATA[<h1 id="问题背景">问题背景</h1><p>　　KMP算法是一种优化后的字符串匹配算法，可以将复杂度由暴力匹配的O(m*n)降低到O(m+n)，具体原理就不再赘述，相信几乎任何一本算法书上面都会有KMP算法的详细介绍与实现。以前虽然学习过KMP算法，也清楚知道算法的原理，但是却从来没有完整实现过一次，闲来无事便打开Visual Studio准备使用C++独立实现一下。</p>
+    <updated>2018-03-27T14:31:40.806Z</updated>
+    <content type="html"><![CDATA[<h1 id="问题背景">问题背景</h1><p>　　KMP算法是一种优化后的字符串匹配算法，可以将复杂度由暴力匹配的O(m*n)降低到O(m+n)，具体原理就不再赘述，相信几乎任何一本算法书上面都会有KMP算法的详细介绍与实现。以前虽然学习过KMP算法，也清楚算法的原理，但是却从来没有完整实现过一次，闲来无事便打开Visual Studio准备使用C++独立实现一下。</p>
 <p>　　代码如下：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//生成模式串对应的next数组</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_next</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> &amp;p, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;next)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> j = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> k = -<span class="number">1</span>;</span><br><span class="line">	next[j] = k;</span><br><span class="line">	<span class="keyword">while</span> (j &lt; p.length() - <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (k == -<span class="number">1</span> || p[k] == p[j]) &#123;</span><br><span class="line">			next[++j] = ++k;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			k = next[k];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//KMP算法实现查找子串</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">KMP</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> &amp;str, <span class="keyword">const</span> <span class="built_in">string</span> &amp;p)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; next(p.length(), <span class="number">0</span>);</span><br><span class="line">	get_next(p, next);</span><br><span class="line">	<span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span> (i &lt; str.length() &amp;&amp; j &lt; p.length()) &#123;</span><br><span class="line">		<span class="keyword">if</span> (j == -<span class="number">1</span> || str[i] == p[j]) &#123;</span><br><span class="line">			i++;</span><br><span class="line">			j++;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			j = next[j];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> (j == len_p) ? i - j : -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>我们使用如下代码对上述KMP算法正确性进行验证：</p>
@@ -36,12 +36,12 @@
 <p>后面一定要改善自己的编码习惯，对于不同类型之间运算一定要仔细考虑默认类型转换，同时对编译器发出的”waring”引起足够的重视，虽然”waring”不会引起语法错误，但是可能会引起错误代价更大的逻辑错误。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h1 id="问题背景">问题背景</h1><p>　　KMP算法是一种优化后的字符串匹配算法，可以将复杂度由暴力匹配的O(m*n)降低到O(m+n)，具体原理就不再赘述，相信几乎任何一本算法书上面都会有KMP算法的详细介绍与实现。以前虽然学习过KMP算法，也清楚知道算法的原理，]]>
+    <![CDATA[<h1 id="问题背景">问题背景</h1><p>　　KMP算法是一种优化后的字符串匹配算法，可以将复杂度由暴力匹配的O(m*n)降低到O(m+n)，具体原理就不再赘述，相信几乎任何一本算法书上面都会有KMP算法的详细介绍与实现。以前虽然学习过KMP算法，也清楚算法的原理，但是]]>
     </summary>
     
       <category term="C++" scheme="http://irootlee.com/tags/C/"/>
     
-      <category term="编程" scheme="http://irootlee.com/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="C++日常踩坑" scheme="http://irootlee.com/categories/C-%E6%97%A5%E5%B8%B8%E8%B8%A9%E5%9D%91/"/>
     
   </entry>
   
@@ -87,7 +87,7 @@
     <link href="http://irootlee.com/juicer_loop_unrolling/"/>
     <id>http://irootlee.com/juicer_loop_unrolling/</id>
     <published>2018-03-04T16:00:00.000Z</published>
-    <updated>2018-03-04T09:24:11.592Z</updated>
+    <updated>2018-03-04T09:24:11.000Z</updated>
     <content type="html"><![CDATA[<h1 id="什么是循环展开？">什么是循环展开？</h1><p>　　循环展开，英文中称（Loop unwinding或loop unrolling），是一种牺牲程序的尺寸来加快程序的执行速度的优化方法。可以由程序员完成，也可由编译器自动优化完成。循环展开最常用来降低循环开销，为具有多个功能单元的处理器提供指令级并行。也有利于指令流水线的调度。</p>
 <h1 id="循环展开对程序性能的影响">循环展开对程序性能的影响</h1><p>　　我们直接以实际代码向大家展示循环展开的作用，首先看未经过循环展开优化的代码：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> start = <span class="built_in">std</span>::chrono::system_clock::now();</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">10000</span>;</span><br><span class="line">    <span class="comment">//循环10000次累加</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; count;i++)&#123;  </span><br><span class="line">        sum += i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">auto</span> end = <span class="built_in">std</span>::chrono::system_clock::now();</span><br><span class="line">    <span class="built_in">std</span>::chrono::duration&lt;<span class="keyword">double</span>&gt; dura = end - start;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt;<span class="string">"共耗时："</span>&lt;&lt; dura.count() &lt;&lt; <span class="string">"s"</span> &lt;&lt; <span class="built_in">std</span>::endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -122,7 +122,7 @@
     <link href="http://irootlee.com/cpp_32bit_big_memory/"/>
     <id>http://irootlee.com/cpp_32bit_big_memory/</id>
     <published>2018-03-01T23:00:00.000Z</published>
-    <updated>2018-03-02T04:01:11.417Z</updated>
+    <updated>2018-03-27T14:31:45.962Z</updated>
     <content type="html"><![CDATA[<h1 id="问题背景：">问题背景：</h1><p>　　在开发股票自动化交易软件过程中，我们需要将股票的tick数据（每3s一笔）存储下来，供我们的股票交易策略部分使用。这种情况下首先想到使用MySql这种关系型数据库进行存储，但是我们的股票自动化交易软件对速度的要求极高，可能相差几十毫秒就是赚钱与亏钱的区别，而MySql这种传统数据库的插入与查询是很慢的，无法满足我们的要求。当然我们也可以选择既满足存储数据的要求又能达到我们需要的速度要求的Redis这种内存数据库，但考虑到我们交易软件是日内交易，不需要股票数据持久化到硬盘上，而且经过大概估算，我们服务器的内存远大于股票每日的数据量，所以考虑将股票数据直接保存在内存中，软件运行时直接对内存中的股票数据进行使用即可。</p>
 <h1 id="问题描述：">问题描述：</h1><p>　　我们使用map保存股票的数据，map的key是股票代码（string类型），value是该股票的行情数据（vector类型），然后建立行情类MarketData（单例模式）将map封装起来，并实现线程安全的插入数据和取数据的方法，这样就实现了一个极其简单的“内存数据库”。在MarketData建立后需要初始化股票数据，使用vector的reserve方法为每支股票预先分配足够存储一天数据的内存空间。代码如下：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">///初始化mapStockData，初始化后该map节点位置不会再变化，避免多线程安全问题</span></span><br><span class="line"><span class="comment">///为vector预先分配内存，避免在程序运行中迭代器失效</span></span><br><span class="line"><span class="keyword">void</span> MarketData::InitStockList(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">set</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>&gt; stockcodes) &#123;</span><br><span class="line">	<span class="keyword">if</span> (stockcodes.empty()) &#123;</span><br><span class="line">		<span class="built_in">cerr</span> &lt;&lt; <span class="string">"未订阅任何股票，请查看ini配置文件！"</span> &lt;&lt; endl;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//为vector预先分配内存，避免在程序运行中迭代器失效</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">auto</span> stockcode : stockcodes) &#123;</span><br><span class="line">		mapStockData_[stockcode].market.reserve(<span class="number">6000</span>);      <span class="comment">//Market数据，每3秒一个数据</span></span><br><span class="line">		mapStockData_[stockcode].transaction.reserve(<span class="number">200000</span>);       <span class="comment">//transaction数据</span></span><br><span class="line">		mapStockData_[stockcode].orderqueue.reserve(<span class="number">12000</span>);       <span class="comment">//orderqueue数据</span></span><br><span class="line">		mapStockData_[stockcode].order.reserve(<span class="number">200000</span>);       <span class="comment">//order数据</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -140,7 +140,7 @@
     
       <category term="C++" scheme="http://irootlee.com/tags/C/"/>
     
-      <category term="编程" scheme="http://irootlee.com/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="C++日常踩坑" scheme="http://irootlee.com/categories/C-%E6%97%A5%E5%B8%B8%E8%B8%A9%E5%9D%91/"/>
     
   </entry>
   
@@ -149,7 +149,7 @@
     <link href="http://irootlee.com/cpp_memset/"/>
     <id>http://irootlee.com/cpp_memset/</id>
     <published>2018-01-02T23:00:00.000Z</published>
-    <updated>2018-01-03T05:48:57.000Z</updated>
+    <updated>2018-03-27T14:31:42.510Z</updated>
     <content type="html"><![CDATA[<h1 id="背景">背景</h1><p>　　事情是这样的：在股票的自动化交易软件开发过程中，我们使用了万得的一套股票行情获取API，伴随着API还提供了一个示例程序，我们在开发过程中借用了部分示例程序中的代码，其中就包括一个配置读取类：ConfigSettings，这个类负责从配置文件中读入软件配置参数，并把参数的值保存在成员变量中，以供后面程序进行参数读取。</p>
 <p>　　但是除了原来支持的参数之外，我们又在配置文件中增加了新的配置参数，是股票代码和其初始持仓，我们需要从配置文件中读取股票代码和其初始持仓，于是我们便想到了在原来的配置读取类（ConfigSettings）基础上进行拓展，拓展思路也很简单，在原来的类中增加一个成员变量用于保存股票代码和其对应持仓，我们采用了标准库里的unordered_map（hash table），键就是string类型的股票代码，值就是该股票代码对应的初始持仓，后续程序想要获取持仓信息只需要读取该map即可。</p>
 <p>　　添加上读取股票代码和对应持仓部分的代码后，测试运行时程序却出现了崩溃现象（runtime error），使用断点调试，发现错误出现在向map中添加新的键值对的代码处：</p>
@@ -175,7 +175,7 @@
     
       <category term="C++" scheme="http://irootlee.com/tags/C/"/>
     
-      <category term="编程" scheme="http://irootlee.com/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="C++日常踩坑" scheme="http://irootlee.com/categories/C-%E6%97%A5%E5%B8%B8%E8%B8%A9%E5%9D%91/"/>
     
   </entry>
   
@@ -407,27 +407,22 @@
     <link href="http://irootlee.com/ML_onehot_encode/"/>
     <id>http://irootlee.com/ML_onehot_encode/</id>
     <published>2016-12-06T23:00:00.000Z</published>
-    <updated>2017-11-17T03:47:56.000Z</updated>
+    <updated>2018-03-27T14:31:44.010Z</updated>
     <content type="html"><![CDATA[<h1 id="独热码">独热码</h1><p>独热码，在英文文献中称做 one-hot code,直观来说就是有多少个状态就有多少比特，而且只有一个比特为1，其他全为0的一种码制。例如，有6个状态的独热码状态编码为：000001，000010，000100，001000，010000，100000。</p>
 <h1 id="问题">问题</h1><p>最近在做一个根据一个人的信息预测此人人品的机器学习项目：<br><a href="https://github.com/Root-lee/ML_micro_loan" target="_blank" rel="external">https://github.com/Root-lee/ML_micro_loan</a><br>在项目中，数据中有上千维的特征，大部分是数值型特征，但是也有93个分类特征，在训练模型时需要将这些分类特征用OneHot编码，使得模型能正确理解这些分类特征。<br>所幸，著名机器学习包已经提供了独热码的编码器：preprocessing.OneHotEncoder()<br>我们只需要直接调用就可以了，于是我写了如下代码编码分类特征：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="comment">#对分类类型的数据进行ONEHOT编码</span></span><br><span class="line">feature_type = pd.read_csv(<span class="string">'G:/Redhat_share/ML_micro/features_type.csv'</span>)</span><br><span class="line">category_feature = list(feature_type[feature_type.type==<span class="string">'category'</span>].feature)</span><br><span class="line">test = pd.read_csv(<span class="string">'G:/Redhat_share/ML_micro/test_x.csv'</span>)</span><br><span class="line">test = test[[<span class="string">'uid'</span>]+category_feature]</span><br><span class="line">train = pd.read_csv(<span class="string">'G:/Redhat_share/ML_micro/train_x.csv'</span>)</span><br><span class="line">train = train[[<span class="string">'uid'</span>]+category_feature]</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> preprocessing</span><br><span class="line">enc = preprocessing.OneHotEncoder()</span><br><span class="line">enc.fit(train)</span><br><span class="line">train= enc.transform(train).toarray()</span><br><span class="line">train_after_oh = pd.DataFrame(train)</span><br><span class="line">train_after_oh[<span class="string">'uid'</span>]=uid</span><br></pre></td></tr></table></figure>
 <p>但是运行程序时却出现了错误：<br><img src="error_info.png" alt="error_info"><br>OneHot编码出现ValueError: X needs to contain only non-negative integers.<br>错误出现在 enc.fit(train) 这一句代码上，根据报错信息，原来scikit-learn库中的onehot编码器要求分类特征是非负整数，但是我们的数据train中的分类特征的值中含有负数，所以会出现错误。</p>
 <h1 id="解决办法">解决办法</h1><p>在调用onehot编码器之前我们需要先对分类特征数据进行一点处理，将所有的值都变为非负数，可以使用如下代码实现目的：</p>
-<pre><code><span class="preprocessor">#OneHot编码要求特征是非负整数</span>
-<span class="preprocessor">#先把训练数据特征的值变为非负数</span>
-uid = train.uid
-train = train.drop(<span class="string">'uid'</span>,axis=<span class="number">1</span>)
-features = list(train.columns)
-<span class="keyword">for</span> feature <span class="keyword">in</span> features:
-    max_ = train[feature].<span class="built_in">max</span>()
-    train[feature] = (train[feature] - max_) * (-<span class="number">1</span>)
-</code></pre><p>把上面这段代码放在onehot编码之前，再次运行程序错误即可消失。</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#OneHot编码要求特征是非负整数</span></span><br><span class="line"><span class="preprocessor">#先把训练数据特征的值变为非负数</span></span><br><span class="line">uid = train.uid</span><br><span class="line">train = train.drop(<span class="string">'uid'</span>,axis=<span class="number">1</span>)</span><br><span class="line">features = list(train.columns)</span><br><span class="line"><span class="keyword">for</span> feature <span class="keyword">in</span> features:</span><br><span class="line">    max_ = train[feature].<span class="built_in">max</span>()</span><br><span class="line">    train[feature] = (train[feature] - max_) * (-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>把上面这段代码放在onehot编码之前，再次运行程序错误即可消失。</p>
 ]]></content>
     <summary type="html">
     <![CDATA[<h1 id="独热码">独热码</h1><p>独热码，在英文文献中称做 one-hot code,直观来说就是有多少个状态就有多少比特，而且只有一个比特为1，其他全为0的一种码制。例如，有6个状态的独热码状态编码为：000001，000010，000100，001000，010]]>
     </summary>
     
-      <category term="机器学习" scheme="http://irootlee.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+      <category term="机器学习" scheme="http://irootlee.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="编程" scheme="http://irootlee.com/categories/%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   
@@ -463,11 +458,11 @@ features = list(train.columns)
   </entry>
   
   <entry>
-    <title><![CDATA[关于C++中结构体和联合体中字节对齐方式的一个误解]]></title>
+    <title><![CDATA[日常踩坑：关于C++中结构体和联合体中字节对齐方式的一个误解]]></title>
     <link href="http://irootlee.com/C_struct_union/"/>
     <id>http://irootlee.com/C_struct_union/</id>
     <published>2016-11-01T16:00:00.000Z</published>
-    <updated>2018-01-03T05:35:11.000Z</updated>
+    <updated>2018-03-27T14:31:44.902Z</updated>
     <content type="html"><![CDATA[<p>前几天遇到这么一个题目：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">char</span> flag[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">short</span> value;</span><br><span class="line">&#125; sampleStruct;</span><br><span class="line"></span><br><span class="line"><span class="keyword">union</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">char</span> flag[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">short</span> value;</span><br><span class="line">&#125; sampleUnion;</span><br><span class="line"></span><br><span class="line"><span class="keyword">sizeof</span>(sampleStruct)=?</span><br><span class="line"><span class="keyword">sizeof</span>(sampleUnion)=?</span><br></pre></td></tr></table></figure>
 <p>当时的想法是:对于stuct类型，对象大小是struct内部所有对象大小的和，当然要考虑字节对齐，char flag[3]对象占三字节，考虑到4字节对齐，后面剩一字节放不下short的2字节，所以short重新占用另外4字节，所以sizeof(sampleStruct)=8。Union类型是union对象里占用字节数最多的那个对象的字节数（在考虑字节对齐的情况下），所以sizeof(sampleUnion)=4。</p>
@@ -486,7 +481,7 @@ features = list(train.columns)
     
       <category term="C++" scheme="http://irootlee.com/tags/C/"/>
     
-      <category term="编程" scheme="http://irootlee.com/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="C++日常踩坑" scheme="http://irootlee.com/categories/C-%E6%97%A5%E5%B8%B8%E8%B8%A9%E5%9D%91/"/>
     
   </entry>
   
@@ -495,7 +490,7 @@ features = list(train.columns)
     <link href="http://irootlee.com/ML_good_weakness/"/>
     <id>http://irootlee.com/ML_good_weakness/</id>
     <published>2016-11-01T14:00:00.000Z</published>
-    <updated>2017-11-17T03:47:56.000Z</updated>
+    <updated>2018-03-27T14:31:43.838Z</updated>
     <content type="html"><![CDATA[<p>最近看完了《集体智慧编程》一书，对常用的机器学习算法有了大体的了解，书中也分析了各个算法的优缺点，并指出了解决不同问题选择不同算法的方法，但是书中所讲太过繁琐，我在此提炼一下相关观点，也当是对自己看完本书作一些记录吧。</p>
 <h1 id="常用的10类机器学习算法：">常用的10类机器学习算法：</h1><ol>
 <li>线性回归</li>
@@ -561,7 +556,7 @@ features = list(train.columns)
     
       <category term="机器学习" scheme="http://irootlee.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
-      <category term="机器学习" scheme="http://irootlee.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+      <category term="编程" scheme="http://irootlee.com/categories/%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   

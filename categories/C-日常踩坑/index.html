@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="I&#39;m Root lee !">
-    <title>Category : 机器学习 - I&#39;m Root lee !</title>
+    <title>Category : C++日常踩坑 - I&#39;m Root lee !</title>
     <meta name="author" content="Root lee">
     
         <link rel="icon" href="/assets/images/favicon.ico">
@@ -17,7 +17,7 @@
     <meta name="description">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="I'm Root lee !">
-<meta property="og:url" content="http://irootlee.com/categories/机器学习/index.html">
+<meta property="og:url" content="http://irootlee.com/categories/C-日常踩坑/index.html">
 <meta property="og:site_name" content="I'm Root lee !">
 <meta property="og:description">
 <meta name="twitter:card" content="summary">
@@ -197,19 +197,19 @@
                 <div class="postShorten-header">
                     <h1 class="postShorten-title" itemprop="headline">
                         
-                                <a class="link-unstyled" href="/ML_onehot_encode/">sklearn中调用OneHot编码出现ValueError:X needs to contain only non-negative integers.解决办法</a>
+                                <a class="link-unstyled" href="/cpp_KMP/">日常踩坑：一场C++实现KMP算法引发的&quot;血案&quot;</a>
                         
                     </h1>
                     <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Tue Dec 06 2016 23:00:00 GMT+0000">
+    <time itemprop="datePublished" content="Tue Mar 27 2018 23:00:00 GMT+0000">
 	
-		    12月 06, 2016
+		    3月 27, 2018
     	
     </time>
     
         <span>分类： </span>
         
-    <a class="category-link" href="/categories/机器学习/">机器学习</a>
+    <a class="category-link" href="/categories/C-日常踩坑/">C++日常踩坑</a>
 
 
     
@@ -218,12 +218,13 @@
                 <div class="postShorten-excerpt" itemprop="articleBody">
                     
                         <p>
-                            独热码独热码，在英文文献中称做 one-hot code,直观来说就是有多少个状态就有多少比特，而且只有一个比特为1，其他全为0的一种码制。例如，有6个状态的独热码状态编码为：000001，000010，000100，001000，010000，100000。
-问题最近在做一个根据一个人的信息预测此人人品的机器学习项目：https://github.com/Root-lee/ML_micro_lo<br>
+                            问题背景　　KMP算法是一种优化后的字符串匹配算法，可以将复杂度由暴力匹配的O(m*n)降低到O(m+n)，具体原理就不再赘述，相信几乎任何一本算法书上面都会有KMP算法的详细介绍与实现。以前虽然学习过KMP算法，也清楚算法的原理，但是却从来没有完整实现过一次，闲来无事便打开Visual Studio准备使用C++独立实现一下。
+　　代码如下：
+12345678910111213141516171<br>
                     
                     
                         
-                            <a href="/ML_onehot_encode/" class="postShorten-excerpt_link link ">继续阅读</a>
+                            <a href="/cpp_KMP/" class="postShorten-excerpt_link link ">继续阅读</a>
                             
                         
                     
@@ -234,7 +235,7 @@
             </div>
             
                 <div class="postShorten-thumbnailimg">
-                    <img alt="" itemprop="image" src="http://irootlee.com/ML_onehot_encode/../ML_good_weakness/machine_learning.png"/>
+                    <img alt="" itemprop="image" src="http://irootlee.com/cpp_KMP/cpp_KMP.png"/>
                 </div>
                 
             
@@ -252,19 +253,19 @@
                 <div class="postShorten-header">
                     <h1 class="postShorten-title" itemprop="headline">
                         
-                                <a class="link-unstyled" href="/ML_good_weakness/">机器学习常用算法优缺点对比</a>
+                                <a class="link-unstyled" href="/cpp_32bit_big_memory/">日常踩坑：C++32位程序申请大内存出现std:bad_alloc</a>
                         
                     </h1>
                     <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Tue Nov 01 2016 14:00:00 GMT+0000">
+    <time itemprop="datePublished" content="Thu Mar 01 2018 23:00:00 GMT+0000">
 	
-		    11月 01, 2016
+		    3月 01, 2018
     	
     </time>
     
         <span>分类： </span>
         
-    <a class="category-link" href="/categories/机器学习/">机器学习</a>
+    <a class="category-link" href="/categories/C-日常踩坑/">C++日常踩坑</a>
 
 
     
@@ -273,22 +274,11 @@
                 <div class="postShorten-excerpt" itemprop="articleBody">
                     
                         <p>
-                            最近看完了《集体智慧编程》一书，对常用的机器学习算法有了大体的了解，书中也分析了各个算法的优缺点，并指出了解决不同问题选择不同算法的方法，但是书中所讲太过繁琐，我在此提炼一下相关观点，也当是对自己看完本书作一些记录吧。
-常用的10类机器学习算法：
-线性回归
-逻辑回归
-决策树
-SVM（支持向量机）
-朴素贝叶斯
-k最近邻算法
-k均值算法
-随机森林算法
-降维算法
-Gradient Boost和Adabo<br>
+                            问题背景：　　在开发股票自动化交易软件过程中，我们需要将股票的tick数据（每3s一笔）存储下来，供我们的股票交易策略部分使用。这种情况下首先想到使用MySql这种关系型数据库进行存储，但是我们的股票自动化交易软件对速度的要求极高，可能相差几十毫秒就是赚钱与亏钱的区别，而MySql这种传统数据库的插入与查询是很慢的，无法满足我们的要求。当然我们也可以选择既满足存储数据的要求又能达到我们需要的速度要<br>
                     
                     
                         
-                            <a href="/ML_good_weakness/" class="postShorten-excerpt_link link ">继续阅读</a>
+                            <a href="/cpp_32bit_big_memory/" class="postShorten-excerpt_link link ">继续阅读</a>
                             
                         
                     
@@ -299,7 +289,117 @@ Gradient Boost和Adabo<br>
             </div>
             
                 <div class="postShorten-thumbnailimg">
-                    <img alt="" itemprop="image" src="http://irootlee.com/ML_good_weakness/machine_learning.png"/>
+                    <img alt="" itemprop="image" src="http://irootlee.com/cpp_32bit_big_memory/cpp.png"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="postShorten-wrap">
+                <div class="postShorten-header">
+                    <h1 class="postShorten-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/cpp_memset/">日常踩坑：C++程序中如何正确使用memset()内存初始化函数？</a>
+                        
+                    </h1>
+                    <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Tue Jan 02 2018 23:00:00 GMT+0000">
+	
+		    1月 02, 2018
+    	
+    </time>
+    
+        <span>分类： </span>
+        
+    <a class="category-link" href="/categories/C-日常踩坑/">C++日常踩坑</a>
+
+
+    
+</div>
+                </div>
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            背景　　事情是这样的：在股票的自动化交易软件开发过程中，我们使用了万得的一套股票行情获取API，伴随着API还提供了一个示例程序，我们在开发过程中借用了部分示例程序中的代码，其中就包括一个配置读取类：ConfigSettings，这个类负责从配置文件中读入软件配置参数，并把参数的值保存在成员变量中，以供后面程序进行参数读取。
+　　但是除了原来支持的参数之外，我们又在配置文件中增加了新的配置参数，是<br>
+                    
+                    
+                        
+                            <a href="/cpp_memset/" class="postShorten-excerpt_link link ">继续阅读</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="postShorten-thumbnailimg">
+                    <img alt="" itemprop="image" src="http://irootlee.com/cpp_memset/cpp_memset.png"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="postShorten-wrap">
+                <div class="postShorten-header">
+                    <h1 class="postShorten-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/C_struct_union/">日常踩坑：关于C++中结构体和联合体中字节对齐方式的一个误解</a>
+                        
+                    </h1>
+                    <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Tue Nov 01 2016 16:00:00 GMT+0000">
+	
+		    11月 01, 2016
+    	
+    </time>
+    
+        <span>分类： </span>
+        
+    <a class="category-link" href="/categories/C-日常踩坑/">C++日常踩坑</a>
+
+
+    
+</div>
+                </div>
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            前几天遇到这么一个题目：
+1234567891011121314typedef struct&#123;    char flag[3];    short value;&#125; sampleStruct;union&#123;    char flag[3];    short value;&#125; sampleUnion;sizeof(sampleStruct)=?sizeof(sam<br>
+                    
+                    
+                        
+                            <a href="/C_struct_union/" class="postShorten-excerpt_link link ">继续阅读</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="postShorten-thumbnailimg">
+                    <img alt="" itemprop="image" src="http://irootlee.com/C_struct_union/cpp.png"/>
                 </div>
                 
             
