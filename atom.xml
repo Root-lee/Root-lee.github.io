@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2018-04-17T10:35:51.865Z</updated>
+  <updated>2018-04-26T05:10:21.199Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -13,6 +13,46 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[C++性能榨汁机之无锁编程]]></title>
+    <link href="http://irootlee.com/juicer_lock_free/"/>
+    <id>http://irootlee.com/juicer_lock_free/</id>
+    <published>2018-04-22T16:00:00.000Z</published>
+    <updated>2018-04-26T05:10:21.199Z</updated>
+    <content type="html"><![CDATA[<h1 id="前言">前言</h1><p>私以为个人的技术水平应该是一个螺旋式上升的过程：先从书本去了解一个大概，然后在实践中加深对相关知识的理解，遇到问题后再次回到书本，然后继续实践……接触C++并发编程已经一年多，从慢慢啃《C++并发编程实战》这本书开始，不停在期货高频交易软件的开发实践中去理解、运用、优化多线程相关技术。多线程知识的学习也是先从最基本的线程建立、互斥锁、条件变量到更高级的线程安全数据结构、线程池等等技术，当然在项目中也用到了简单的无锁编程相关知识，今天把一些体会心得跟大家分享一下，如有错误，还望大家批评指正。</p>
+<h1 id="多线程并发读写">多线程并发读写</h1><p>在编写多线程程序时，最重要的问题就是多线程间共享数据的保护。多个线程之间共享地址空间，所以多个线程共享进程中的全局变量和堆，都可以对全局变量和堆上的数据进行读写，但是如果两个线程同时修改同一个数据，可能造成某线程的修改丢失；如果一个线程写的同时，另一个线程去读该数据时可能会读到写了一半的数据。这些行为都是线程不安全的行为，会造成程序运行逻辑出现错误。举个最简单的例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span>  i = <span class="number">0</span>;</span><br><span class="line">mutex mut;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">iplusplus</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = <span class="number">10000000</span>;  <span class="comment">//循环次数</span></span><br><span class="line">    <span class="keyword">while</span> (c--) &#123;</span><br><span class="line">        i++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="function">thread <span class="title">thread1</span><span class="params">(iplusplus)</span></span>;  <span class="comment">//建立并运行线程1</span></span><br><span class="line">    <span class="function">thread <span class="title">thread2</span><span class="params">(iplusplus)</span></span>;  <span class="comment">//建立并运行线程2</span></span><br><span class="line">    thread1.join();  <span class="comment">// 等待线程1运行完毕</span></span><br><span class="line">    thread2.join();  <span class="comment">// 等待线程2运行完毕</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"i = "</span> &lt;&lt; i &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码main函数中建立了两个线程thread1和thread2，两个线程都是运行iplusplus函数，该函数功能就是运行i++语句10000000次，按照常识，两个线程各对i自增10000000次，最后i的结果应该是20000000，但是运行后结果却是如下：</p>
+<p><img src="iplusplus1.png" alt="iplusplus1"></p>
+<p>i并不等于20000000，这是在多线程读写情况下没有对线程间共享的变量i进行保护所导致的问题。</p>
+<h1 id="有锁编程">有锁编程</h1><p>对于保护多线程共享数据，最常用也是最基本的方法就是使用C++11线程标准库提供的互斥锁mutex保护临界区，保证同一时间只能有一个线程可以获取锁，持有锁的线程可以对共享变量进行修改，修改完毕后释放锁，而不持有锁的线程阻塞等待直到获取到锁，然后才能对共享变量进行修改，这种方法几乎是并发编程中的标准做法。大体流程如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;atomic&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">int</span>  i = <span class="number">0</span>;</span><br><span class="line">mutex mut; <span class="comment">//互斥锁</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">iplusplus</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = <span class="number">10000000</span>;  <span class="comment">//循环次数</span></span><br><span class="line">    <span class="keyword">while</span> (c--) &#123;</span><br><span class="line">        mut.lock();  <span class="comment">//互斥锁加锁</span></span><br><span class="line">        i++;</span><br><span class="line">        mut.unlock(); <span class="comment">//互斥锁解锁</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    chrono::steady_clock::time_point start_time = chrono::steady_clock::now();<span class="comment">//开始时间</span></span><br><span class="line">    <span class="function">thread <span class="title">thread1</span><span class="params">(iplusplus)</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">thread2</span><span class="params">(iplusplus)</span></span>;</span><br><span class="line">    thread1.join();  <span class="comment">// 等待线程1运行完毕</span></span><br><span class="line">    thread2.join();  <span class="comment">// 等待线程2运行完毕</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"i = "</span> &lt;&lt; i &lt;&lt; endl;</span><br><span class="line">    chrono::steady_clock::time_point stop_time = chrono::steady_clock::now();<span class="comment">//结束时间</span></span><br><span class="line">    chrono::duration&lt;<span class="keyword">double</span>&gt; time_span = chrono::duration_cast&lt;chrono::microseconds&gt;(stop_time - start_time);</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"共耗时："</span> &lt;&lt; time_span.count() &lt;&lt; <span class="string">" ms"</span> &lt;&lt; endl; <span class="comment">// 耗时</span></span><br><span class="line">    system(<span class="string">"pause"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码14行和16行分别为互斥锁加锁和解锁代码，29行我们打印程序运行耗时，代码运行结果如下：</p>
+<p><img src="iplusplus2.png" alt="iplusplus2"></p>
+<p>可以看到，通过加互斥锁，i的运行结果是正确的，由此解决了多线程同时写一个数据产生的线程安全问题，代码总耗时3.37328ms。</p>
+<h1 id="无锁编程">无锁编程</h1><p>原子操作是无锁编程的基石，原子操作是不可分隔的操作，一般通过CAS(Compare and Swap)操作实现，CAS操作需要输入两个数值，一个旧值（期望操作前的值）和一个新值，在操作期间先比较下旧值有没有发生变化，如果没有发生变化，才交换成新值，发生了变化则不交换。C++11的线程库为我们提供了一系列原子类型，同时提供了相对应的原子操作，我们通过使用这些原子类型即可摆脱每次对共享变量进行操作都进行的加锁解锁动作，节省了系统开销，同时避免了线程因阻塞而频繁的切换。原子类型的基本使用方法如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;atomic&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line">atomic&lt;<span class="keyword">int</span>&gt; i = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">iplusplus</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = <span class="number">10000000</span>;  <span class="comment">//循环次数</span></span><br><span class="line">    <span class="keyword">while</span> (c--) &#123;</span><br><span class="line">        i++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    chrono::steady_clock::time_point start_time = chrono::steady_clock::now();<span class="comment">//开始时间</span></span><br><span class="line">    <span class="function">thread <span class="title">thread1</span><span class="params">(iplusplus)</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">thread2</span><span class="params">(iplusplus)</span></span>;</span><br><span class="line">    thread1.join();  <span class="comment">// 等待线程1运行完毕</span></span><br><span class="line">    thread2.join();  <span class="comment">// 等待线程2运行完毕</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"i = "</span> &lt;&lt; i &lt;&lt; endl;</span><br><span class="line">    chrono::steady_clock::time_point stop_time = chrono::steady_clock::now();<span class="comment">//结束时间</span></span><br><span class="line">    chrono::duration&lt;<span class="keyword">double</span>&gt; time_span = chrono::duration_cast&lt;chrono::microseconds&gt;(stop_time - start_time);</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"共耗时："</span> &lt;&lt; time_span.count() &lt;&lt; <span class="string">" ms"</span> &lt;&lt; endl; <span class="comment">// 耗时</span></span><br><span class="line">    system(<span class="string">"pause"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码的第8行定义了一个原子类型（int）变量i，在第13行多线程修改i的时候即可免去加锁和解锁的步骤，同时又能保证变量i的线程安全性。代码运行结果如下：</p>
+<p><img src="iplusplus3.png" alt="iplusplus3"></p>
+<p>可以看到i的值是符合预期的，代码运行总耗时1.12731ms，仅为有锁编程的耗时3.37328ms的1/3，由此可以看出无锁编程由于避免了加锁而相对于有锁编程提高了一定的性能。</p>
+<h1 id="总结">总结</h1><p>无锁编程最大的优势是什么？是性能提高吗？其实并不是，我们的测试代码中临界区非常短，只有一个语句，所以显得加锁解锁操作对程序性能影响很大，但在实际应用中，我们的临界区一般不会这么短，临界区越长，加锁和解锁操作的性能损耗越微小，无锁编程和有锁编程之间的性能差距也就越微小。</p>
+<p>我认为无锁编程最大的优势在于两点：</p>
+<ol>
+<li>避免了死锁的产生。由于无锁编程避免了使用锁，所以也就不会出现并发编程中最让人头疼的死锁问题，对于提高程序健壮性有很大积极意义</li>
+<li>代码更加清晰与简洁。对于一个多线程共享的变量，保证其安全性我们只需在声明时将其声明为原子类型即可，在代码中使用的时候和使用一个普通变量一样，而不用每次使用都要在前面写个加锁操作，在后面写一个解锁操作。我写的C++期货高频交易软件中，有一个全局变量fund，存储的是当前资金量，程序采用线程池运行交易策略，交易策略中频繁使用到fund变量，如果采用加锁的方式，使用起来极其繁琐，为了保护一个fund变量需要非常频繁的加锁解锁，后来将fund变量改为原子类型，后面使用就不用再考虑加锁问题，整个程序阅读起来清晰很多。</li>
+</ol>
+<p>如果是为了提高性能将程序大幅改写成无锁编程，一般来说结果可能会让我们失望，而且无锁编程里面需要注意的地方也非常多，比如ABA问题，内存顺序问题，正确实现无锁编程比实现有锁编程要困难很多，除非有必要（确定了性能瓶颈）才去考虑使用无锁编程，否则还是使用互斥锁更好，毕竟程序的高性能是建立在程序正确性的基础上，如果程序不正确，一切性能提升都是徒劳无功。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="前言">前言</h1><p>私以为个人的技术水平应该是一个螺旋式上升的过程：先从书本去了解一个大概，然后在实践中加深对相关知识的理解，遇到问题后再次回到书本，然后继续实践……接触C++并发编程已经一年多，从慢慢啃《C++并发编程实战》这本书开始，不停在期货高频交易]]>
+    </summary>
+    
+      <category term="C++" scheme="http://irootlee.com/tags/C/"/>
+    
+      <category term="C++性能榨汁机系列文章" scheme="http://irootlee.com/categories/C-%E6%80%A7%E8%83%BD%E6%A6%A8%E6%B1%81%E6%9C%BA%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[C++性能榨汁机之惊群问题]]></title>
@@ -701,58 +741,6 @@
 ]]></content>
     <summary type="html">
     <![CDATA[<p>这个博客从去年开始写，写到现在也已经差不多一年了，博客里记录了一些自己的心情和感想，可以让自己看到自己思想转变的轨迹，这些文章也是自己非常重要的精神财富。除了读后感和随笔外，博客还记录了一些自己在日常学习中遇到的问题和解决办法，本来是为了便于自己以后遇到类似问题可以有点参考]]>
-    </summary>
-    
-      <category term="问题解决记录" scheme="http://irootlee.com/categories/%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E8%AE%B0%E5%BD%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[解决Windows7/10系统连接网线后显示“未识别的网络”的问题]]></title>
-    <link href="http://irootlee.com/win_net_error/"/>
-    <id>http://irootlee.com/win_net_error/</id>
-    <published>2016-07-15T20:00:00.000Z</published>
-    <updated>2017-11-17T03:48:02.000Z</updated>
-    <content type="html"><![CDATA[<h1 id="问题描述">问题描述</h1><p>本科期间使用的是南京航空航天大学的校园网，宿舍里每个人桌子上都有一个网线接口，用网线连接接口和电脑的网线插孔，然后使用校园网账号进行拨号上网。一般情况下这样操作即可以连上互联网，但也有偶然情况：插上网线后，电脑屏幕右下角的网络连接图标一直在那转圈，一直显示“正在识别网络”，当然，最后是识别不出来的，点击右下角的网络图标后发现本地连接是未识别的网络。</p>
-<p>这种状态下是无法拨号上网的，拨号上网会显示错误653，当时只是认为这是校园网抽风，一般等一晚上后重新插网线问题就不会再出现，所以并没有特别关注和研究这个问题。但是昨天这个问题又出现在了我的研究生工作电脑上，工作电脑也是使用的校园网，但是这次运气不那么好，昨天弄了一下午也没弄好，不知道问题在哪，网上的方法也都试了一遍，但都没任何作用。本以为等一晚上，网络就会自动好了，但今天早上打开电脑插上网线发现问题依旧，心情顿时落入谷底……</p>
-<h1 id="尝试解决">尝试解决</h1><ol>
-<li><p>首先使用windows系统自带的网络问题诊断，经过一番诊断，windows报告说问题原因是无法获取有效的ip地址，于是我进入：控制面板\网络和 Internet\网络连接 中查看本地连接的状态，发现ip地址和MAC地址都是有的，但是却没有子网掩码、默认网关和DHCP服务器，后来在网上搜到解答说当电脑获取不到DHCP服务器自动分配的ip地址时便会在0-255之间随机选一个数字作为ip地址，也就是说虽然电脑上显示有ip地址，但是事实上这个ip地址是无效的！</p>
-</li>
-<li><p>那是不是网线或者电脑网卡出现了问题呢？我的电脑是windows+linux双系统，重启电脑进入linux系统，插上网线拨号上网，网络连接成功，打开浏览器随便浏览几个网页发现网络正常。同样的电脑同样的网线，既然linux系统可以上网，那就说明网线没问题，是可以成功传递数据的，电脑网卡也没问题。</p>
-</li>
-<li><p>硬件故障排除，那么故障就一定是出现在windows操作系统的软件层面上，那么“第一嫌疑人”就是windows系统的网卡的驱动！借同学的电脑下载了一个驱动精灵万能网卡版，然后卸载自己电脑原先的网卡驱动，然后用驱动精灵重新装网卡驱动，装完重启，问题依旧，网卡驱动的原因也排除了。</p>
-</li>
-<li><p>既然不能自动获取到ip地址，那我们不使用DHCP分配的动态地址而使用静态地址呢？先切换到linux系统，连接上网络，进入网络连接的属性界面，记录下网络连接的ip地址、子网掩码、默认网关、DNS服务器等参数，然后断开连接，切换到windows系统，打开控制面板依次进入网络和共享中心，更改适配器设置，右击本地连接，属性，Tcp/ipv4，属性，然后把“自动获取ip地址”更改为“使用下面的ip地址”，然后把在linux系统上记录下来的ip地址参数填到对应的参数栏里，同样把“自动获取DNS服务器地址”改为“使用下面的DNS服务器地址”，把主要DNS服务器地址和备用服务器地址填入对应参数栏，修改完后点击确定。更改完成后依然是“未识别的网络”，静态地址方法尝试失败。</p>
-</li>
-<li><p>既然获取不到ip地址，那我们就释放掉这个ip地址然后再重新获取新的ip地址也许可以解决。首先把上一步更改的ipv4参数改回来，然后进入windows命令行模式，输入命令：<br>ipconfig /release      #释放ip地址<br>ipconfig /renew        #获取新ip地址<br>然后电脑界面就停留在这个界面：<br><img src="ipconfig.png" alt="ipconfig"><br>等待几分钟后,我们看到电脑上显示：<strong>无法连接DHCP服务器</strong><br>这说明什么？说明我们的电脑和学校路由器（或交换机）之间的线路是不通的。这种“不通”并不是说物理上的线路坏了，而是在客户端与服务器端通信协议的不一致。</p>
-</li>
-</ol>
-<h1 id="解决办法">解决办法</h1><p>我们根据上面第五个方法初步判断是通信协议出了问题。PS.没想到兜来兜去，最后却回到了我自己的本科和研究生专业通信工程上面来了，真是让人哭笑不得。<br>那就复习一下专业知识吧：在通信系统中，OSI(Open System Interconnection)模型将网络划分为七层：</p>
-<ol>
-<li>物理层(Physical layer)是参考模型的最低层。由连接不同结点的电缆与设备共同构成。主要功能是：利用传输介质为数据链路层提供物理连接，负责处理数据传输并监控数据出错率，以便数据流的透明传输。 </li>
-<li>数据链路层(Data link layer)是参考模型的第2层。 主要功能是：在物理层提供的服务基础上，在通信的实体间建立数据链路连接，传输以“帧”为单位的数据包，并采用差错控制与流量控制方法，使有差错的物理线路变成无差错的数据链路。</li>
-<li>网络层(Network layer)是参考模型的第3层。主要功能是：为数据在结点之间传输创建逻辑链路，通过路由选择算法为分组通过通信子网选择最适当的路径，以及实现拥塞控制、网络互联等功能。 </li>
-<li>传输层(Transport layer)是参考模型的第4层。主要功能是向用户提供可靠的端到端(End-to-End)服务，处理数据包错误、数据包次序，以及其他一些关键传输问题。传输层向高层屏蔽了下层数据通信的细节，因此，它是计算机通信体系结构中关键的一层。</li>
-<li>会话层(Session layer)是参考模型的第5层。主要功能是：负责维扩两个结点之间的传输链接，以便确保点到点传输不中断，以及管理数据交换等功能。</li>
-<li>表示层(Presentation layer)是参考模型的第6层。主要功能是：用于处理在两个通信系统中交换信息的表示方式，主要包括数据格式变换、数据加密与解密、数据压缩与恢复等功能。</li>
-<li>应用层(Application layer)是参考模型的最高层。主要功能是：为应用软件提供了很多服务，例如文件服务器、数据库服务、电子邮件与其他网络软件服务。  </li>
-</ol>
-<p>高层协议主要由各个应用程序负责，如果高层协议出现问题那么只会影响特定的应用程序，而不会像我们遇到的问题一样所有的程序都连不上网络，所以问题应该出现在底层协议上面。<br>物理层就是网线，我们已经排除了，那就再看数据链路层，数据传输有单工、半双工、全双工之分，代表不同的数据传输方法，还有传输速率，客户端和服务器端要保持相同的工作模式，但我们不知道服务器端的工作模式，只能改变自己电脑的工作模式，我们电脑的工作模式一般默认是自动协商，就是不论服务器端的工作模式是什么，我们都可以自动改变自己的工作模式去匹配服务器端的工作模式。但是并不是总是能正确匹配的，如果双方的工作模式不匹配，那么这时因模式不匹配而导致客户端与服务器端之间不能形成有效链路，即虽然网线连接上了，但是无法正常通信，电脑也就没法从服务器获取正确的ip了。</p>
-<p>知道了问题原因，我们把自动协商改成自己设置工作模式。打开“网络和共享中心”，“点击更改适配器设置”，右击“本地连接”，选择“属性”，在属性栏里点击“配置”，然后点击“高级”，找到“连接速度和双工模式”选项：<br><img src="double.png" alt="double"><br>一共有六种工作模式：</p>
-<ol>
-<li>1.0Gbps 全双工</li>
-<li>10Mbps 半双工</li>
-<li>10Mbps 全双工</li>
-<li>100Mbps 半双工</li>
-<li>100Mbps 全双工</li>
-<li>自动侦测</li>
-</ol>
-<p>PS:其中bps代表bits per second，一般指传输速度，这里的1G、10M、和100M并不是我们平常说的“网速”，但它跟网速有关，这里的单位是比特（bit），而我们平常说的网速是以字节（byte）为单位的，一字节等于八bit，也就是说如果传输速率是10Mbps，那么你的网速最高就是1.25M/s。</p>
-<p>我试了100Mbps全双工和半双工都不起作用，当我切换成10Mbps后，网络图标里的“未识别网络”消失了，变成了“网络”，尝试拨号上网，连接成功！</p>
-<h1 id="感想">感想</h1><p>至此，历尽艰辛，花费了昨天一下午和今天大半早上终于解决了这个困扰我很久的问题，期间无数次想放弃弄这些去直接重装系统，但最终还是坚持下来了，得到了不少收获，至少修电脑水平又提高了一毫米。<em>（虽然并没有妹子找我修电脑，呵呵）</em><br>但自己修自己的电脑何尝不是一种乐趣？<em>（强行安慰自己）</em></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h1 id="问题描述">问题描述</h1><p>本科期间使用的是南京航空航天大学的校园网，宿舍里每个人桌子上都有一个网线接口，用网线连接接口和电脑的网线插孔，然后使用校园网账号进行拨号上网。一般情况下这样操作即可以连上互联网，但也有偶然情况：插上网线后，电脑屏幕右下角的网络连]]>
     </summary>
     
       <category term="问题解决记录" scheme="http://irootlee.com/categories/%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E8%AE%B0%E5%BD%95/"/>
