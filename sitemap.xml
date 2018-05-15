@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://irootlee.com/juicer_switch/</loc>
+    
+    <lastmod>2018-05-15T14:24:05.024Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://irootlee.com/juicer_branch_predictor2/</loc>
     
     <lastmod>2018-05-15T08:00:54.211Z</lastmod>
@@ -142,13 +149,6 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/review_solitude/</loc>
-    
-    <lastmod>2017-11-17T03:48:02.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://irootlee.com/win_net_error/</loc>
     
     <lastmod>2017-11-17T03:48:02.000Z</lastmod>
@@ -157,6 +157,13 @@
   
   <url>
     <loc>http://irootlee.com/review_pingfan1/</loc>
+    
+    <lastmod>2017-11-17T03:48:02.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://irootlee.com/review_solitude/</loc>
     
     <lastmod>2017-11-17T03:48:02.000Z</lastmod>
     
@@ -191,14 +198,14 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/python_pywin32_thread/</loc>
+    <loc>http://irootlee.com/review_design/</loc>
     
     <lastmod>2017-11-17T03:47:59.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://irootlee.com/review_design/</loc>
+    <loc>http://irootlee.com/python_pywin32_thread/</loc>
     
     <lastmod>2017-11-17T03:47:59.000Z</lastmod>
     
@@ -208,13 +215,6 @@
     <loc>http://irootlee.com/python_thread/</loc>
     
     <lastmod>2017-11-17T03:47:59.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://irootlee.com/python_mkdir/</loc>
-    
-    <lastmod>2017-11-17T03:47:58.000Z</lastmod>
     
   </url>
   
@@ -234,6 +234,13 @@
   
   <url>
     <loc>http://irootlee.com/python_CRLF/</loc>
+    
+    <lastmod>2017-11-17T03:47:58.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://irootlee.com/python_mkdir/</loc>
     
     <lastmod>2017-11-17T03:47:58.000Z</lastmod>
     
@@ -282,14 +289,14 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/kharkiv/</loc>
+    <loc>http://irootlee.com/git/</loc>
     
     <lastmod>2017-11-17T03:47:54.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://irootlee.com/git/</loc>
+    <loc>http://irootlee.com/kharkiv/</loc>
     
     <lastmod>2017-11-17T03:47:54.000Z</lastmod>
     

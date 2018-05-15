@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2018-05-06T13:30:29.810Z</updated>
+  <updated>2018-05-15T14:24:05.024Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -13,6 +13,54 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[C++性能榨汁机之switch语句的背后]]></title>
+    <link href="http://irootlee.com/juicer_switch/"/>
+    <id>http://irootlee.com/juicer_switch/</id>
+    <published>2018-05-15T22:00:00.000Z</published>
+    <updated>2018-05-15T14:24:05.024Z</updated>
+    <content type="html"><![CDATA[<h1 id="前言">前言</h1><p>几乎每本面向初学者的C语言或C++书籍在前面两章都会提到分支控制语句if……else和switch……case，在某些情况下这两种分支控制语句可以互相替换，但却很少有人去深究在if……else和switch……case语句的背后到底有什么异同？应该选择哪一个语句才能使得效率最高？要回答这些问题，只能走到switch语句的背后，看看这些语句到底是怎么实现的。</p>
+<h1 id="if语句与switch语句">if语句与switch语句</h1><p>相信学过C/C++的同学对这两个语句的异同早就了如指掌，if语句作为条件判断，满足条件进入if语句块，不满足条件则进入else语句块，而且if和else语句块又可以继续嵌套if语句。switch则是通过判断一个<strong>整型</strong>表达式的值来决定进入到哪一个case语句中，如果所有case条件都不满足则进入到default语句块。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//简单的if语句</span></span><br><span class="line"><span class="keyword">if</span> (a == <span class="number">1</span>)</span><br><span class="line">    i = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (a == <span class="number">2</span>)</span><br><span class="line">    i = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    i = <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//简单的switch语句</span></span><br><span class="line"><span class="keyword">switch</span> (a)&#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">1</span>: i = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">2</span>: i = <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">default</span>: i = <span class="number">3</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="编译器如何实现switch语句？">编译器如何实现switch语句？</h1><p>现在编译器已经足够智能和强大，经过测试，g++实现switch语句的方式就至少有三种方法，编译器会根据代码的实际情况，权衡时间效率和空间效率，去选择一个对当前代码而言综合效率最高的一种。</p>
+<p>编译器实现switch语句的三种方式：</p>
+<ul>
+<li>逐条件判断</li>
+<li>跳转表</li>
+<li>二分查找法</li>
+</ul>
+<p>后面我们将就这三种实现方法适用的代码场景进行测试和分析。</p>
+<h2 id="逐条件判断法">逐条件判断法</h2><p>逐条件判断法其实就是和if……else语句的汇编实现相同，编译器把switch语句中各个case条件逐个进行判断，直到找到正确的case语句块。这种方法适用于switch语句中case条件很少的情况，即使逐个条件判断也不会导致大量时间和空间的浪费，比如下面这段代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">test_switch</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i ;</span><br><span class="line">    <span class="keyword">int</span> a = <span class="built_in">std</span>::rand();</span><br><span class="line">    <span class="keyword">switch</span>(a)&#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>: i = <span class="number">0</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>: i = <span class="number">1</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2</span>: i = <span class="number">2</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>: i = <span class="number">3</span>;<span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该代码对应的汇编代码如下:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#9;movl&#9;-4(%rbp), %eax&#10;&#9;cmpl&#9;$1, %eax&#10;&#9;je&#9;.L3&#10;&#9;cmpl&#9;$2, %eax&#10;&#9;je&#9;.L4&#10;&#9;testl&#9;%eax, %eax&#10;&#9;jne&#9;.L8&#10;&#9;movl&#9;$0, -8(%rbp)&#10;&#9;jmp&#9;.L6&#10;.L3:&#10;&#9;movl&#9;$1, -8(%rbp)&#10;&#9;jmp&#9;.L6&#10;.L4:&#10;&#9;movl&#9;$2, -8(%rbp)&#10;&#9;jmp&#9;.L6&#10;.L8:&#10;&#9;movl&#9;$3, -8(%rbp)&#10;&#9;nop</span><br></pre></td></tr></table></figure>
+<p>eax寄存器存储的是判断条件值（对应于C++代码中的a值），首先判断a是否等于1，如果等于1则跳转到.L3执行a==1对应的代码段，然后判断a是否等于2，如果等于2则跳转到.L4执行a==2对应的代码段……可能难理解的是第6行代码<code>testl    %eax, %eax</code>，其实这只是编译器提高判断一个寄存器是否为0效率的一个小技巧，如果eax不等于0则跳转到.L8代码段，执行default代码段对应的代码，如果eax等于0则执行a==0对应的代码段。</p>
+<p>由上面对编译器生成汇编代码的分析，我们可以发现：编译器在这种情况下使用逐个条件判断来实现switch语句。</p>
+<h2 id="跳转表实现法">跳转表实现法</h2><p>在编译器采用这种switch语句实现方式的时候，会在程序中生成一个跳转表，跳转表存放各个case语句指令块的地址，程序运行时，首先判断switch条件的值，然后把该条件值作为跳转表的偏移量去找到对应case语句的指令地址，然后执行。这种方法适用于case条件较多，但是case的值比较连续的情况，使用这种方法可以提高时间效率且不会显著降低空间效率，比如下面这段代码编译器就会采用跳转表这种实现方式：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">test_switch</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i ;</span><br><span class="line">    <span class="keyword">int</span> a = <span class="built_in">std</span>::rand();</span><br><span class="line">    <span class="keyword">switch</span>(a)&#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>: i = <span class="number">0</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>: i = <span class="number">1</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2</span>: i = <span class="number">2</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">3</span>: i = <span class="number">3</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">4</span>: i = <span class="number">4</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">5</span>: i = <span class="number">5</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">6</span>: i = <span class="number">6</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">7</span>: i = <span class="number">7</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">8</span>: i = <span class="number">8</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">9</span>: i = <span class="number">9</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>: i = <span class="number">10</span>;<span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该代码对应的汇编代码如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#9;movl&#9;-4(%rbp), %eax&#10;&#9;movq&#9;.L4(,%rax,8), %rax&#10;&#9;jmp&#9;*%rax&#10;.L4:&#10;&#9;.quad&#9;.L3&#10;&#9;.quad&#9;.L5&#10;&#9;.quad&#9;.L6&#10;&#9;.quad&#9;.L7&#10;&#9;.quad&#9;.L8&#10;&#9;.quad&#9;.L9&#10;&#9;.quad&#9;.L10&#10;&#9;.quad&#9;.L11&#10;&#9;.quad&#9;.L12&#10;&#9;.quad&#9;.L13&#10;&#9;.text&#10;.L3:&#10;&#9;movl&#9;$0, -8(%rbp)&#10;&#9;jmp&#9;.L14&#10;.L5:&#10;&#9;movl&#9;$1, -8(%rbp)&#10;&#9;jmp&#9;.L14&#10;#&#21518;&#38754;&#30465;&#30053;&#8230;&#8230;</span><br></pre></td></tr></table></figure>
+<p>在x64架构中，eax寄存器是rax寄存器的低32位，此处我们可以认为两者值相等，代码第一行是把判断条件（对应于C++代码中的a值）复制到eax寄存器中，第二行代码是把.L4段偏移rax寄存器值大小的地址赋值给rax寄存器，第三行代码则是取出rax中存放的地址并且跳转到该地址处。我们可以清楚的看到.L4代码段就是编译器为switch语句生成的存放于.text段的跳转表，每种case均对应于跳转表中一个地址值，我们通过判断条件的值即可计算出来其对应代码段地址存放的地址相对于.L4的偏移，从而实现高效的跳转。</p>
+<h2 id="二分查找法">二分查找法</h2><p>如果case值较多且分布极其离散的话，如果采用逐条件判断的话，时间效率会很低，如果采用跳转表方法的话，跳转表占用的空间就会很大，前两种方法均会导致程序效率效率低。在这种情况下，编译器就会采用二分查找法实现switch语句，程序编译时，编译器先将所有case值排序后按照二分查找顺序写入汇编代码，在程序执行时则采二分查找的方法在各个case值中查找条件值，如果查找到则执行对应的case语句，如果最终没有查找到则执行default语句。对于如下C++代码编译器就会采用这种二分查找法实现switch语句：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">test_switch</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i ;</span><br><span class="line">    <span class="keyword">int</span> a = <span class="built_in">std</span>::rand();</span><br><span class="line">    <span class="keyword">switch</span>(a)&#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">4</span>: i = <span class="number">4</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">10</span>: i = <span class="number">10</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">50</span>: i = <span class="number">50</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">100</span>: i = <span class="number">100</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">200</span>: i = <span class="number">200</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">500</span>: i = <span class="number">500</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>: i = <span class="number">0</span>;<span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>改代码段对应的汇编代码为：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#9;movl&#9;-4(%rbp), %eax&#10;&#9;cmpl&#9;$50, %eax&#10;&#9;je&#9;.L3&#10;&#9;cmpl&#9;$50, %eax&#10;&#9;jg&#9;.L4&#10;&#9;cmpl&#9;$4, %eax&#10;&#9;je&#9;.L5&#10;&#9;cmpl&#9;$10, %eax&#10;&#9;je&#9;.L6&#10;&#9;jmp&#9;.L2&#10;.L4:&#10;&#9;cmpl&#9;$200, %eax&#10;&#9;je&#9;.L7&#10;&#9;cmpl&#9;$500, %eax&#10;&#9;je&#9;.L8&#10;&#9;cmpl&#9;$100, %eax&#10;&#9;je&#9;.L9&#10;&#9;jmp&#9;.L2</span><br></pre></td></tr></table></figure>
+<p>代码第二行条件值首先与50比较，为什么是50而不是放在最前面的4？这是因为二分查找首先查找的是处于中间的值，所以这里先与50进行比较，如果eax等于50，则执行case 50对应代码，如果eax值大于50则跳转到.L4代码段，如果eax小于50则继续跟4比较……直至找到条件值或者查找完毕条件值不存在。可以看出二分查找法在保持了较高的查询效率的同时又节省了空间占用。</p>
+<h1 id="总结">总结</h1><p>何时应该使用if……else语句，何时应该使用switch……case语句？</p>
+<p>通过上面的分析我们可以得出结论，在可能条件比较少的时候使用if……else和switch……case所对应的汇编代码是相同的，所以两者在性能上是没有区别的，使用哪一种取决于个人习惯。如果条件较多的话，显而易见switch……case的效率更高，无论是跳转表还是二分查找都比if……else的顺序查找效率更高，所以在这种情况下尽量选用switch语句来实现分支语句。当然如果我们知道哪种条件出现的概率最高，我们可以将这个条件放在if判断的第一个，使顺序查找提前结束，这时使用if……else语句也可以达到较高的运行效率。</p>
+<p>switch语句也有他本身的局限性，即switch语句的值只能为整型，比如当我们需要对一个double型数据进行判断时，便无法使用switch语句，这时只能使用if……else语句来实现。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="前言">前言</h1><p>几乎每本面向初学者的C语言或C++书籍在前面两章都会提到分支控制语句if……else和switch……case，在某些情况下这两种分支控制语句可以互相替换，但却很少有人去深究在if……else和switch……case语句的背后到底有什]]>
+    </summary>
+    
+      <category term="C++" scheme="http://irootlee.com/tags/C/"/>
+    
+      <category term="C++性能榨汁机系列文章" scheme="http://irootlee.com/categories/C-%E6%80%A7%E8%83%BD%E6%A6%A8%E6%B1%81%E6%9C%BA%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[日常踩坑：一把亲手写出的死锁]]></title>
@@ -702,33 +750,6 @@
       <category term="机器学习" scheme="http://irootlee.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
       <category term="编程" scheme="http://irootlee.com/categories/%E7%BC%96%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[赚钱的时候认真赚钱，花钱的时候认真花钱]]></title>
-    <link href="http://irootlee.com/money/"/>
-    <id>http://irootlee.com/money/</id>
-    <published>2016-08-23T15:00:00.000Z</published>
-    <updated>2017-11-17T03:47:56.000Z</updated>
-    <content type="html"><![CDATA[<p>庸俗点说，人的社会生活可以分为两个部分：赚钱与花钱。</p>
-<p>上班族每天按时上班、小贩每天起早贪黑、码农整天与代码中的BUG战斗……<br>这些都是属于“赚钱”这部分社会生活。</p>
-<p>平时去超市购买生活用品、闲暇时坐在咖啡馆享受一个温暖的午后时光、假期去心中向往的城市旅旅游……<br>这些构成了我们的“花钱”这部分生活。</p>
-<p>工作努力，学习勤奋，对于大多数人来说，做到认真赚钱并不难，但是认真花钱却有些人看不清。</p>
-<p>暑假跟同学去做了几天兼职，工作目的主要是推广一个旅游软件，要做的工作内容就是帮助游客下载注册登录这个旅游软件，然后游客在这个软件上购买景区门票可以有10元钱的优惠。工作内容单一但却并不无聊，虽然重复的是同一个流程，但是面对的却是不同的人，工作让我见识到了形形色色的人，有的人只是随便看看便不想麻烦而直接去售票窗口买票了、有的人一边擦着额头的汗一边不厌其烦的按步骤去注册下载、也有的人弄了半天到最后一步支付时发现自己的余额不足而遗憾退出的、也有的人连自己的手机都不会操作让我们一步步帮助操作，到最后却嫌麻烦而直接去窗口买票回来后却还骂骂咧咧骂我们骗子的……</p>
-<p>既然软件公司投入大量补贴去推广新用户，也就注定新用户不会很简单就获得优惠，所以需要用户扫描二维码、注册、下载软件、登录、注册……这些步骤说简单也简单，说复杂也复杂，简单是对于熟练使用手机的用户，复杂是对于那些相对不太会操作手机的用户而言。</p>
-<p>七八月的南京就是一个火炉，站在室外，即使不活动，不出两分钟汗水也会浸透衣服。注册下载整个流程下来，操作顺利的人两三分可以操作完成，如果期间遇到一些问题则需要十来分钟甚至二十分钟。为了优惠十元钱站在阳光下点着手机的人无一不是满头大汗，如果是带着孩子来玩的家长，操作的间隙还要顾着到处跑的孩子，孩子等的不耐烦催促着家长直接进去时会换来父母的一顿训斥。在闷热的天气与操作的繁琐的作用下，人会变得异常暴躁，会因为同伴的一句不耐烦的话而对其恶语相向……</p>
-<p>望着他们，我有时真想问他们来到这里到底是不是出来游玩放松的？</p>
-<p>注册软件是在省钱，但是其实省钱的实际意义就是在“赚钱”。既然赚钱就要付出与之相对应的时间与精力，也就是说需要在应该“花钱”的时候去“赚钱”了，花钱享受的时候还要付出时间与精力去赚钱，那这里“花钱”的意义是什么？</p>
-<p>赚钱时就认真努力赚钱，花钱时认真踏实花钱，不要在赚钱时去想着享受，也不要在花钱时念念不忘赚钱，赚钱花钱应该分开。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>庸俗点说，人的社会生活可以分为两个部分：赚钱与花钱。</p>
-<p>上班族每天按时上班、小贩每天起早贪黑、码农整天与代码中的BUG战斗……<br>这些都是属于“赚钱”这部分社会生活。</p>
-<p>平时去超市购买生活用品、闲暇时坐在咖啡馆享受一个温暖的午后时光、假期去心中向]]>
-    </summary>
-    
-      <category term="随笔" scheme="http://irootlee.com/categories/%E9%9A%8F%E7%AC%94/"/>
     
   </entry>
   
