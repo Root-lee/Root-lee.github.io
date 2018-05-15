@@ -328,30 +328,30 @@
     <link href="http://irootlee.com/juicer_branch_predictor4/"/>
     <id>http://irootlee.com/juicer_branch_predictor4/</id>
     <published>2017-12-24T22:00:00.000Z</published>
-    <updated>2017-12-24T14:52:13.000Z</updated>
-    <content type="html"><![CDATA[<h1 id="前言">前言</h1><p>　　在<a href="http://irootlee.com/juicer_branch_predictor3">上篇文章</a>中，我们通过分析一段典型程序的汇编级代码更加清楚的看到了分支预测对程序性能的影响，当数据对分支预测器预测不友好的时候，我们的程序性能下降巨大。那么，怎么才能避免分支预测频繁出错对我们程序运行的不利影响呢？</p>
-<h1 id="用条件传送替代条件控制转移">用条件传送替代条件控制转移</h1><p>　　分支预测对有规律的分支跳转可以实现非常高的预测正确率，比如在循环判断中，在循环终止之前，分支预测都可以基本保证完全的预测正确，预测错误只会出现在最后跳出循环的条件满足时。但是，对于每次跳转结果都不确定的分支判断，分支预测率的预测正确率就很低了，可能只有50%左右，基本相当于每次都随机猜测，这样的情况下，流水线会经常被打断，影响程序性能。对于这种严重依赖于数据的分支跳转命令，最好的替代方法就是条件传送指令。</p>
-<p>　　在使用条件传送的条件下，命令中是没有跳转命令的，也就避免了使用分支预测器去预测一个很难预测的分支。</p>
-<h1 id="如何写条件传送代码？">如何写条件传送代码？</h1><p>　　对于C和C++这样的高级语言是没有提供控制底层实现到底是使用条件控制转移指令还是条件传送指令的功能的，底层命令实现靠编译器实现。但是，我们可以通过我们写代码的具体方法去间接影响编译器生成的汇编代码，从而达到使用条件传送命令替代条件控制转移命令的目的。</p>
-<p>　　下面的C++代码经过编译器编译后生成的汇编代码是通过条件控制转移命令实现分支跳转的（我们在上一篇文章中已经就此代码进行了分析）：</p>
+    <updated>2018-05-15T08:00:52.535Z</updated>
+    <content type="html"><![CDATA[<h1 id="前言">前言</h1><p>在<a href="http://irootlee.com/juicer_branch_predictor3">上篇文章</a>中，我们通过分析一段典型程序的汇编级代码更加清楚的看到了分支预测对程序性能的影响，当数据对分支预测器预测不友好的时候，我们的程序性能下降巨大。那么，怎么才能避免分支预测频繁出错对我们程序运行的不利影响呢？</p>
+<h1 id="用条件传送替代条件控制转移">用条件传送替代条件控制转移</h1><p>分支预测对有规律的分支跳转可以实现非常高的预测正确率，比如在循环判断中，在循环终止之前，分支预测都可以基本保证完全的预测正确，预测错误只会出现在最后跳出循环的条件满足时。但是，对于每次跳转结果都不确定的分支判断，分支预测率的预测正确率就很低了，可能只有50%左右，基本相当于每次都随机猜测，这样的情况下，流水线会经常被打断，影响程序性能。对于这种严重依赖于数据的分支跳转命令，最好的替代方法就是条件传送指令。</p>
+<p>在使用条件传送的条件下，命令中是没有跳转命令的，也就避免了使用分支预测器去预测一个很难预测的分支。</p>
+<h1 id="如何写条件传送代码？">如何写条件传送代码？</h1><p>对于C和C++这样的高级语言是没有提供控制底层实现到底是使用条件控制转移指令还是条件传送指令的功能的，底层命令实现靠编译器实现。但是，我们可以通过我们写代码的具体方法去间接影响编译器生成的汇编代码，从而达到使用条件传送命令替代条件控制转移命令的目的。</p>
+<p>下面的C++代码经过编译器编译后生成的汇编代码是通过条件控制转移命令实现分支跳转的（我们在上一篇文章中已经就此代码进行了分析）：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">unsigned</span> c = <span class="number">0</span>; c &lt; arraySize; ++c)&#123;</span><br><span class="line">     <span class="keyword">if</span>(data[c] &gt;= <span class="number">128</span>)&#123;</span><br><span class="line">         sum += data[c];</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>上述代码的汇编代码：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.L8:&#10;    movl    $0, -131104(%rbp)&#10;.L7:&#10;    cmpl    $32767, -131104(%rbp)&#10;    ja  .L5&#10;    movl    -131104(%rbp), %eax&#10;    movl    -131088(%rbp,%rax,4), %eax&#10;    cmpl    $127, %eax&#10;    jle .L6&#10;    movl    -131104(%rbp), %eax&#10;    movl    -131088(%rbp,%rax,4), %eax&#10;    cltq&#10;    addq    %rax, -131096(%rbp)&#10;.L6:&#10;    addl    $1, -131104(%rbp)&#10;    jmp .L7</span><br></pre></td></tr></table></figure>
 <p>其中<code>jle .L6</code>就是条件控制转移指令，当数据随机的时候，此命令的整体效率会极大降低。</p>
 <p>　　但如果我们使用下面C++代码实现上面程序同样的功能的话，就可以避免产生条件控制转移指令：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">unsigned</span> c = <span class="number">0</span>; c &lt; arraySize; ++c)&#123;</span><br><span class="line">	<span class="keyword">int</span> t = (data[c] - <span class="number">128</span>) &gt;&gt; <span class="number">31</span>;</span><br><span class="line">	sum += ~t &amp; data[c];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上述C++代码首先使用一个减法和移位获取data[c]与128比较的结果，如果data[c] &gt;= 128，则t为0，否则t为1，然后将t取非操作并于data[c]做与操作，以决定累加到sum上的数据是0还是data[c]。产生的汇编代码如下：</p>
+<p>上述C++代码首先使用一个减法和移位获取data[c]与128比较的结果，如果data[c] &gt;= 128，则t的所有位均为0，否则t的所有位均为1，然后将t取非操作并于data[c]做与操作，以决定累加到sum上的数据是0还是data[c]。产生的汇编代码如下：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.L6:&#10;    cmpl    $32767, -131108(%rbp)&#10;    ja  .L5&#10;    movl    -131108(%rbp), %eax&#10;    movl    -131088(%rbp,%rax,4), %eax&#10;    addl    $-128, %eax&#10;    sarl    $31, %eax&#10;    movl    %eax, -131100(%rbp)&#10;    movl    -131100(%rbp), %eax&#10;    notl    %eax&#10;    movl    %eax, %edx&#10;    movl    -131108(%rbp), %eax&#10;    movl    -131088(%rbp,%rax,4), %eax&#10;    andl    %edx, %eax&#10;    cltq&#10;    addq    %rax, -131096(%rbp)&#10;    addl    $1, -131108(%rbp)&#10;    jmp .L6</span><br></pre></td></tr></table></figure>
-<p>　　可以看到，上述汇编代码完整实现了我们C++代码的思路，而且没有产生分支控制跳转命令，我们通过一些hack技巧实现了条件传送命令替代条件控制跳转命令，这样的代码对于任何数据表现都是一样的，即程序的性能不会因为输入数据的随机与否而变化。</p>
-<p>　　经过测试，修改过后的程序比随机数据＋条件控制跳转程序提高了３倍，而且性能表现对于可预测数据和随机数据均一致。</p>
+<p>可以看到，上述汇编代码完整实现了我们C++代码的思路，而且没有产生分支控制跳转命令，我们通过一些hack技巧实现了条件传送命令替代条件控制跳转命令，这样的代码对于任何数据表现都是一样的，即程序的性能不会因为输入数据的随机与否而变化。</p>
+<p>经过测试，修改过后的程序比随机数据＋条件控制跳转程序提高了３倍，而且性能表现对于可预测数据和随机数据均一致。</p>
 <p><img src="branch_radom_and_norandom.png" alt="branch_radom_and_norandom.png"></p>
-<p>　　第一个花费时间7.42568秒是程序在随机数据上的表现结果，第二个花费时间7.4234秒是程序在排序后数据上的表现结果，可以看多两者表现相差可以忽略不计，可以说更改后的程序达到了性能与输入数据无关的目的。</p>
-<h1 id="总结">总结</h1><p>　　上面代码将条件控制转移指令转换成了条件传送代码，但是，代码的可读性急剧下降，<code>int t = (data[c] - 128) &gt;&gt; 31; sum += ~t &amp; data[c];</code>这句代码很难让人一眼看出代码的目的，这种代码会对整个项目的维护带来巨大麻烦。</p>
-<p>　　所以，在现代处理器和现代编译器的帮助下，<strong>千万不要过度关心分支预测带来的影响</strong>，对于程序中大部分分支命令，分支预测器都可以有很高的预测正确率，而对于那些分支预测器很难预测的分支，现代编译器可以对其进行自动优化，比如gcc中开启-O3优化的时候，编译器会自动把条件跳转转为条件传送以提高程序运行效率。</p>
-<p>　　大部分情况下，请<strong>相信处理器、相信编译器！</strong>有在完全确定了程序的性能瓶颈所在的时候再去针对这部分代码做特殊优化，避免提前优化和过度优化。</p>
+<p>第一个花费时间7.42568秒是程序在随机数据上的表现结果，第二个花费时间7.4234秒是程序在排序后数据上的表现结果，可以看多两者表现相差可以忽略不计，可以说更改后的程序达到了性能与输入数据无关的目的。</p>
+<h1 id="总结">总结</h1><p>上面代码将条件控制转移指令转换成了条件传送代码，但是，代码的可读性急剧下降，<code>int t = (data[c] - 128) &gt;&gt; 31; sum += ~t &amp; data[c];</code>这句代码很难让人一眼看出代码的目的，这种代码会对整个项目的维护带来巨大麻烦。</p>
+<p>所以，在现代处理器和现代编译器的帮助下，<strong>千万不要过度关心分支预测带来的影响</strong>，对于程序中大部分分支命令，分支预测器都可以有很高的预测正确率，而对于那些分支预测器很难预测的分支，现代编译器可以对其进行自动优化，比如gcc中开启-O3优化的时候，编译器会自动把条件跳转转为条件传送以提高程序运行效率。</p>
+<p>大部分情况下，请<strong>相信处理器、相信编译器！</strong>有在完全确定了程序的性能瓶颈所在的时候再去针对这部分代码做特殊优化，避免提前优化和过度优化。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h1 id="前言">前言</h1><p>　　在<a href="http://irootlee.com/juicer_branch_predictor3">上篇文章</a>中，我们通过分析一段典型程序的汇编级代码更加清楚的看到了分支预测对程序性能的影响，当数据对分支预测器预测]]>
+    <![CDATA[<h1 id="前言">前言</h1><p>在<a href="http://irootlee.com/juicer_branch_predictor3">上篇文章</a>中，我们通过分析一段典型程序的汇编级代码更加清楚的看到了分支预测对程序性能的影响，当数据对分支预测器预测不友]]>
     </summary>
     
       <category term="C++" scheme="http://irootlee.com/tags/C/"/>
@@ -365,31 +365,31 @@
     <link href="http://irootlee.com/juicer_branch_predictor3/"/>
     <id>http://irootlee.com/juicer_branch_predictor3/</id>
     <published>2017-12-16T14:00:00.000Z</published>
-    <updated>2017-12-16T13:32:39.000Z</updated>
-    <content type="html"><![CDATA[<h1 id="前言">前言</h1><p>　　前面两篇文章，我们大体介绍了分支预测器的基本概念及经典实现方法：1. <a href="http://irootlee.com/juicer_branch_predictor1">分支预测器的概念与作用</a>  2. <a href="http://irootlee.com/juicer_branch_predictor2">分支预测器的经典实现方法</a> ，我们又参与CPU架构相关的工作，那么我们了解到的分支预测器这些知识用处在哪里呢？或者换句话说，这些知识对我们写程序有什么指导意义吗？</p>
-<p>　　条件判断与循环这些程序基本组成部分是我们写程序必须用到的结构，而条件判断与循环终止判断反映在机器指令上就是条件分支跳转与否，决定着CPU下次取指的地址，所以提高CPU分支判断准确率，降低流水线冲刷频率对我们提高程序性能有着极大的影响。</p>
-<h1 id="用C++直观感受分支预测器对程序的影响">用C++直观感受分支预测器对程序的影响</h1><p>　　分支预测器是CPU硬件层面的东西，既看不见也摸不着，那我们只能从一段简单的包含循环和条件判断的程序开始，直观的去感受下分支预测器对我们程序的影响。以下这段代码来自Stack OverFlow的一个经典问题：<a href="https://stackoverflow.com/questions/11227809/why-is-it-faster-to-process-a-sorted-array-than-an-unsorted-array" target="_blank" rel="external">Why is it faster to process a sorted array than an unsorted array? - Stack Overflow</a> ，我做了一点稍微修改，代码如下：</p>
+    <updated>2018-05-15T08:00:51.203Z</updated>
+    <content type="html"><![CDATA[<h1 id="前言">前言</h1><p>前面两篇文章，我们大体介绍了分支预测器的基本概念及经典实现方法：1. <a href="http://irootlee.com/juicer_branch_predictor1">分支预测器的概念与作用</a>  2. <a href="http://irootlee.com/juicer_branch_predictor2">分支预测器的经典实现方法</a> ，我们又参与CPU架构相关的工作，那么我们了解到的分支预测器这些知识用处在哪里呢？或者换句话说，这些知识对我们写程序有什么指导意义吗？</p>
+<p>条件判断与循环这些程序基本组成部分是我们写程序必须用到的结构，而条件判断与循环终止判断反映在机器指令上就是条件分支跳转与否，决定着CPU下次取指的地址，所以提高CPU分支判断准确率，降低流水线冲刷频率对我们提高程序性能有着极大的影响。</p>
+<h1 id="用C++直观感受分支预测器对程序的影响">用C++直观感受分支预测器对程序的影响</h1><p>分支预测器是CPU硬件层面的东西，既看不见也摸不着，那我们只能从一段简单的包含循环和条件判断的程序开始，直观的去感受下分支预测器对我们程序的影响。以下这段代码来自Stack OverFlow的一个经典问题：<a href="https://stackoverflow.com/questions/11227809/why-is-it-faster-to-process-a-sorted-array-than-an-unsorted-array" target="_blank" rel="external">Why is it faster to process a sorted array than an unsorted array? - Stack Overflow</a> ，我做了一点稍微修改，代码如下：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//branch_predictor.cpp</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">unsigned</span> arraySize = <span class="number">32768</span>;</span><br><span class="line">    <span class="keyword">int</span> data[arraySize];</span><br><span class="line">    <span class="comment">//生成0-255范围的随机数并存入数组data</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">unsigned</span> c = <span class="number">0</span>;c&lt;arraySize;++c)&#123;</span><br><span class="line">        data[c] = <span class="built_in">std</span>::rand() % <span class="number">256</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  	<span class="comment">//对数组进行排序</span></span><br><span class="line">    <span class="built_in">std</span>::sort(data,data + arraySize);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">auto</span> start = chrono::system_clock::now();</span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">long</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">unsigned</span> i = <span class="number">0</span>;i&lt;<span class="number">100000</span>;++i)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">unsigned</span> c = <span class="number">0</span>; c &lt; arraySize; ++c)&#123;</span><br><span class="line">            <span class="keyword">if</span>(data[c] &gt;= <span class="number">128</span>)&#123;</span><br><span class="line">                sum += data[c];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">auto</span> end = chrono::system_clock::now();</span><br><span class="line">    <span class="keyword">auto</span> duration = chrono::duration_cast&lt;chrono::microseconds&gt;(end-start);</span><br><span class="line">    <span class="keyword">double</span> elapsed  = <span class="keyword">double</span>(duration.count()) * chrono::microseconds::period::num / chrono::microseconds::period::den;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"共花费："</span> &lt;&lt; elapsed &lt;&lt;<span class="string">"秒"</span> &lt;&lt; <span class="built_in">std</span>::endl;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"sum ="</span> &lt;&lt; sum &lt;&lt; <span class="built_in">std</span>::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>　　上述程序逻辑很简单，就是使用0-255范围的随机数填充大小为32768的数组data，对data进行排序，循环100000次，每次循环都遍历data数组，并将数组中大于128的数累加到sum变量中。</p>
+<p>上述程序逻辑很简单，就是使用0-255范围的随机数填充大小为32768的数组data，对data进行排序，循环100000次，每次循环都遍历data数组，并将数组中大于128的数累加到sum变量中。</p>
 <p>该程序在我电脑上使用g++默认优化等级编译后，运行结果如下：</p>
 <p><img src="code_with_sort.png" alt="code_with_sort">  </p>
 <p>如果我们将上面代码中的排序注释掉，即我们不对数组中的数字进行排序，而是直接使用原始的乱序的数组进行100000次累加，得到的运行结果如下：</p>
 <p><img src="code_without_sort.png" alt="code_without_sort"> </p>
-<p>　　我们发现同样一段代码，却因为数组中数据是否有序而导致运行时间相差了大约3倍（6.95695 : 20.272），看我们这段代码，逻辑上与数组是否有序是没有任何关系的，无论数组是否有序，for循环里面的if语句进入的次数是一样的，那么到底什么原因导致了程序运行性能跟数据的有序与否有关呢？</p>
-<p>　　没错，就是分支预测器的原因，在本例子中，有序的原始数据被称为对分支预测器友好的数据，而乱序的原始数据便是对分支预测器不友好的数据。对于有序的数据，前n次循环，分支都是不跳转，后m次循环，分支都是跳转，这对于分支预测器来说很好预测，只有在循环开始结束及跳转不跳转分界点容易产生预测错误，所以分支预测的准确度非常高，流水线效率也就更高；而对于无序的数据，每一次数据都有可能大于或者小于128，也就是每次跳转的概率是50%，而且跳转不跳转完全随机，所以分支预测器对于这样的分支跳转的预测准确率很低，无法做出有效的分支预测，导致流水线被频繁冲刷，严重影响了流水线的吞吐量。</p>
-<h1 id="从汇编语言层面看分支预测">从汇编语言层面看分支预测</h1><p>　　为了更为充分的理解分支跳转命令在程序中的存在，我们通过g++的汇编指令，看branch_predictor.cpp的汇编级代码是什么样的，在shell中运行如下命令：</p>
+<p>我们发现同样一段代码，却因为数组中数据是否有序而导致运行时间相差了大约3倍（6.95695 : 20.272），看我们这段代码，逻辑上与数组是否有序是没有任何关系的，无论数组是否有序，for循环里面的if语句进入的次数是一样的，那么到底什么原因导致了程序运行性能跟数据的有序与否有关呢？</p>
+<p>没错，就是分支预测器的原因，在本例子中，有序的原始数据被称为对分支预测器友好的数据，而乱序的原始数据便是对分支预测器不友好的数据。对于有序的数据，前n次循环，分支都是不跳转，后m次循环，分支都是跳转，这对于分支预测器来说很好预测，只有在循环开始结束及跳转不跳转分界点容易产生预测错误，所以分支预测的准确度非常高，流水线效率也就更高；而对于无序的数据，每一次数据都有可能大于或者小于128，也就是每次跳转的概率是50%，而且跳转不跳转完全随机，所以分支预测器对于这样的分支跳转的预测准确率很低，无法做出有效的分支预测，导致流水线被频繁冲刷，严重影响了流水线的吞吐量。</p>
+<h1 id="从汇编语言层面看分支预测">从汇编语言层面看分支预测</h1><p>为了更为充分的理解分支跳转命令在程序中的存在，我们通过g++的汇编指令，看branch_predictor.cpp的汇编级代码是什么样的，在shell中运行如下命令：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g++ -S branch_predictor.cpp</span><br></pre></td></tr></table></figure>
-<p>　　运行该命令后，g++会将生成的汇编代码branch_predictor.s放在当前文件夹，通过vim查看汇编代码（AT&amp;T格式汇编，不是intel格式）：</p>
+<p>运行该命令后，g++会将生成的汇编代码branch_predictor.s放在当前文件夹，通过vim查看汇编代码（AT&amp;T格式汇编，不是intel格式）：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.L8:&#10;    movl    $0, -131104(%rbp)&#10;.L7:&#10;    cmpl    $32767, -131104(%rbp)&#10;    ja  .L5&#10;    movl    -131104(%rbp), %eax&#10;    movl    -131088(%rbp,%rax,4), %eax&#10;    cmpl    $127, %eax&#10;    jle .L6&#10;    movl    -131104(%rbp), %eax&#10;    movl    -131088(%rbp,%rax,4), %eax&#10;    cltq&#10;    addq    %rax, -131096(%rbp)&#10;.L6:&#10;    addl    $1, -131104(%rbp)&#10;    jmp .L7&#10;.L5:</span><br></pre></td></tr></table></figure>
 <p>为了便于阅读，上述汇编代码并不是完整版代码，只是对应于原始C++代码中关键的遍历数组的汇编代码，对应的C++部分代码是：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">unsigned</span> c = <span class="number">0</span>; c &lt; arraySize; ++c)&#123;</span><br><span class="line">    <span class="keyword">if</span>(data[c] &gt;= <span class="number">128</span>)&#123;</span><br><span class="line">        sum += data[c];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>　　汇编代码分析：.L8是给循环变量c赋初始值0，.L7部分是循环主体，首先判断c是否大于32767，如果大于32767则跳转到.L5，代表循环结束，否则进入循环体执行判断与累加。这段汇编代码中最最关键的两句汇编命令就是：</p>
+<p>汇编代码分析：.L8是给循环变量c赋初始值0，.L7部分是循环主体，首先判断c是否大于32767，如果大于32767则跳转到.L5，代表循环结束，否则进入循环体执行判断与累加。这段汇编代码中最最关键的两句汇编命令就是：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmpl    $127, %eax&#10;jle .L6</span><br></pre></td></tr></table></figure>
-<p>　　判断data[c]是否大于128，如果data[c]大于128，则跳转到.L6，否则继续顺序执行累加操作，分支预测器就是在这里起到了关键作用，如果分支预测器预测会发生跳转，则会从.L6代码段取指，如果预测不跳转，则顺序取指。假设遇到分支指令cmpl时分支预测器预测不会发生跳转，则顺序取指，累加部分指令进入流水线进行译码等操作，等cmpl执行完毕后，发现分支判断运行结果是跳转到.L6，即分支预测错误，则在流水线中的累加部分指令则必须被冲刷掉，然后重新从.L6代码段取指、译码、执行……，如果预测错误出现太频繁，势必会影响到流水线的吞吐量，导致性能下降。</p>
-<h1 id="总结">总结</h1><p>　　我们上面分别从C++代码层面和汇编代码层面看到了分支预测器是如何影响到程序的运行性能的，也希望能在实际项目中正确的应用以提高程序执行效率，避免写出对分支预测器不友好的分支判断程序。下一篇文章，我将就如何避免分支预测影响程序执行效率讲一点点自己在项目中的心得。</p>
+<p>判断data[c]是否大于128，如果data[c]大于128，则跳转到.L6，否则继续顺序执行累加操作，分支预测器就是在这里起到了关键作用，如果分支预测器预测会发生跳转，则会从.L6代码段取指，如果预测不跳转，则顺序取指。假设遇到分支指令cmpl时分支预测器预测不会发生跳转，则顺序取指，累加部分指令进入流水线进行译码等操作，等cmpl执行完毕后，发现分支判断运行结果是跳转到.L6，即分支预测错误，则在流水线中的累加部分指令则必须被冲刷掉，然后重新从.L6代码段取指、译码、执行……，如果预测错误出现太频繁，势必会影响到流水线的吞吐量，导致性能下降。</p>
+<h1 id="总结">总结</h1><p>我们上面分别从C++代码层面和汇编代码层面看到了分支预测器是如何影响到程序的运行性能的，也希望能在实际项目中正确的应用以提高程序执行效率，避免写出对分支预测器不友好的分支判断程序。下一篇文章，我将就如何避免分支预测影响程序执行效率讲一点点自己在项目中的心得。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h1 id="前言">前言</h1><p>　　前面两篇文章，我们大体介绍了分支预测器的基本概念及经典实现方法：1. <a href="http://irootlee.com/juicer_branch_predictor1">分支预测器的概念与作用</a>  2. <a hre]]>
+    <![CDATA[<h1 id="前言">前言</h1><p>前面两篇文章，我们大体介绍了分支预测器的基本概念及经典实现方法：1. <a href="http://irootlee.com/juicer_branch_predictor1">分支预测器的概念与作用</a>  2. <a href=]]>
     </summary>
     
       <category term="C++" scheme="http://irootlee.com/tags/C/"/>
@@ -403,12 +403,12 @@
     <link href="http://irootlee.com/juicer_branch_predictor2/"/>
     <id>http://irootlee.com/juicer_branch_predictor2/</id>
     <published>2017-12-14T12:00:00.000Z</published>
-    <updated>2017-12-14T08:30:40.000Z</updated>
-    <content type="html"><![CDATA[<h1 id="前言">前言</h1><p>　　在上篇文章中，我们介绍了分支预测器在提高CPU流水线效率上的重要作用，上篇文章最后还提到，分支预测器的预测准确率对CPU执行命令效率有巨大影响，当预测错误时必须将流水线冲刷，然后重新从正确的地址取指，分支预测错误将会产生很大的代价，而且这种代价随着流水线的深度的增加而快速增长。</p>
-<p>　　过去几十年，国内外科研界及工业界提出了多种分支预测模型以提高分支预测的准确率，本篇文章，我们主要挑选部分典型的分支预测模型，探究其分支预测算法。</p>
-<p>　　根据分支预测器利用的信息可以将分支预测器分为静态分支预测器和动态分支预测器。静态分支预测器主要利用静态分支的信息或编译器提供的信息对分支方向进行预测，而动态分支预测器除了利用上述信息外，还会在程序执行过程中动态收集分支历史跳转等信息进行预测。</p>
-<h1 id="静态预测">静态预测</h1><p>　　静态分支预测器一般实现比较简单，在类似于嵌入式处理器这种资源较少的处理器中应用比较多，但是因为静态预测器实现逻辑比较简单，所以预测准确率相应一半也不高。</p>
-<p>　　静态分支预测器的实现算法主要有下面这几种：</p>
+    <updated>2018-05-15T08:00:54.211Z</updated>
+    <content type="html"><![CDATA[<h1 id="前言">前言</h1><p>在上篇文章中，我们介绍了分支预测器在提高CPU流水线效率上的重要作用，上篇文章最后还提到，分支预测器的预测准确率对CPU执行命令效率有巨大影响，当预测错误时必须将流水线冲刷，然后重新从正确的地址取指，分支预测错误将会产生很大的代价，而且这种代价随着流水线的深度的增加而快速增长。</p>
+<p>过去几十年，国内外科研界及工业界提出了多种分支预测模型以提高分支预测的准确率，本篇文章，我们主要挑选部分典型的分支预测模型，探究其分支预测算法。</p>
+<p>根据分支预测器利用的信息可以将分支预测器分为静态分支预测器和动态分支预测器。静态分支预测器主要利用静态分支的信息或编译器提供的信息对分支方向进行预测，而动态分支预测器除了利用上述信息外，还会在程序执行过程中动态收集分支历史跳转等信息进行预测。</p>
+<h1 id="静态预测">静态预测</h1><p>静态分支预测器一般实现比较简单，在类似于嵌入式处理器这种资源较少的处理器中应用比较多，但是因为静态预测器实现逻辑比较简单，所以预测准确率相应一半也不高。</p>
+<p>静态分支预测器的实现算法主要有下面这几种：</p>
 <ol>
 <li><p>所有的分支指令都不跳转，每次CPU都顺序取出下一条命令放入流水线。</p>
 </li>
@@ -421,12 +421,12 @@
 <li><p>向前的分支会跳转，向后的分支不跳转。该方法主要针对程序中的循环进行的优化。</p>
 </li>
 </ol>
-<p>　　虽然看似在概率上，这些静态方法的预测正确率只有50%，但是由于一般程序中都有大量循环存在，针对循环优化的静态方法一般都有高于70%的正确率。</p>
-<p>　　对于哪些对于预测准确率要求不算太高，且本身资源有限制或者对功耗要求高的场景，静态分支预测器是一个很好的选择。</p>
-<h1 id="动态预测">动态预测</h1><p>　　静态预测70%的准确率虽然看似不低，但是对于拥有非常深流水线的现代处理器，30%的错误率会导致流水线被频繁冲刷（flush），对CPU效率的影响是巨大的。因此，为了进一步提高分支预测器的预测准确度，人们开始研究更为复杂的动态分支预测器。</p>
-<p>　　动态分支预测中最简单的方法就是<strong>双模态预测器</strong>（bimodal predictor），该预测器采用4个状态的状态机对分支跳转进行预测，分支指令执行完毕后根据实际跳转结果更新状态机，用于下次预测，状态机大体流程如下：</p>
+<p>虽然看似在概率上，这些静态方法的预测正确率只有50%，但是由于一般程序中都有大量循环存在，针对循环优化的静态方法一般都有高于70%的正确率。</p>
+<p>对于哪些对于预测准确率要求不算太高，且本身资源有限制或者对功耗要求高的场景，静态分支预测器是一个很好的选择。</p>
+<h1 id="动态预测">动态预测</h1><p>静态预测70%的准确率虽然看似不低，但是对于拥有非常深流水线的现代处理器，30%的错误率会导致流水线被频繁冲刷（flush），对CPU效率的影响是巨大的。因此，为了进一步提高分支预测器的预测准确度，人们开始研究更为复杂的动态分支预测器。</p>
+<p>动态分支预测中最简单的方法就是<strong>双模态预测器</strong>（bimodal predictor），该预测器采用4个状态的状态机对分支跳转进行预测，分支指令执行完毕后根据实际跳转结果更新状态机，用于下次预测，状态机大体流程如下：</p>
 <p><img src="bimodal.png" alt="bimodal predictor"></p>
-<p>　　看状态机机的状态跳转可能不太好理解互相之间的关系，那我们用通俗一点的话来解释一下。想象这么一个场景：在遥远的地方有这么一个班级，为了区分学生优差，按照学习成绩将学生分为了4类：</p>
+<p>看状态机机的状态跳转可能不太好理解互相之间的关系，那我们用通俗一点的话来解释一下。想象这么一个场景：在遥远的地方有这么一个班级，为了区分学生优差，按照学习成绩将学生分为了4类：</p>
 <ol>
 <li>优等生（强跳转）</li>
 <li>中等偏上（弱跳转）</li>
@@ -440,15 +440,15 @@
 <li>中等偏下考得好变为中等偏上，考得差变为差生。</li>
 <li>差生考得差还是差生，考得好变为中等偏下。</li>
 </ol>
-<p>　　其中，我们优等生和中等偏上学生我们认为是好学生（预测他下次会考得好），差生和中等偏下学生我们认为是坏学生（预测他下次会考得差）。</p>
-<p>　　这个班级学生状态变化如下图所示：</p>
+<p>其中，我们优等生和中等偏上学生我们认为是好学生（预测他下次会考得好），差生和中等偏下学生我们认为是坏学生（预测他下次会考得差）。</p>
+<p>这个班级学生状态变化如下图所示：</p>
 <p><img src="bimodal_student.png" alt="student"></p>
-<p>　　当然上面这个班级的例子只是想象出来解释双模态预测器的，我们反对这种将学生只按学习成绩划分三六九等的方法。但上述例子基本原理与双模态预测器的原理是相同的，不知道有没有让读者对双模态预测器了解更透彻一点。</p>
-<h1 id="总结">总结</h1><p>　　上述双模态预测器的预测准确度相对于静态预测器已经有了极大的提高，预测准确度基本可以达到90%以上。但是人们追求分支预测器准确度的脚步是不会停的，后面发展出了两级自适应预测器、局部/全局分支预测器、融合分支预测器、神经分支预测器等等动态分支预测器，将预测准确度进一步提高，此处限于篇幅就不再详细解释了。</p>
-<p>　　这两篇文章解释了分支预测器的意义及常见的简单实现方法，下一篇文章，我将会就分支预测器对我们写程序的指导意义做一些简单的测试与阐述。</p>
+<p>当然上面这个班级的例子只是想象出来解释双模态预测器的，我们反对这种将学生只按学习成绩划分三六九等的方法。但上述例子基本原理与双模态预测器的原理是相同的，不知道有没有让读者对双模态预测器了解更透彻一点。</p>
+<h1 id="总结">总结</h1><p>上述双模态预测器的预测准确度相对于静态预测器已经有了极大的提高，预测准确度基本可以达到90%以上。但是人们追求分支预测器准确度的脚步是不会停的，后面发展出了两级自适应预测器、局部/全局分支预测器、融合分支预测器、神经分支预测器等等动态分支预测器，将预测准确度进一步提高，此处限于篇幅就不再详细解释了。</p>
+<p>这两篇文章解释了分支预测器的意义及常见的简单实现方法，下一篇文章，我将会就分支预测器对我们写程序的指导意义做一些简单的测试与阐述。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h1 id="前言">前言</h1><p>　　在上篇文章中，我们介绍了分支预测器在提高CPU流水线效率上的重要作用，上篇文章最后还提到，分支预测器的预测准确率对CPU执行命令效率有巨大影响，当预测错误时必须将流水线冲刷，然后重新从正确的地址取指，分支预测错误将会产生很大的代价，]]>
+    <![CDATA[<h1 id="前言">前言</h1><p>在上篇文章中，我们介绍了分支预测器在提高CPU流水线效率上的重要作用，上篇文章最后还提到，分支预测器的预测准确率对CPU执行命令效率有巨大影响，当预测错误时必须将流水线冲刷，然后重新从正确的地址取指，分支预测错误将会产生很大的代价，而且]]>
     </summary>
     
       <category term="C++" scheme="http://irootlee.com/tags/C/"/>
@@ -462,27 +462,28 @@
     <link href="http://irootlee.com/juicer_branch_predictor1/"/>
     <id>http://irootlee.com/juicer_branch_predictor1/</id>
     <published>2017-12-05T12:00:00.000Z</published>
-    <updated>2017-12-13T01:59:42.000Z</updated>
+    <updated>2018-05-15T08:00:53.927Z</updated>
     <content type="html"><![CDATA[<h1 id="什么是分支预测器？">什么是分支预测器？</h1><p>我们首先看一下维基百科中对分支预测器的定义：</p>
 <blockquote>
 <p>在电脑架构中，分支预测器（英语：Branch predictor）是一种数字电路，在分支指令执行结束之前猜测哪一路分支将会被运行，以提高处理器的指令流水线的性能。使用分支预测器的目的，在于改善指令管线化的流程。现代使用指令管线化处理器的性能能够提高，分支预测器对于现今的指令流水线微处理器获得高性能是非常关键的技术。</p>
 </blockquote>
-<p>　　由定义可以看出，分支预测器的主要作用就是预测分支指令的跳转与否，如果预测结果是跳转，预测器还负责预测跳转的地址。</p>
-<h1 id="为什么需要分支预测器？">为什么需要分支预测器？</h1><p>　　上面我们大体了解了分支预测器的定义及作用，那么为什么CPU需要分支预测器，或者说分支预测器在程序指令执行过程中扮演什么角色？</p>
-<p>　　如果要解释这个问题，我们需要先了解现代处理器的工作原理，任何一条指令在CPU中的执行都必须经历如下这些步骤：</p>
+<p>由定义可以看出，分支预测器的主要作用就是预测分支指令的跳转与否，如果预测结果是跳转，预测器还负责预测跳转的地址。</p>
+<p><code>&lt;!-- excerpt --&gt;</code></p>
+<h1 id="为什么需要分支预测器？">为什么需要分支预测器？</h1><p>上面我们大体了解了分支预测器的定义及作用，那么为什么CPU需要分支预测器，或者说分支预测器在程序指令执行过程中扮演什么角色？</p>
+<p>如果要解释这个问题，我们需要先了解现代处理器的工作原理，任何一条指令在CPU中的执行都必须经历如下这些步骤：</p>
 <ol>
 <li>取指（Fetch）：取指阶段从存储器读取指令字节，地址为程序计数器（PC）的值。</li>
 <li>译码（Decode）：译码阶段完成指令的翻译，从寄存器文件读入最多两个操作数。</li>
 <li>执行（Execute）：执行指令，如果是执行的是一条跳转指令的话，这个阶段会检查条件码和分支条件，决定是否选择分支。</li>
 <li>写回（Write Back）：将指令执行结果保存到内存中。</li>
 </ol>
-<p>　　现代处理器使用流水线架构主要是为了提高程序执行效率，比如在第一条指令进入执行阶段时，第二条指令已经开始译码，第三条指令处于取指阶段……相对于第一条指令完全执行完并写回内存再开始第二条指令的取指，效率提高了很多倍。当然，现代处理器一般流水线深度高达10-31级，对程序执行速度有着显著提高。</p>
+<p>现代处理器使用流水线架构主要是为了提高程序执行效率，比如在第一条指令进入执行阶段时，第二条指令已经开始译码，第三条指令处于取指阶段……相对于第一条指令完全执行完并写回内存再开始第二条指令的取指，效率提高了很多倍。当然，现代处理器一般流水线深度高达10-31级，对程序执行速度有着显著提高。</p>
 <p><img src="pipline.png" alt="pipline"></p>
-<p>　　上述流水线架构对于顺序执行的命令，效果提高显著，但是遇到跳转命令时效率便会急剧下降，对于分支跳转指令，我们在执行完该指令之前是不知道是否发生跳转的，也就是说，我们在分支指令执行完之前，我们无法确定分支指令的下一条指令的地址，所以也就没法把分支指令的下一条命令放入流水线中，只能等待分支指令执行完毕才能开始下一条命令的取指步骤，所以流水线中就会出现气泡（Bubble），这会大大降低流水线的吞吐能力。</p>
+<p>上述流水线架构对于顺序执行的命令，效果提高显著，但是遇到跳转命令时效率便会急剧下降，对于分支跳转指令，我们在执行完该指令之前是不知道是否发生跳转的，也就是说，我们在分支指令执行完之前，我们无法确定分支指令的下一条指令的地址，所以也就没法把分支指令的下一条命令放入流水线中，只能等待分支指令执行完毕才能开始下一条命令的取指步骤，所以流水线中就会出现气泡（Bubble），这会大大降低流水线的吞吐能力。</p>
 <p><img src="pipline_bubble.png" alt="pipline with bubble"></p>
-<p>　　为了解决上述问题，分支预测器应运而生。当指令执行到分支跳转指令时，CPU不再是空等待分支跳转指令执行完毕给出下一条命令的地址，而是根据模型预测分支是否发生跳转以及跳转到哪里，CPU将预测到的指令直接放入流水线，去执行指令的取指、译码等工作。</p>
-<p>　　当分支跳转指令完成执行阶段后，给出是否跳转的结果，CPU即可判断分支跳转预测是否正确，如果指令执行后的跳转结果与分支预测器预测结果相一致，则流水线继续往下执行，如果发现分支预测结果出现错误，则需要清空流水线，将前面不该进入流水线的指令清空，然后将正确的指令放入流水线重新执行。</p>
-<h1 id="总结">总结</h1><p>　　在分支预测器预测准确时可以提高CPU流水线的吞吐量，但是如果预测错误导致清空流水线指令，也会导致CPU效率降低。由上面的分析可以看出，分支预测的准确性对CPU执行效率影响很大，提高分支预测器的预测准确度是几十年来学术界及工业界研究的目标，后面的文章我会分析几个典型分支预测器模型的实现原理。</p>
+<p>为了解决上述问题，分支预测器应运而生。当指令执行到分支跳转指令时，CPU不再是空等待分支跳转指令执行完毕给出下一条命令的地址，而是根据模型预测分支是否发生跳转以及跳转到哪里，CPU将预测到的指令直接放入流水线，去执行指令的取指、译码等工作。</p>
+<p>当分支跳转指令完成执行阶段后，给出是否跳转的结果，CPU即可判断分支跳转预测是否正确，如果指令执行后的跳转结果与分支预测器预测结果相一致，则流水线继续往下执行，如果发现分支预测结果出现错误，则需要清空流水线，将前面不该进入流水线的指令清空，然后将正确的指令放入流水线重新执行。</p>
+<h1 id="总结">总结</h1><p>在分支预测器预测准确时可以提高CPU流水线的吞吐量，但是如果预测错误导致清空流水线指令，也会导致CPU效率降低。由上面的分析可以看出，分支预测的准确性对CPU执行效率影响很大，提高分支预测器的预测准确度是几十年来学术界及工业界研究的目标，后面的文章我会分析几个典型分支预测器模型的实现原理。</p>
 ]]></content>
     <summary type="html">
     <![CDATA[<h1 id="什么是分支预测器？">什么是分支预测器？</h1><p>我们首先看一下维基百科中对分支预测器的定义：</p>
