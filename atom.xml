@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2018-05-16T01:29:35.578Z</updated>
+  <updated>2018-06-03T07:17:20.347Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -13,6 +13,63 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[C++性能榨汁机之指针与引用]]></title>
+    <link href="http://irootlee.com/juicer_pointer_reference/"/>
+    <id>http://irootlee.com/juicer_pointer_reference/</id>
+    <published>2018-06-03T15:00:00.000Z</published>
+    <updated>2018-06-03T07:17:20.347Z</updated>
+    <content type="html"><![CDATA[<h1 id="前言">前言</h1><p>C语言的指针让我们有了直接操控内存的强大能力，同时指针也是使用C语言时最容易出问题的地方。C++在继承了C语言的指针的同时又给我们提供了另外一个武器：引用。今天我们来探讨一下指针与引用的异同以及两者之间的性能差异。</p>
+<h1 id="指针与引用的区别">指针与引用的区别</h1><p>引用与指针的区别也算是C++中老生常谈的话题了，无论是在期末考试的试卷上还是找工作时的笔试面试上，这个问题都是“常客”。对于这个问题更加详细的解答请参考《More Effective C++》的条款1，本文主要提一下以下三个区别：</p>
+<ol>
+<li><p>引用必须初始化，而指针可以不初始化。</p>
+<p>我们在定义一个引用的时候必须为其指定一个初始值，但是指针却不需要。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> &amp;r;    <span class="comment">//不合法，没有初始化引用</span></span><br><span class="line"><span class="keyword">int</span> *p;    <span class="comment">//合法，但p为野指针，使用需要小心</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>引用不能为空，而指针可以为空。</p>
+<p>由于引用不能为空，所以我们在使用引用的时候不需要测试其合法性，而在使用指针的时候需要首先判断指针是否为空指针，否则可能会引起程序崩溃。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test_p</span><span class="params">(<span class="keyword">int</span>* p)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">  	<span class="keyword">if</span>(p != null_ptr)    <span class="comment">//对p所指对象赋值时需先判断p是否为空指针</span></span><br><span class="line">    	*p = <span class="number">3</span>;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test_r</span><span class="params">(<span class="keyword">int</span>&amp; r)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    r = <span class="number">3</span>;    <span class="comment">//由于引用不能为空，所以此处无需判断r的有效性就可以对r直接赋值</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>引用不能更换目标</p>
+<p>指针可以随时改变指向，但是引用只能指向初始化时指向的对象，无法改变。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> &amp;r = a;    <span class="comment">//初始化引用r指向变量a</span></span><br><span class="line"><span class="keyword">int</span> *p = &amp;a;   <span class="comment">//初始化指针p指向变量a</span></span><br><span class="line"></span><br><span class="line">p = &amp;b;        <span class="comment">//指针p指向了变量b</span></span><br><span class="line">r = b;         <span class="comment">//引用r依然指向a，但a的值变成了b</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="引用的使用场景">引用的使用场景</h1><p>只看两者区别的话，我们发现引用可以完成的任务都可以使用指针完成，并且在使用引用时限制条件更多，那么C++为什么要引入“引用”呢？</p>
+<p>限制条件多不一定是缺点，C++的引用在减少了程序员自由度的同时提升了内存操作的安全性和语义的优美性。比如引用强制要求必须初始化，可以让我们在使用引用的时候不用再去判断引用是否为空，让代码更加简洁优美，避免了指针满天飞的情形。除了这种场景之外引用还用于如下两个场景：</p>
+<ol>
+<li><p>引用型参数</p>
+<p>一般我们使用const reference参数作为只读形参，这种情况下既可以避免参数拷贝还可以获得与传值参数一样的调用方式。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;data)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">  	<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; data&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>&#125;;</span><br><span class="line">    test(data);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>引用型返回值</p>
+<p>C++提供了重载运算符的功能，我们在重载某些操作符的时候，使用引用型返回值可以获得跟该操作符原来语法相同的调用方式，保持了操作符语义的一致性。一个例子就是operator []操作符，这个操作符一般需要返回一个引用对象，才能正确的被修改。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v(<span class="number">10</span>);</span><br><span class="line">v[<span class="number">5</span>] = <span class="number">10</span>;    <span class="comment">//[]操作符返回引用，然后vector对应元素才能被修改</span></span><br><span class="line">              <span class="comment">//如果[]操作符不返回引用而是指针的话，赋值语句则需要这样写</span></span><br><span class="line">*v[<span class="number">5</span>] = <span class="number">10</span>;   <span class="comment">//这种书写方式，完全不符合我们对[]调用的认知，容易产生误解</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="指针与引用的性能差距">指针与引用的性能差距</h1><p>指针与引用之间有没有性能差距呢？这种问题就需要进入汇编层面去看一下。我们先写一个test1函数，参数传递使用指针：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test1</span><span class="params">(<span class="keyword">int</span>* p)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    *p = <span class="number">3</span>;    <span class="comment">//此处应该首先判断p是否为空，为了测试的需要，此处我们没加。</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该代码段对应的汇编代码如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pushq&#9;%rbp&#10;movq&#9;%rsp, %rbp&#10;movq&#9;%rdi, -8(%rbp)&#10;movq&#9;-8(%rbp), %rax&#10;movl&#9;$3, (%rax)&#10;nop&#10;popq&#9;%rbp&#10;ret</span><br></pre></td></tr></table></figure>
+<p>上述代码1、2行是参数调用保存现场操作；第3行是参数传递，函数调用第一个参数一般放在rdi寄存器，此行代码把rdi寄存器值（指针p的值）写入栈中；第4行是把栈中p的值写入rax寄存器；第5行是把立即数3写入到<strong>rax寄存器值所指向的内存</strong>中，此处要注意(%rax)两边的括号，这个括号并并不是可有可无的，(%rax)和%rax完全是两种意义，(%rax)代表rax寄存器中值所代表地址部分的内存，即相当于C++代码中的*p，而%rax代表rax寄存器，相当于C++代码中的p值，所以汇编这里使用了(%rax)而不是%rax。</p>
+<p>我们再写出参数传递使用引用的C++代码段test2：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test2</span><span class="params">(<span class="keyword">int</span>&amp; r)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    r = <span class="number">3</span>;    <span class="comment">//赋值前无需判断reference是否为空</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码对应的汇编代码如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pushq&#9;%rbp&#10;movq&#9;%rsp, %rbp&#10;movq&#9;%rdi, -8(%rbp)&#10;movq&#9;-8(%rbp), %rax&#10;movl&#9;$3, (%rax)&#10;nop&#10;popq&#9;%rbp&#10;ret</span><br></pre></td></tr></table></figure>
+<p>我们发现test2对应的汇编代码和test1对应的汇编代码完全相同，这说明C++编译器在编译程序的时候将指针和引用编译成了完全一样的机器码。所以C++中的引用只是C++对指针操作的一个“语法糖”，在底层实现时C++编译器实现这两种操作的方法完全相同。</p>
+<h1 id="总结">总结</h1><p>C++中引入了引用操作，在对引用的使用加了更多限制条件的情况下，保证了引用使用的安全性和便捷性，还可以保持代码的优雅性。在适合的情况使用适合的操作，引用的使用可以一定程度避免“指针满天飞”的情况，对于提升程序鲁棒性也有一定的积极意义。最后，指针与引用底层实现都是一样的，不用担心两者的性能差距。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="前言">前言</h1><p>C语言的指针让我们有了直接操控内存的强大能力，同时指针也是使用C语言时最容易出问题的地方。C++在继承了C语言的指针的同时又给我们提供了另外一个武器：引用。今天我们来探讨一下指针与引用的异同以及两者之间的性能差异。</p>
+<h1 id]]>
+    </summary>
+    
+      <category term="C++" scheme="http://irootlee.com/tags/C/"/>
+    
+      <category term="C++性能榨汁机系列文章" scheme="http://irootlee.com/categories/C-%E6%80%A7%E8%83%BD%E6%A6%A8%E6%B1%81%E6%9C%BA%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[C++性能榨汁机之switch语句的背后]]></title>
@@ -279,28 +336,28 @@
     <link href="http://irootlee.com/juicer_loop_unrolling/"/>
     <id>http://irootlee.com/juicer_loop_unrolling/</id>
     <published>2018-03-04T16:00:00.000Z</published>
-    <updated>2018-03-04T09:24:11.000Z</updated>
-    <content type="html"><![CDATA[<h1 id="什么是循环展开？">什么是循环展开？</h1><p>　　循环展开，英文中称（Loop unwinding或loop unrolling），是一种牺牲程序的尺寸来加快程序的执行速度的优化方法。可以由程序员完成，也可由编译器自动优化完成。循环展开最常用来降低循环开销，为具有多个功能单元的处理器提供指令级并行。也有利于指令流水线的调度。</p>
-<h1 id="循环展开对程序性能的影响">循环展开对程序性能的影响</h1><p>　　我们直接以实际代码向大家展示循环展开的作用，首先看未经过循环展开优化的代码：</p>
+    <updated>2018-06-03T07:17:20.339Z</updated>
+    <content type="html"><![CDATA[<h1 id="什么是循环展开？">什么是循环展开？</h1><p>循环展开，英文中称（Loop unwinding或loop unrolling），是一种牺牲程序的尺寸来加快程序的执行速度的优化方法。可以由程序员完成，也可由编译器自动优化完成。循环展开最常用来降低循环开销，为具有多个功能单元的处理器提供指令级并行。也有利于指令流水线的调度。</p>
+<h1 id="循环展开对程序性能的影响">循环展开对程序性能的影响</h1><p>我们直接以实际代码向大家展示循环展开的作用，首先看未经过循环展开优化的代码：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> start = <span class="built_in">std</span>::chrono::system_clock::now();</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">10000</span>;</span><br><span class="line">    <span class="comment">//循环10000次累加</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; count;i++)&#123;  </span><br><span class="line">        sum += i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">auto</span> end = <span class="built_in">std</span>::chrono::system_clock::now();</span><br><span class="line">    <span class="built_in">std</span>::chrono::duration&lt;<span class="keyword">double</span>&gt; dura = end - start;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt;<span class="string">"共耗时："</span>&lt;&lt; dura.count() &lt;&lt; <span class="string">"s"</span> &lt;&lt; <span class="built_in">std</span>::endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>　　类似于上面的这段代码是我们平常工作中经常见到的，函数目的就是求得1+2+……+9998+9999的累加和，每次循环把i累加到sum变量上，循环次数一共10000次。代码运行结果如下：</p>
+<p>类似于上面的这段代码是我们平常工作中经常见到的，函数目的就是求得1+2+……+9998+9999的累加和，每次循环把i累加到sum变量上，循环次数一共10000次。代码运行结果如下：</p>
 <p><img src="result1.png" alt="result1"></p>
 <p>可以看出代码运行耗时0.0000279秒。</p>
-<p>　　下面我们将循环展开一次，即把上述代码中的循环改为如下代码：</p>
+<p>下面我们将循环展开一次，即把上述代码中的循环改为如下代码：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; count;i += <span class="number">2</span>)&#123;</span><br><span class="line">    sum += i;</span><br><span class="line">    sum += i+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>　　即每次循环将i和i+1一起累加到sum变量上，这样可以把循环次数从10000次降低到5000次，由于CPU的高度流水线化，连续两个加法指令增加耗时很低，所以此版本代码可以一定程度上提高程序运行速度，运行结果如下：</p>
+<p>即每次循环将i和i+1一起累加到sum变量上，这样可以把循环次数从10000次降低到5000次，由于CPU的高度流水线化，连续两个加法指令增加耗时很低，所以此版本代码可以一定程度上提高程序运行速度，运行结果如下：</p>
 <p><img src="result2.png" alt="result2"></p>
 <p>代码运行耗时0.0000159秒，相较于未优化代码速度快了将近一倍。</p>
-<p>　　<em>当然，我们可以继续增加循环展开次数以进一步提高程序运行速度，但是这个增加循环展开次数也是有限度的，当达到了CPU的最高吞吐量之后，继续增加循环展开次数是没有意义的。</em></p>
-<p>　　上述循环展开后的代码依然有进一步优化的空间，那就是消除连续指令的相关性，以达到指令级并行，我们可以看到循环展开后的代码，循环体中有两条语句：sum += i 和 sum += i+1，第二条语句sum += i+1依赖于第一条命来sum += i的执行结果，所以这两条语句只能依次执行，限制了CPU进一步提高性能的可能。如果我们将循环体改为如下代码：</p>
+<p><em>当然，我们可以继续增加循环展开次数以进一步提高程序运行速度，但是这个增加循环展开次数也是有限度的，当达到了CPU的最高吞吐量之后，继续增加循环展开次数是没有意义的。</em></p>
+<p>上述循环展开后的代码依然有进一步优化的空间，那就是消除连续指令的相关性，以达到指令级并行，我们可以看到循环展开后的代码，循环体中有两条语句：sum += i 和 sum += i+1，第二条语句sum += i+1依赖于第一条命来sum += i的执行结果，所以这两条语句只能依次执行，限制了CPU进一步提高性能的可能。如果我们将循环体改为如下代码：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> sum1=<span class="number">0</span>,sum2=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;count/<span class="number">2</span>;i+=<span class="number">2</span>)&#123;</span><br><span class="line">    sum1 += i;</span><br><span class="line">    sum2 += i+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line">sum = sum1 + sum2;</span><br></pre></td></tr></table></figure>
-<p>　　我们新建了两个变量sum1和sum2用于存储循环展开时两个累加语句的累加结果，最后在循环体外将两部分结果相加得到最终结果。该代码中两个累加语句之间是互不相关的，所以CPU可以并行执行这两条指令，以达到性能的进一步提高。下面是运行结果：</p>
+<p>我们新建了两个变量sum1和sum2用于存储循环展开时两个累加语句的累加结果，最后在循环体外将两部分结果相加得到最终结果。该代码中两个累加语句之间是互不相关的，所以CPU可以并行执行这两条指令，以达到性能的进一步提高。下面是运行结果：</p>
 <p><img src="result3.png" alt="result3"></p>
 <p>代码运行耗时0.0000073秒，相较于只进行循环展开的代码速度又快了将近一倍。</p>
-<h1 id="总结">总结</h1><p>　　由上面三段代码的运行速度对比可以看出，循环展开对程序性能有着很重要的影响，可以减少分支预测错误次数，增加取消数据相关进一步利用并行执行提高速度的机会。但是，<strong>并不建议大家进行手动的循环展开</strong>，在代码中进行循环展开会导致程序的可读性下降，代码膨胀。为了直观感受循环展开对性能的影响，上述代码运行结果均是在不开编译器优化的情况下进行的测试，其实在我们开启了编译器优化的时候，编译器会自动对我们的循环代码进行循环展开，让我们可以在保持了代码可读性的同时，又能享受到循环展开对我们程序性能的提高。</p>
+<h1 id="总结">总结</h1><p>由上面三段代码的运行速度对比可以看出，循环展开对程序性能有着很重要的影响，可以减少分支预测错误次数，增加取消数据相关进一步利用并行执行提高速度的机会。但是，<strong>并不建议大家进行手动的循环展开</strong>，在代码中进行循环展开会导致程序的可读性下降，代码膨胀。为了直观感受循环展开对性能的影响，上述代码运行结果均是在不开编译器优化的情况下进行的测试，其实在我们开启了编译器优化的时候，编译器会自动对我们的循环代码进行循环展开，让我们可以在保持了代码可读性的同时，又能享受到循环展开对我们程序性能的提高。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h1 id="什么是循环展开？">什么是循环展开？</h1><p>　　循环展开，英文中称（Loop unwinding或loop unrolling），是一种牺牲程序的尺寸来加快程序的执行速度的优化方法。可以由程序员完成，也可由编译器自动优化完成。循环展开最常用来降低循环开销，]]>
+    <![CDATA[<h1 id="什么是循环展开？">什么是循环展开？</h1><p>循环展开，英文中称（Loop unwinding或loop unrolling），是一种牺牲程序的尺寸来加快程序的执行速度的优化方法。可以由程序员完成，也可由编译器自动优化完成。循环展开最常用来降低循环开销，为具]]>
     </summary>
     
       <category term="C++" scheme="http://irootlee.com/tags/C/"/>
@@ -675,81 +732,6 @@
       <category term="C++" scheme="http://irootlee.com/tags/C/"/>
     
       <category term="C++日常踩坑" scheme="http://irootlee.com/categories/C-%E6%97%A5%E5%B8%B8%E8%B8%A9%E5%9D%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[机器学习常用算法优缺点对比]]></title>
-    <link href="http://irootlee.com/ML_good_weakness/"/>
-    <id>http://irootlee.com/ML_good_weakness/</id>
-    <published>2016-11-01T14:00:00.000Z</published>
-    <updated>2018-03-27T14:31:43.838Z</updated>
-    <content type="html"><![CDATA[<p>最近看完了《集体智慧编程》一书，对常用的机器学习算法有了大体的了解，书中也分析了各个算法的优缺点，并指出了解决不同问题选择不同算法的方法，但是书中所讲太过繁琐，我在此提炼一下相关观点，也当是对自己看完本书作一些记录吧。</p>
-<h1 id="常用的10类机器学习算法：">常用的10类机器学习算法：</h1><ol>
-<li>线性回归</li>
-<li>逻辑回归</li>
-<li>决策树</li>
-<li>SVM（支持向量机）</li>
-<li>朴素贝叶斯</li>
-<li>k最近邻算法</li>
-<li>k均值算法</li>
-<li>随机森林算法</li>
-<li>降维算法</li>
-<li>Gradient Boost和Adaboost算法</li>
-</ol>
-<h1 id="贝叶斯分类器">贝叶斯分类器</h1><h3 id="优点：">优点：</h3><ul>
-<li>同时具备接收大数据量训练和查询时具备高速度的特点</li>
-<li>具有支持增量式训练的能力（不借助于旧有训练数据，每一组新的训练数据都有可能引起概率值的变化，而如决策树和支持向量机，则需要我们一次性将整个数据集都传给它们。）</li>
-<li>对贝叶斯分类器实际学习状况的解释相对简单。</li>
-</ul>
-<h3 id="缺点：">缺点：</h3><ul>
-<li>无法处理基于特征值组合所产生的变化结果。<em>例如：“在线”和“药店”分开出现时一般出现在正常邮件中，但当组合起来时“在线药店”却一般出现在垃圾邮件中，贝叶斯分类器无法理解这种特征组合。</em></li>
-</ul>
-<h1 id="决策树分类器">决策树分类器</h1><h3 id="优点:">优点:</h3><ul>
-<li>利用决策树可以很容易的解释一个受训模型，而且算法将最重要的判断因素很好的安排在了靠近树的根部位置。</li>
-<li>决策树能找到能使信息增益达到最大化的分界线，因此它能够同时处理分类数据和数值数据。</li>
-<li>与贝叶斯分类器相比，它能够很容易地处理变量之间的相互影响。</li>
-</ul>
-<h3 id="缺点：-1">缺点：</h3><ul>
-<li>不支持向量式训练，每次训练都要从头开始。</li>
-</ul>
-<h1 id="神经网络">神经网络</h1><h3 id="优点：-1">优点：</h3><ul>
-<li>能够处理复杂的非线性函数，并且能发现不同输入之间的依赖关系。</li>
-<li>允许增量式训练</li>
-</ul>
-<h2 id="缺点：-2">缺点：</h2><ul>
-<li>神经网络是一种黑盒方法，无法确知推导过程。</li>
-<li>在选择训练数据的比率及与问题相适应的网络规模方面，并没有明确的规则可以遵循。</li>
-</ul>
-<h1 id="支持向量机">支持向量机</h1><h3 id="优点：-2">优点：</h3><ul>
-<li>在对新的观测数据进行分类时速度极快，因为支持向量机分类时只需判断坐标点位于分界线的哪一侧即可。</li>
-<li>通过将分类输入转换成数值输入，可以令支持向量机同时支持分类数据和数值数据。</li>
-</ul>
-<h3 id="缺点：-3">缺点：</h3><ul>
-<li>针对每个数据集的最佳核变换函数及其相应的参数都是不一样的，而且每当遇到新的数据集时都必须重新确定这些函数及参数。</li>
-<li>和神经网络一样，SVM也是一种黑盒技术，实际上，由于存在向高维空间的变换，SVM的分类过程甚至更加难于解释。</li>
-</ul>
-<h1 id="k-最近邻算法">k-最近邻算法</h1><h3 id="优点：-3">优点：</h3><ul>
-<li>能够利用复杂函数进行数值预测，同时又保持简单易懂的特点</li>
-<li>合理的数据缩放量不但可以改善预测的效果，而且还可以告诉我们预测过程中各个变量的重要程度。</li>
-<li>KNN是一种在线（online）技术，这意味着新的数据可以在任何时候被添加进来，而不需要进行任何的计算。</li>
-</ul>
-<h3 id="缺点：-4">缺点：</h3><ul>
-<li>为了完成预测，它要求所有的训练数据都必须缺一不可，为了找到最为接近的数据项，每一项待预测的数据必须和其他数据项进行比较，会产出极大的数据计算量。</li>
-<li>寻找合理的缩放因子并不是那么简单。</li>
-</ul>
-<h1 id="总结">总结</h1><p>每种机器学习的方法都有其固有的优缺点，因为这些固有的优缺点的存在，所以每种算法都有其适用的问题领域，具体到我们使用机器学习处理任务时，要充分了解需要解决问题的特点，从而选择最有效的机器学习算法来解决问题。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>最近看完了《集体智慧编程》一书，对常用的机器学习算法有了大体的了解，书中也分析了各个算法的优缺点，并指出了解决不同问题选择不同算法的方法，但是书中所讲太过繁琐，我在此提炼一下相关观点，也当是对自己看完本书作一些记录吧。</p>
-<h1 id="常用的10类机器学习算法：">]]>
-    </summary>
-    
-      <category term="python" scheme="http://irootlee.com/tags/python/"/>
-    
-      <category term="机器学习" scheme="http://irootlee.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-      <category term="编程" scheme="http://irootlee.com/categories/%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   

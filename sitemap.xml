@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://irootlee.com/juicer_pointer_reference/</loc>
+    
+    <lastmod>2018-06-03T07:17:20.347Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://irootlee.com/juicer_loop_unrolling/</loc>
+    
+    <lastmod>2018-06-03T07:17:20.339Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://irootlee.com/juicer_switch/</loc>
     
     <lastmod>2018-05-16T01:29:35.578Z</lastmod>
@@ -114,13 +128,6 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/juicer_loop_unrolling/</loc>
-    
-    <lastmod>2018-03-04T09:24:11.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://irootlee.com/learn_english/</loc>
     
     <lastmod>2018-03-02T05:02:17.000Z</lastmod>
@@ -198,6 +205,13 @@
   </url>
   
   <url>
+    <loc>http://irootlee.com/python_thread/</loc>
+    
+    <lastmod>2017-11-17T03:47:59.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://irootlee.com/review_design/</loc>
     
     <lastmod>2017-11-17T03:47:59.000Z</lastmod>
@@ -206,13 +220,6 @@
   
   <url>
     <loc>http://irootlee.com/python_pywin32_thread/</loc>
-    
-    <lastmod>2017-11-17T03:47:59.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://irootlee.com/python_thread/</loc>
     
     <lastmod>2017-11-17T03:47:59.000Z</lastmod>
     
@@ -254,14 +261,14 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/mycat/</loc>
+    <loc>http://irootlee.com/Py2exe/</loc>
     
     <lastmod>2017-11-17T03:47:57.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://irootlee.com/Py2exe/</loc>
+    <loc>http://irootlee.com/mycat/</loc>
     
     <lastmod>2017-11-17T03:47:57.000Z</lastmod>
     
@@ -289,13 +296,6 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/git/</loc>
-    
-    <lastmod>2017-11-17T03:47:54.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://irootlee.com/kharkiv/</loc>
     
     <lastmod>2017-11-17T03:47:54.000Z</lastmod>
@@ -304,6 +304,13 @@
   
   <url>
     <loc>http://irootlee.com/huoluan_love/</loc>
+    
+    <lastmod>2017-11-17T03:47:54.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://irootlee.com/git/</loc>
     
     <lastmod>2017-11-17T03:47:54.000Z</lastmod>
     

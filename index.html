@@ -196,6 +196,61 @@
                 <div class="postShorten-header">
                     <h1 class="postShorten-title" itemprop="headline">
                         
+                                <a class="link-unstyled" href="/juicer_pointer_reference/">C++性能榨汁机之指针与引用</a>
+                        
+                    </h1>
+                    <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Sun Jun 03 2018 15:00:00 GMT+0000">
+	
+		    6月 03, 2018
+    	
+    </time>
+    
+        <span>分类： </span>
+        
+    <a class="category-link" href="/categories/C-性能榨汁机系列文章/">C++性能榨汁机系列文章</a>
+
+
+    
+</div>
+                </div>
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            前言C语言的指针让我们有了直接操控内存的强大能力，同时指针也是使用C语言时最容易出问题的地方。C++在继承了C语言的指针的同时又给我们提供了另外一个武器：引用。今天我们来探讨一下指针与引用的异同以及两者之间的性能差异。
+指针与引用的区别引用与指针的区别也算是C++中老生常谈的话题了，无论是在期末考试的试卷上还是找工作时的笔试面试上，这个问题都是“常客”。对于这个问题更加详细的解答请参考《More <br>
+                    
+                    
+                        
+                            <a href="/juicer_pointer_reference/" class="postShorten-excerpt_link link ">继续阅读</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="postShorten-thumbnailimg">
+                    <img alt="" itemprop="image" src="http://irootlee.com/juicer_pointer_reference/pointer_reference.png"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="postShorten-wrap">
+                <div class="postShorten-header">
+                    <h1 class="postShorten-title" itemprop="headline">
+                        
                                 <a class="link-unstyled" href="/juicer_switch/">C++性能榨汁机之switch语句的背后</a>
                         
                     </h1>
@@ -608,8 +663,9 @@ if语句与switch语句相信学过C<br>
                 <div class="postShorten-excerpt" itemprop="articleBody">
                     
                         <p>
-                            什么是循环展开？　　循环展开，英文中称（Loop unwinding或loop unrolling），是一种牺牲程序的尺寸来加快程序的执行速度的优化方法。可以由程序员完成，也可由编译器自动优化完成。循环展开最常用来降低循环开销，为具有多个功能单元的处理器提供指令级并行。也有利于指令流水线的调度。
-循环展开对程序性能的影响　　我们直接以实际代码向大家展示循环展开的作用，首先看未经过循环展开优化的代码<br>
+                            什么是循环展开？循环展开，英文中称（Loop unwinding或loop unrolling），是一种牺牲程序的尺寸来加快程序的执行速度的优化方法。可以由程序员完成，也可由编译器自动优化完成。循环展开最常用来降低循环开销，为具有多个功能单元的处理器提供指令级并行。也有利于指令流水线的调度。
+循环展开对程序性能的影响我们直接以实际代码向大家展示循环展开的作用，首先看未经过循环展开优化的代码：
+12<br>
                     
                     
                         
@@ -679,61 +735,6 @@ if语句与switch语句相信学过C<br>
             
                 <div class="postShorten-thumbnailimg">
                     <img alt="" itemprop="image" src="http://irootlee.com/cpp_32bit_big_memory/cpp.png"/>
-                </div>
-                
-            
-        </article>
-    
-        
-            
-                
-            
-        
-        
-            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
-        
-            <div class="postShorten-wrap">
-                <div class="postShorten-header">
-                    <h1 class="postShorten-title" itemprop="headline">
-                        
-                                <a class="link-unstyled" href="/cpp_memset/">日常踩坑：C++程序中如何正确使用memset()内存初始化函数？</a>
-                        
-                    </h1>
-                    <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Tue Jan 02 2018 23:00:00 GMT+0000">
-	
-		    1月 02, 2018
-    	
-    </time>
-    
-        <span>分类： </span>
-        
-    <a class="category-link" href="/categories/C-日常踩坑/">C++日常踩坑</a>
-
-
-    
-</div>
-                </div>
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    
-                        <p>
-                            背景　　事情是这样的：在股票的自动化交易软件开发过程中，我们使用了万得的一套股票行情获取API，伴随着API还提供了一个示例程序，我们在开发过程中借用了部分示例程序中的代码，其中就包括一个配置读取类：ConfigSettings，这个类负责从配置文件中读入软件配置参数，并把参数的值保存在成员变量中，以供后面程序进行参数读取。
-　　但是除了原来支持的参数之外，我们又在配置文件中增加了新的配置参数，是<br>
-                    
-                    
-                        
-                            <a href="/cpp_memset/" class="postShorten-excerpt_link link ">继续阅读</a>
-                            
-                        
-                    
-                    
-                        </p>
-                    
-                </div>
-            </div>
-            
-                <div class="postShorten-thumbnailimg">
-                    <img alt="" itemprop="image" src="http://irootlee.com/cpp_memset/cpp_memset.png"/>
                 </div>
                 
             
