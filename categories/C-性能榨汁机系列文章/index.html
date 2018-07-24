@@ -197,6 +197,60 @@
                 <div class="postShorten-header">
                     <h1 class="postShorten-title" itemprop="headline">
                         
+                                <a class="link-unstyled" href="/juicer_vtable/">C++性能榨汁机之虚函数的开销</a>
+                        
+                    </h1>
+                    <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Tue Jul 24 2018 23:00:00 GMT+0000">
+	
+		    7月 24, 2018
+    	
+    </time>
+    
+        <span>分类： </span>
+        
+    <a class="category-link" href="/categories/C-性能榨汁机系列文章/">C++性能榨汁机系列文章</a>
+
+
+    
+</div>
+                </div>
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            虚函数的实现虽然C++标准并没有规定编译器实现虚函数的方式，但是大部分编译器均是采用了虚函数表来实现虚函数，即对于每一个包含虚成员函数的类生成一个虚函数表，一个指向虚函数表的指针被放在对象的首地址（不考虑多继承等复杂情况），虚函数表中存储该类所有的虚函数地址。当使用引用或者指针调用虚函数时，首先通过虚函数表指针找到虚函数表，然后通过偏移量找到虚函数地址并调用。关于虚函数表的更多细节，建议阅读《深度<br>
+                    
+                    
+                        
+                            <a href="/juicer_vtable/" class="postShorten-excerpt_link link ">继续阅读</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="postShorten-thumbnailimg">
+                    <img alt="" itemprop="image" src="http://irootlee.com/juicer_vtable/vtable.png"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="postShorten-wrap">
+                <div class="postShorten-header">
+                    <h1 class="postShorten-title" itemprop="headline">
+                        
                                 <a class="link-unstyled" href="/juicer_pointer_reference/">C++性能榨汁机之指针与引用</a>
                         
                     </h1>
@@ -682,61 +736,6 @@ if语句与switch语句相信学过C<br>
             
                 <div class="postShorten-thumbnailimg">
                     <img alt="" itemprop="image" src="http://irootlee.com/juicer_branch_predictor3/branch_predictor.png"/>
-                </div>
-                
-            
-        </article>
-    
-        
-            
-                
-            
-        
-        
-            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
-        
-            <div class="postShorten-wrap">
-                <div class="postShorten-header">
-                    <h1 class="postShorten-title" itemprop="headline">
-                        
-                                <a class="link-unstyled" href="/juicer_branch_predictor2/">C++性能榨汁机之分支预测器(2)</a>
-                        
-                    </h1>
-                    <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Thu Dec 14 2017 12:00:00 GMT+0000">
-	
-		    12月 14, 2017
-    	
-    </time>
-    
-        <span>分类： </span>
-        
-    <a class="category-link" href="/categories/C-性能榨汁机系列文章/">C++性能榨汁机系列文章</a>
-
-
-    
-</div>
-                </div>
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    
-                        <p>
-                            前言在上篇文章中，我们介绍了分支预测器在提高CPU流水线效率上的重要作用，上篇文章最后还提到，分支预测器的预测准确率对CPU执行命令效率有巨大影响，当预测错误时必须将流水线冲刷，然后重新从正确的地址取指，分支预测错误将会产生很大的代价，而且这种代价随着流水线的深度的增加而快速增长。
-过去几十年，国内外科研界及工业界提出了多种分支预测模型以提高分支预测的准确率，本篇文章，我们主要挑选部分典型的分支预<br>
-                    
-                    
-                        
-                            <a href="/juicer_branch_predictor2/" class="postShorten-excerpt_link link ">继续阅读</a>
-                            
-                        
-                    
-                    
-                        </p>
-                    
-                </div>
-            </div>
-            
-                <div class="postShorten-thumbnailimg">
-                    <img alt="" itemprop="image" src="http://irootlee.com/juicer_branch_predictor2/branch_predictor.png"/>
                 </div>
                 
             

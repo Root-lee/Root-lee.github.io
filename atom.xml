@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://irootlee.com/"/>
-  <updated>2018-06-03T07:17:20.347Z</updated>
+  <updated>2018-07-24T15:10:04.786Z</updated>
   <id>http://irootlee.com/</id>
   
   <author>
@@ -13,6 +13,45 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[C++性能榨汁机之虚函数的开销]]></title>
+    <link href="http://irootlee.com/juicer_vtable/"/>
+    <id>http://irootlee.com/juicer_vtable/</id>
+    <published>2018-07-24T23:00:00.000Z</published>
+    <updated>2018-07-24T15:10:04.786Z</updated>
+    <content type="html"><![CDATA[<h1 id="虚函数的实现">虚函数的实现</h1><p>虽然C++标准并没有规定编译器实现虚函数的方式，但是大部分编译器均是采用了<strong>虚函数表</strong>来实现虚函数，即对于每一个包含虚成员函数的类生成一个虚函数表，一个指向虚函数表的指针被放在对象的首地址（不考虑多继承等复杂情况），虚函数表中存储该类所有的虚函数地址。当使用引用或者指针调用虚函数时，首先通过虚函数表指针找到虚函数表，然后通过偏移量找到虚函数地址并调用。关于虚函数表的更多细节，建议阅读《深度探索C++对象模型》这本书。</p>
+<h1 id="虚函数表面上的开销">虚函数表面上的开销</h1><ol>
+<li><p>空间开销</p>
+<p>首先，由于需要为每一个包含虚函数的类生成一个虚函数表，所以程序的二进制文件大小会相应的增大；其次，对于包含虚函数的类的实例来说，每个实例都包含一个虚函数表指针用于指向对应的虚函数表，所以每个实例的空间占用都增加一个指针大小（32位系统4字节，64位系统8字节）。这些空间开销可能会造成缓存的不友好，在一定程度上影响程序性能。</p>
+</li>
+<li><p>时间开销</p>
+<p>虚函数的时间开销主要是增加了一次内存寻址，通过虚函数表指针找到虚函数表，虽对程序性能有一些影响，但是影响并不大。</p>
+</li>
+</ol>
+<h1 id="虚函数隐藏在背后的开销">虚函数隐藏在背后的开销</h1><p>上述虚函数表面上的开销其实是微不足道的，真正影响虚函数性能的是隐藏在背后的，不被人轻易察觉的，只有对计算机体系结构有一定理解才能探寻出藏在背后的“性能杀手”。</p>
+<p>首先我们先看调用虚函数时，在汇编层生成了什么代码：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">...&#10;movq&#9;(%rax), %rax&#10;movq&#9;(%rax), %rax&#10;movq&#9;-24(%rbp), %rdx&#10;movq&#9;%rdx, %rdi&#10;call&#9;*%rax&#10;...</span><br></pre></td></tr></table></figure>
+<p>上述汇编代码最重要的就是第6行，在AT&amp;T格式汇编中，这是一个间接调用，意义是从%rax指明的地址处读取跳转的目标位置。这也是虚函数调用与普通成员函数的区别所在，普通函数调用是一个直接调用。直接调用与间接调用的区别就是跳转地址是否确定，直接调用的跳转地址是编译器确定的，而间接调用是运行到该指令时从寄存器中取出地址然后跳转。</p>
+<p>有了上面的基本认识，我们就可以分析虚函数的性能开销所在了，其实说到底，这个隐藏在背后的关键点就是<strong>分支预测器</strong>，如果看过我之前的博客，相信对分支预测器已经很熟悉了，如果感觉分支预测器还是很陌生，推荐阅读我以前的分支预测器的四篇文章：</p>
+<p><a href="http://irootlee.com/juicer_branch_predictor1/">C++性能榨汁机之分支预测器1</a></p>
+<p><a href="http://irootlee.com/juicer_branch_predictor2/">C++性能榨汁机之分支预测器2</a></p>
+<p><a href="http://irootlee.com/juicer_branch_predictor3/">C++性能榨汁机之分支预测器3</a></p>
+<p><a href="http://irootlee.com/juicer_branch_predictor4/">C++性能榨汁机之分支预测器4</a></p>
+<p>有了分支预测器和CPU指令流水线的基本知识，我们可以发现对于直接调用而言，是不存在分支跳转的，因为跳转地址是编译器确定的，CPU直接去跳转地址取后面的指令即可，不存在分支预测，这样可以保证CPU流水线不被打断。而对于间接寻址，由于跳转地址不确定，所以此处会有多个分支可能，这个时候需要分支预测器进行预测，如果分支预测失败，则会导致流水线冲刷，重新进行取指、译码等操作，对程序性能有很大的影响。</p>
+<p>网上有部分文章中说对于虚函数这种间接跳转会直接导致流水线冲刷，这种说法明显是自相矛盾的，如果间接跳转必定会导致流水线冲刷，那把这些指令放进流水线的意义何在呢？其实查阅资料就可以知道，Intel和AMD的CPU中存在两级自适应预测器用于预测间接跳转，此预测器可以预测多分支跳转。</p>
+<h1 id="总结">总结</h1><p>本文探究出影响到虚函数调用性能的背后原因是流水线和分支预测，由于虚函数调用需要间接跳转，所以会导致虚函数调用比普通函数调用多了分支预测的过程，产生性能差距的原因主要是分支预测失败导致的流水线冲刷性能开销。</p>
+<p>本文的目的并不是为了说明虚函数调用有额外开销而让大家避免使用虚函数，使用不使用虚函数应该由自己程序的需要而定，如果程序逻辑需要使用动态绑定，如果不使用虚函数而是自己实现相应逻辑的话产生的性能损耗一般会比使用虚函数的性能损耗大得多。但对于一些性能敏感的程序，在虚函数可用可不用的时候，可以考虑不使用虚函数以提高性能。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="虚函数的实现">虚函数的实现</h1><p>虽然C++标准并没有规定编译器实现虚函数的方式，但是大部分编译器均是采用了<strong>虚函数表</strong>来实现虚函数，即对于每一个包含虚成员函数的类生成一个虚函数表，一个指向虚函数表的指针被放在对象的首地址（]]>
+    </summary>
+    
+      <category term="C++" scheme="http://irootlee.com/tags/C/"/>
+    
+      <category term="C++性能榨汁机系列文章" scheme="http://irootlee.com/categories/C-%E6%80%A7%E8%83%BD%E6%A6%A8%E6%B1%81%E6%9C%BA%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[C++性能榨汁机之指针与引用]]></title>
@@ -704,34 +743,6 @@
     </summary>
     
       <category term="读后感" scheme="http://irootlee.com/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[日常踩坑：关于C++中结构体和联合体中字节对齐方式的一个误解]]></title>
-    <link href="http://irootlee.com/C_struct_union/"/>
-    <id>http://irootlee.com/C_struct_union/</id>
-    <published>2016-11-01T16:00:00.000Z</published>
-    <updated>2018-03-27T14:31:44.902Z</updated>
-    <content type="html"><![CDATA[<p>前几天遇到这么一个题目：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">char</span> flag[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">short</span> value;</span><br><span class="line">&#125; sampleStruct;</span><br><span class="line"></span><br><span class="line"><span class="keyword">union</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">char</span> flag[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">short</span> value;</span><br><span class="line">&#125; sampleUnion;</span><br><span class="line"></span><br><span class="line"><span class="keyword">sizeof</span>(sampleStruct)=?</span><br><span class="line"><span class="keyword">sizeof</span>(sampleUnion)=?</span><br></pre></td></tr></table></figure>
-<p>当时的想法是:对于stuct类型，对象大小是struct内部所有对象大小的和，当然要考虑字节对齐，char flag[3]对象占三字节，考虑到4字节对齐，后面剩一字节放不下short的2字节，所以short重新占用另外4字节，所以sizeof(sampleStruct)=8。Union类型是union对象里占用字节数最多的那个对象的字节数（在考虑字节对齐的情况下），所以sizeof(sampleUnion)=4。</p>
-<p>当我在g++上编译运行程序时发现程序输出的结果并不是我想的那样：sizeof(sampleStruct)=8，sizeof(sampleUnion)=4，而是下图所示：<br><img src="gcc.png" alt="gcc"><br>sizeof(sampleStruct)=6<br>sizeof(sampleUnion)=4</p>
-<p>那是哪里出错了呢？<br>网上查阅资料发现，自己对C++中的字节对齐原理理解不够透彻，想当然的以为所有的结构体和联合体都是遵循4字节对齐这个规则，这种想法是错误的。<br>正确的字节对齐方式是：先取成员变量中的字节数最大值，这里struct中的short为2，<strong>然后与4字节比较</strong>，取两个中的最小值，这里为short的大小2字节，所以这个结构体的字节对齐方式为2字节对齐，根据2字节对齐方法算出来sizeof(sampleStruct)=6。</p>
-<p>============================================<br>2016.11.3补充：</p>
-<p>结构体字节对齐的方式，gcc与vs2010的处理细节还有一些小区别,看以下这个程序：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">typedef</span> <span class="keyword">struct</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">double</span> a;</span><br><span class="line">		<span class="keyword">short</span> b;</span><br><span class="line">		<span class="keyword">int</span> c;</span><br><span class="line">		<span class="keyword">char</span> d;</span><br><span class="line">	&#125;sampleStruct;</span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt;<span class="string">"sizeof(sampleStruct)="</span>&lt;&lt;<span class="keyword">sizeof</span>(sampleStruct)&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>此程序在gcc下编译运行后获得结果：<br><img src="result_gcc.png" alt="gcc"><br>而同样一个程序在vs2010上运行结果却是：<br><img src="result_vs.png" alt="vs"></p>
-<p>这里gcc与vs2010的一个区别是：vs2010在结构体对齐中不仅要求4字节对齐，而且还要求结构体最后的大小一定要是结构体中最大对象字节数的整数倍，所以在本程序中，按4字节对齐之后，算出结构体大小是20字节，但是结构体里最大元素是double，占用8字节，结构体大小应该是8的整数倍，所以还需要再补4字节，所以最后vs2010输出结构体大小是24字节。</p>
-<p>在linux里的gcc中没有要求结构体大小是最大对象的整数倍，所以在gcc中输出结构体的大小是20字节。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>前几天遇到这么一个题目：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span]]>
-    </summary>
-    
-      <category term="C++" scheme="http://irootlee.com/tags/C/"/>
-    
-      <category term="C++日常踩坑" scheme="http://irootlee.com/categories/C-%E6%97%A5%E5%B8%B8%E8%B8%A9%E5%9D%91/"/>
     
   </entry>
   

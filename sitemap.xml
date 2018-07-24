@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://irootlee.com/juicer_vtable/</loc>
+    
+    <lastmod>2018-07-24T15:10:04.786Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://irootlee.com/juicer_pointer_reference/</loc>
     
     <lastmod>2018-06-03T07:17:20.347Z</lastmod>
@@ -177,14 +184,14 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/review_influence/</loc>
+    <loc>http://irootlee.com/review_paris/</loc>
     
     <lastmod>2017-11-17T03:48:01.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://irootlee.com/review_paris/</loc>
+    <loc>http://irootlee.com/review_influence/</loc>
     
     <lastmod>2017-11-17T03:48:01.000Z</lastmod>
     
@@ -205,14 +212,14 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/python_thread/</loc>
+    <loc>http://irootlee.com/review_design/</loc>
     
     <lastmod>2017-11-17T03:47:59.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://irootlee.com/review_design/</loc>
+    <loc>http://irootlee.com/python_thread/</loc>
     
     <lastmod>2017-11-17T03:47:59.000Z</lastmod>
     
@@ -233,7 +240,7 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/python_cookie/</loc>
+    <loc>http://irootlee.com/python_mkdir/</loc>
     
     <lastmod>2017-11-17T03:47:58.000Z</lastmod>
     
@@ -247,21 +254,21 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/python_mkdir/</loc>
+    <loc>http://irootlee.com/python_cookie/</loc>
     
     <lastmod>2017-11-17T03:47:58.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://irootlee.com/py_save_data_of_sun/</loc>
+    <loc>http://irootlee.com/Py2exe/</loc>
     
     <lastmod>2017-11-17T03:47:57.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://irootlee.com/Py2exe/</loc>
+    <loc>http://irootlee.com/py_save_data_of_sun/</loc>
     
     <lastmod>2017-11-17T03:47:57.000Z</lastmod>
     
@@ -282,13 +289,6 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/matlab_wav_error/</loc>
-    
-    <lastmod>2017-11-17T03:47:55.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://irootlee.com/linux/</loc>
     
     <lastmod>2017-11-17T03:47:55.000Z</lastmod>
@@ -296,7 +296,14 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/kharkiv/</loc>
+    <loc>http://irootlee.com/matlab_wav_error/</loc>
+    
+    <lastmod>2017-11-17T03:47:55.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://irootlee.com/git/</loc>
     
     <lastmod>2017-11-17T03:47:54.000Z</lastmod>
     
@@ -310,7 +317,7 @@
   </url>
   
   <url>
-    <loc>http://irootlee.com/git/</loc>
+    <loc>http://irootlee.com/kharkiv/</loc>
     
     <lastmod>2017-11-17T03:47:54.000Z</lastmod>
     
