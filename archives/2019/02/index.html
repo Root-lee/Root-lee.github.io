@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="I&#39;m Root lee !">
-    <title>All archives : 2018 - I&#39;m Root lee !</title>
+    <title>All archives : 2019/2 - I&#39;m Root lee !</title>
     <meta name="author" content="Root lee">
     
         <link rel="icon" href="/assets/images/favicon.ico">
@@ -17,7 +17,7 @@
     <meta name="description">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="I'm Root lee !">
-<meta property="og:url" content="http://irootlee.com/archives/2018/page/2/index.html">
+<meta property="og:url" content="http://irootlee.com/archives/2019/02/index.html">
 <meta property="og:site_name" content="I'm Root lee !">
 <meta property="og:description">
 <meta name="twitter:card" content="summary">
@@ -213,19 +213,19 @@
                 <div class="postShorten-header">
                     <h1 class="postShorten-title" itemprop="headline">
                         
-                                <a class="link-unstyled" href="/cpp_32bit_big_memory/">日常踩坑：C++32位程序申请大内存出现std:bad_alloc</a>
+                                <a class="link-unstyled" href="/juicer_cpu_affinity/">C++性能榨汁机之CPU亲和性</a>
                         
                     </h1>
                     <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Thu Mar 01 2018 23:00:00 GMT+0000">
+    <time itemprop="datePublished" content="Thu Feb 21 2019 14:00:00 GMT+0000">
 	
-		    3月 01, 2018
+		    2月 21, 2019
     	
     </time>
     
         <span>分类： </span>
         
-    <a class="category-link" href="/categories/C-日常踩坑/">C++日常踩坑</a>
+    <a class="category-link" href="/categories/C-性能榨汁机系列文章/">C++性能榨汁机系列文章</a>
 
 
     
@@ -234,11 +234,11 @@
                 <div class="postShorten-excerpt" itemprop="articleBody">
                     
                         <p>
-                            问题背景：　　在开发股票自动化交易软件过程中，我们需要将股票的tick数据（每3s一笔）存储下来，供我们的股票交易策略部分使用。这种情况下首先想到使用MySql这种关系型数据库进行存储，但是我们的股票自动化交易软件对速度的要求极高，可能相差几十毫秒就是赚钱与亏钱的区别，而MySql这种传统数据库的插入与查询是很慢的，无法满足我们的要求。当然我们也可以选择既满足存储数据的要求又能达到我们需要的速度要<br>
+                            前言CPU领域中最广为人知的一条定律——摩尔定律：预计18个月会将芯片的性能提高一倍。过去几十年，各大公司致力于提高CPU晶体管密度和提高CPU工作频率，使得CPU的性能提升基本符合摩尔定律。但随着工艺不断发展，晶体管密度提升已经接近物理极限，CPU工作频率也由于功耗和发热的制约而无法继续提升。在基础物理领域没有大的突破的前提下，单核CPU的性能提升日益困难，于是，各大公司将目光投向了通过增加CP<br>
                     
                     
                         
-                            <a href="/cpp_32bit_big_memory/" class="postShorten-excerpt_link link ">继续阅读</a>
+                            <a href="/juicer_cpu_affinity/" class="postShorten-excerpt_link link ">继续阅读</a>
                             
                         
                     
@@ -249,62 +249,7 @@
             </div>
             
                 <div class="postShorten-thumbnailimg">
-                    <img alt="" itemprop="image" src="http://irootlee.com/cpp_32bit_big_memory/cpp.png"/>
-                </div>
-                
-            
-        </article>
-    
-        
-            
-                
-            
-        
-        
-            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
-        
-            <div class="postShorten-wrap">
-                <div class="postShorten-header">
-                    <h1 class="postShorten-title" itemprop="headline">
-                        
-                                <a class="link-unstyled" href="/cpp_memset/">日常踩坑：C++程序中如何正确使用memset()内存初始化函数？</a>
-                        
-                    </h1>
-                    <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Tue Jan 02 2018 23:00:00 GMT+0000">
-	
-		    1月 02, 2018
-    	
-    </time>
-    
-        <span>分类： </span>
-        
-    <a class="category-link" href="/categories/C-日常踩坑/">C++日常踩坑</a>
-
-
-    
-</div>
-                </div>
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    
-                        <p>
-                            背景　　事情是这样的：在股票的自动化交易软件开发过程中，我们使用了万得的一套股票行情获取API，伴随着API还提供了一个示例程序，我们在开发过程中借用了部分示例程序中的代码，其中就包括一个配置读取类：ConfigSettings，这个类负责从配置文件中读入软件配置参数，并把参数的值保存在成员变量中，以供后面程序进行参数读取。
-　　但是除了原来支持的参数之外，我们又在配置文件中增加了新的配置参数，是<br>
-                    
-                    
-                        
-                            <a href="/cpp_memset/" class="postShorten-excerpt_link link ">继续阅读</a>
-                            
-                        
-                    
-                    
-                        </p>
-                    
-                </div>
-            </div>
-            
-                <div class="postShorten-thumbnailimg">
-                    <img alt="" itemprop="image" src="http://irootlee.com/cpp_memset/cpp_memset.png"/>
+                    <img alt="" itemprop="image" src="http://irootlee.com/juicer_cpu_affinity/affinity.png"/>
                 </div>
                 
             
@@ -313,17 +258,8 @@
     <div class="pagination-bar">
     <ul class="pagination">
         
-        <li class="pagination-prev">
-            
-                <a class="btn btn--default btn--small" href="/ ">
-            
-                <i class="fa fa-angle-left text-base icon-mr"></i>
-                    <span>前一页</span>
-            </a>
-        </li>
         
-        
-        <li class="pagination-number">当前页： 2 　总页： 2</li>
+        <li class="pagination-number">当前页： 1 　总页： 1</li>
     </ul>
 </div>
 
