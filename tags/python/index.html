@@ -84,8 +84,8 @@
         <li class="sidebar-button">
             
                 <a  class="sidebar-button-link "
-                    href="/%20
-                    ">
+                    href="/
+                            ">
             
                     <i class="sidebar-button-icon fa fa-lg fa-home"></i>
                     <span class="sidebar-button-desc">Home</span>
@@ -239,6 +239,421 @@
             
                 <div class="post-thumbnailimg">
                     <img alt="" itemprop="image" src="http://irootlee.com/python_filename_xml/Python.png"/>
+                </div>
+                
+            
+        </article>
+    
+    <div class="pagination-bar">
+    <ul class="pagination">
+        
+        
+        <li class="pagination-number">Page 1 of 1</li>
+    </ul>
+</div>
+</section>
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>
+功能先在Linux虚拟机中写了一个小的python程序用来测试可行性，代码如下：123456input = open(&#x27;raw.txt&#x27;<br>
+                    
+                    
+                        
+                            <a href="/python_CRLF/" class="post-excerpt_link link ">Continue reading</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="post-thumbnailimg">
+                    <img alt="" itemprop="image" src="http://irootlee.com/python_CRLF/win_py.png"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="post post--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="post-wrap">
+                <div class="post-header">
+                    <h1 class="post-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/ML_good_weakness/">机器学习常用算法优缺点对比</a>
+                        
+                    </h1>
+                    <div class="post-meta">
+    <time  itemprop="datePublished" content="Tue Nov 01 2016 14:00:00 GMT+0800">
+        Nov 01, 2016
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a>
+
+
+    
+</div>
+                </div>
+                <div class="post-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            最近看完了《集体智慧编程》一书，对常用的机器学习算法有了大体的了解，书中也分析了各个算法的优缺点，并指出了解决不同问题选择不同算法的方法，但是书中所讲太过繁琐，我在此提炼一下相关观点，也当是对自己看完本书作一些记录吧。
+常用的10类机器学习算法：
+线性回归
+逻辑回归
+决策树
+SVM（支持向量机）
+朴素贝叶斯
+k最近邻算法
+k均值算法
+随机森林算法
+降维算法
+Gradient Boost和Adabo<br>
+                    
+                    
+                        
+                            <a href="/ML_good_weakness/" class="post-excerpt_link link ">Continue reading</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="post-thumbnailimg">
+                    <img alt="" itemprop="image" src="http://irootlee.com/ML_good_weakness/machine_learning.png"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="post post--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="post-wrap">
+                <div class="post-header">
+                    <h1 class="post-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/python_mkdir/">python使用mkdir函数出现错误WindowsError:[Error 3]的解决办法</a>
+                        
+                    </h1>
+                    <div class="post-meta">
+    <time  itemprop="datePublished" content="Tue Apr 12 2016 20:00:00 GMT+0800">
+        Apr 12, 2016
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Python/">Python</a>
+
+
+    
+</div>
+                </div>
+                <div class="post-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            错误出现背景最近在写python爬虫抓取照片时，需要将抓到的照片按学年、学院、班级建立文件夹并将相应图片存入相应文件夹。程序中使用到了这样一段代码，即先判断即将创建的文件夹是否存在，如果不存在，则创建该文件夹，代码类似如下：
+12345# -*- coding: utf-8 -*-  import ospath_of_pic = &#x27;1\\2&#x27;  #当前文件夹子文件夹1，子文件夹<br>
+                    
+                    
+                        
+                            <a href="/python_mkdir/" class="post-excerpt_link link ">Continue reading</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="post-thumbnailimg">
+                    <img alt="" itemprop="image" src="http://irootlee.com/python_mkdir/Python.png"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="post post--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="post-wrap">
+                <div class="post-header">
+                    <h1 class="post-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/python_thread/">Python多线程学习心得</a>
+                        
+                    </h1>
+                    <div class="post-meta">
+    <time  itemprop="datePublished" content="Sat Mar 12 2016 20:00:00 GMT+0800">
+        Mar 12, 2016
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Python/">Python</a>
+
+
+    
+</div>
+                </div>
+                <div class="post-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            使用python写程序，并用PyQt创建一个Gui。
+问题描述当python程序运行耗费时间过长时，便会阻塞Gui进程，导致Gui无法刷新，从而使得程序出现“未响应”的情况。
+解决办法这种情况下便需要使用Python的多线程功能。最常见的线程协同方式：UI主线程+后台线程UI被触发后，对应的主线程创建后台线程，后台线程在后台运行，并通过发信号给主线程，从而间接控制UI的显示。
+例子以下是我编写的一<br>
+                    
+                    
+                        
+                            <a href="/python_thread/" class="post-excerpt_link link ">Continue reading</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="post-thumbnailimg">
+                    <img alt="" itemprop="image" src="http://irootlee.com/python_thread/Python.png"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="post post--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="post-wrap">
+                <div class="post-header">
+                    <h1 class="post-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/bug_of_nuaa/">南航教务处泄露学生信息漏洞的发现以及关于此事的一些想法</a>
+                        
+                    </h1>
+                    <div class="post-meta">
+    <time  itemprop="datePublished" content="Tue Mar 08 2016 15:00:00 GMT+0800">
+        Mar 08, 2016
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Python/">Python</a>
+
+
+    
+</div>
+                </div>
+                <div class="post-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            发现漏洞偶然的一个发现，学校教务处网站有一个小小的漏洞，会泄露全校所有学生的学号、姓名、及照片。这个漏洞存在于新版教务处里，当登录教务处之后，点击“学生个人查询”–&gt;“基本查询”，会出现当前登录学生的所有个人资料，同时附带个人的证件照，并且证件照之上附带个人的姓名和学号信息，类似于下图：
+
+漏洞便在这个照片之上。我们右击图片查看图片属性：
+
+然后将图片地址粘贴在浏览器的地址栏然后点回车，在浏<br>
+                    
+                    
+                        
+                            <a href="/bug_of_nuaa/" class="post-excerpt_link link ">Continue reading</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="post-thumbnailimg">
+                    <img alt="" itemprop="image" src="http://irootlee.com/bug_of_nuaa/security.jpg"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="post post--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="post-wrap">
+                <div class="post-header">
+                    <h1 class="post-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/py_save_data_of_sun/">大三暑期实习中用Python自动保存太阳活动数据</a>
+                        
+                    </h1>
+                    <div class="post-meta">
+    <time  itemprop="datePublished" content="Mon Nov 23 2015 20:00:00 GMT+0800">
+        Nov 23, 2015
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Python/">Python</a>
+
+
+    
+</div>
+                </div>
+                <div class="post-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            大三结束，学校（乌克兰哈尔科夫国立航空航天大学）安排为期一个月的暑期实习，实习地点为与学校相邻的一个航空航天研究所，这次实习收获良多，大体了解了研究所的研究内容，接触了一些专业软件，借这个机会学会了微软Office的Excel，实习前Excel小白一个，连利用数据画图表都不熟练，实习后，我已经会用数据透视图分析数据，几十万数据处理逼迫我使用宏来做一些重复性动作，也大体了解了VBA代码，也可以磕磕碰<br>
+                    
+                    
+                        
+                            <a href="/py_save_data_of_sun/" class="post-excerpt_link link ">Continue reading</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="post-thumbnailimg">
+                    <img alt="" itemprop="image" src="http://irootlee.com/py_save_data_of_sun/pic2.gif"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="post post--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="post-wrap">
+                <div class="post-header">
+                    <h1 class="post-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/doc_replace/">用Python写的文档批量替换软件</a>
+                        
+                    </h1>
+                    <div class="post-meta">
+    <time  itemprop="datePublished" content="Sun Nov 22 2015 20:00:00 GMT+0800">
+        Nov 22, 2015
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Python/">Python</a>
+
+
+    
+</div>
+                </div>
+                <div class="post-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            软件介绍本软件受本院潘老师所托所写，经过多次版本迭代，最后写成此软件。现将源码分享出来，欢迎大家一起优化修改。软件使用Python2.7版本写成，用户界面使用pyQt4.5版本写成，在Python中导入了win32模块，使用该模块可以调用Office接口，从而实现文档内容替换的功能。
+
+这里是软件下载地址
+
+软件功能本软件可以批量替换文档中的特定词句，支持文件类型：.doc .docx .xls <br>
+                    
+                    
+                        
+                            <a href="/doc_replace/" class="post-excerpt_link link ">Continue reading</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="post-thumbnailimg">
+                    <img alt="" itemprop="image" src="http://irootlee.com/doc_replace/docreplace.png"/>
                 </div>
                 
             
