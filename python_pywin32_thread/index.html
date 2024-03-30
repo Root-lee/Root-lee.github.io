@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Root lee">
+    <title>pywin32与多线程：pywintypes.com_error:CoInitialize - Root lee</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="Root lee">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="问题被pywin32和多线程之间的关系折磨了一上午，终于大体弄懂了，将一些经验记录一下，以备不时之需。在成像声纳幅相校正程序（ https:&#x2F;&#x2F;github.com&#x2F;Root-lee&#x2F;hex2bin ）中，软件2.0版本，在原来版本的基础上，通过COM接口调用Matlab程序，将幅相校正的第一步（使用Matlab计算幅相校正系数）也包含在软件之中，为操作人员又省去一个操作步骤。当前版本软件只需选择">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="pywin32与多线程：pywintypes.com_error:CoInitialize">
+<meta property="og:url" content="http://irootlee.com/python_pywin32_thread/index.html">
+<meta property="og:site_name" content="Root lee">
+<meta property="og:description" content="问题被pywin32和多线程之间的关系折磨了一上午，终于大体弄懂了，将一些经验记录一下，以备不时之需。在成像声纳幅相校正程序（ https:&#x2F;&#x2F;github.com&#x2F;Root-lee&#x2F;hex2bin ）中，软件2.0版本，在原来版本的基础上，通过COM接口调用Matlab程序，将幅相校正的第一步（使用Matlab计算幅相校正系数）也包含在软件之中，为操作人员又省去一个操作步骤。当前版本软件只需选择">
+<meta property="og:locale" content="zh_CH">
+<meta property="og:image" content="http://irootlee.com/python_pywin32_thread/error.png">
+<meta property="article:published_time" content="2017-02-25T08:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T13:08:39.903Z">
+<meta property="article:author" content="Root lee">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://irootlee.com/python_pywin32_thread/error.png">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/mountietocat.png"/>
+    
+    
+        <meta property="og:image" content="/python_pywin32_thread/Python.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/python_pywin32_thread/Python.png" />
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">Root lee</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/%20
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="mailto:irootlee@gmail.com" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">pywin32与多线程：pywintypes.com_error:CoInitialize</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Sat Feb 25 2017 16:00:00 GMT+0800">
+        Feb 25, 2017
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Python/">Python</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>被pywin32和多线程之间的关系折磨了一上午，终于大体弄懂了，将一些经验记录一下，以备不时之需。<br>在成像声纳幅相校正程序（ <a href="https://github.com/Root-lee/hex2bin">https://github.com/Root-lee/hex2bin</a> ）中，软件2.0版本，在原来版本的基础上，通过COM接口调用Matlab程序，将幅相校正的第一步（使用Matlab计算幅相校正系数）也包含在软件之中，为操作人员又省去一个操作步骤。当前版本软件只需选择声纳上位机软件采集到的AD数据之后，即可自动完成计算及转换。<br>实现软件功能时需要在程序中调用pywin32模块中的Dipatch，测试程序如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> win32com.client <span class="keyword">import</span> Dispatch</span><br><span class="line"></span><br><span class="line">h = Dispatch(<span class="string">&quot;Matlab.application&quot;</span>)</span><br><span class="line">h.Visible = <span class="number">0</span></span><br><span class="line">h.Feval(<span class="string">&#x27;cd&#x27;</span>,<span class="number">0</span>,<span class="number">0</span>,os.getcwd())</span><br><span class="line">path = <span class="string">u&#x27;AD自动采集数据_调整noise.dat&#x27;</span></span><br><span class="line">h.Feval(<span class="string">&#x27;generate&#x27;</span>,<span class="number">0</span>,<span class="number">0</span>,path)</span><br></pre></td></tr></table></figure><br>程序运行正常。<br>但是当把此程序移植到主程序中，这部分代码放在一个后台线程中，代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">from</span> win32com.client <span class="keyword">import</span> Dispatch</span><br><span class="line"><span class="keyword">import</span> time,os</span><br><span class="line"></span><br><span class="line"><span class="comment">#继承 QThread 类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BigWorkThread</span>(QtCore.QThread):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;docstring for BigWorkThread&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, file_path = []</span>):</span><br><span class="line">        <span class="built_in">super</span>(BigWorkThread, self).__init__(<span class="literal">None</span>)</span><br><span class="line">        self.path = file_path</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">run</span>(<span class="params">self</span>): </span><br><span class="line">        self.gen_txt_file()</span><br><span class="line">        <span class="built_in">input</span> = <span class="built_in">open</span>(<span class="string">u&#x27;幅相系数记录.txt&#x27;</span>,<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">        raw = <span class="built_in">input</span>.read()</span><br><span class="line">        output = <span class="built_in">open</span>(<span class="string">u&#x27;幅相系数记录.dat&#x27;</span>,<span class="string">&#x27;wb+&#x27;</span>)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(raw)/<span class="number">2</span>):</span><br><span class="line">            output.write(<span class="built_in">chr</span>(<span class="built_in">int</span>(raw[<span class="number">2</span>*i:<span class="number">2</span>*i+<span class="number">2</span>],<span class="number">16</span>)))</span><br><span class="line">            j = <span class="built_in">int</span>(<span class="number">2</span>*i/<span class="built_in">len</span>(raw)*<span class="number">100</span>)</span><br><span class="line">            self.emit(QtCore.SIGNAL(<span class="string">&quot;where&quot;</span>),j)</span><br><span class="line">        self.emit(QtCore.SIGNAL(<span class="string">&quot;finish_show&quot;</span>))</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">gen_txt_file</span>(<span class="params">self</span>):</span><br><span class="line">        h = Dispatch(<span class="string">&quot;Matlab.application&quot;</span>)  <span class="comment">#打开Matlab进程</span></span><br><span class="line">        h.Visible = <span class="number">0</span>  <span class="comment">#隐藏Matlab界面</span></span><br><span class="line">        h.Feval(<span class="string">&#x27;cd&#x27;</span>,<span class="number">0</span>,<span class="number">0</span>,os.getcwd())  <span class="comment">#Matlab工作路径切换到当前软件目录</span></span><br><span class="line">        h.Feval(<span class="string">&#x27;generate&#x27;</span>,<span class="number">0</span>,<span class="number">0</span>,self.path)  <span class="comment">#调用generate.m中的函数，产生txt格式文件</span></span><br></pre></td></tr></table></figure><br>这时，当程序运行到gen_txt_file()函数中的h = Dispatch(“Matlab.application”) 这一句时便会出错：pywintypes.com_error:CoInitialize<br><img src="error.png" alt="error"></p>
+<p>为什么这段代码在主程中可以正常工作，放进多线程中就不能工作了呢？<br>因为COM对象属于一个线程，该线程与当前的线程无法正常通信，所以导致在多线程中调用Dispatch函数会报错。</p>
+<h1 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h1><p>我们需要Windows提供的函数Coinitialize来创建一个套间，使得他们可以正常关联和执行，具体方法就是在多线程中调用COM对象代码前面加上pythoncom.CoInitialize()，最后在COM对象调用结束后加上pythoncom.CoUninitialize()释放资源。<br>代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="keyword">from</span> win32com.client <span class="keyword">import</span> Dispatch</span><br><span class="line"><span class="keyword">import</span> time,os</span><br><span class="line"><span class="keyword">import</span> pythoncom</span><br><span class="line"></span><br><span class="line"><span class="comment"># 中间代码同上...</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">gen_txt_file</span>(<span class="params">self</span>):</span><br><span class="line">        pythoncom.CoInitialize()</span><br><span class="line">        h = Dispatch(<span class="string">&quot;Matlab.application&quot;</span>)  <span class="comment">#打开Matlab进程</span></span><br><span class="line">        h.Visible = <span class="number">0</span>  <span class="comment">#隐藏Matlab界面</span></span><br><span class="line">        h.Feval(<span class="string">&#x27;cd&#x27;</span>,<span class="number">0</span>,<span class="number">0</span>,os.getcwd())  <span class="comment">#Matlab工作路径切换到当前软件目录</span></span><br><span class="line">        h.Feval(<span class="string">&#x27;generate&#x27;</span>,<span class="number">0</span>,<span class="number">0</span>,self.path)  <span class="comment">#调用generate.m中的函数，产生txt格式文件</span></span><br><span class="line">        pythoncom.CoUninitialize()</span><br></pre></td></tr></table></figure><br>代码经过这样改动之后即可以正常运行。</p>
+<p>其实这个问题还有个更简单的方法，那就是在多线程中添加代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> win32com.client <span class="keyword">import</span> Dispatch</span><br></pre></td></tr></table></figure><br>将文件开头的这句代码删除。<br>这样之后在多线程中调用pywin32模块就不会再出问题，即记住：什么时候调用COM对象，什么时候才import win32com。<br>代码可以这样改：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> PyQt4 <span class="keyword">import</span> QtCore, QtGui</span><br><span class="line"><span class="comment">#from win32com.client import Dispatch</span></span><br><span class="line"><span class="keyword">import</span> time,os</span><br><span class="line"></span><br><span class="line"><span class="comment"># 中间代码同上...</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">gen_txt_file</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">from</span> win32com.client <span class="keyword">import</span> Dispatch</span><br><span class="line">        h = Dispatch(<span class="string">&quot;Matlab.application&quot;</span>)  <span class="comment">#打开Matlab进程</span></span><br><span class="line">        h.Visible = <span class="number">0</span>  <span class="comment">#隐藏Matlab界面</span></span><br><span class="line">        h.Feval(<span class="string">&#x27;cd&#x27;</span>,<span class="number">0</span>,<span class="number">0</span>,os.getcwd())  <span class="comment">#Matlab工作路径切换到当前软件目录</span></span><br><span class="line">        h.Feval(<span class="string">&#x27;generate&#x27;</span>,<span class="number">0</span>,<span class="number">0</span>,self.path)  <span class="comment">#调用generate.m中的函数，产生txt格式文件</span></span><br></pre></td></tr></table></figure><br>将最上面的from win32com.client import Dispatch移动到gen_txt_file函数中，这样可以保证代码修改量小，而且更容易理解。</p>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/python/" rel="tag">python</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_branch_predictor1/"  data-tooltip="C++性能榨汁机之分支预测器(1)">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/python_CRLF/" data-tooltip="python中遇到的Windows系统中换行符的一个坑">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/python_pywin32_thread/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/python_pywin32_thread/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/python_pywin32_thread/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_branch_predictor1/"  data-tooltip="C++性能榨汁机之分支预测器(1)">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/python_CRLF/" data-tooltip="python中遇到的Windows系统中换行符的一个坑">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/python_pywin32_thread/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/python_pywin32_thread/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/python_pywin32_thread/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/python_pywin32_thread/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/python_pywin32_thread/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/python_pywin32_thread/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Root lee">
+    <title>C++性能榨汁机之局部性原理 - Root lee</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="Root lee">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="前言《CSAPP》讲到了局部性原理：一个编写良好的计算机程序常常具有良好的局部性（loacality）。也就是说，它们倾向于引用邻近于其他最近引用过的数据项，或者最近引用过的数据项本身。这种倾向性，被称为局部性原理（principle of locality），是一个持久的概念，对硬件和软件系统的设计和性能都有着极大的影响。 局部性原理代码示例为了让大家更加直观的感受到局部性原理对我们程序性能的影">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="C++性能榨汁机之局部性原理">
+<meta property="og:url" content="http://irootlee.com/juicer_locality/index.html">
+<meta property="og:site_name" content="Root lee">
+<meta property="og:description" content="前言《CSAPP》讲到了局部性原理：一个编写良好的计算机程序常常具有良好的局部性（loacality）。也就是说，它们倾向于引用邻近于其他最近引用过的数据项，或者最近引用过的数据项本身。这种倾向性，被称为局部性原理（principle of locality），是一个持久的概念，对硬件和软件系统的设计和性能都有着极大的影响。 局部性原理代码示例为了让大家更加直观的感受到局部性原理对我们程序性能的影">
+<meta property="og:locale" content="zh_CH">
+<meta property="og:image" content="http://irootlee.com/juicer_locality/time_count.png">
+<meta property="article:published_time" content="2018-04-04T14:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T13:08:39.853Z">
+<meta property="article:author" content="Root lee">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://irootlee.com/juicer_locality/time_count.png">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/mountietocat.png"/>
+    
+    
+        <meta property="og:image" content="/juicer_locality/locality.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/juicer_locality/locality.png" />
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">Root lee</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/%20
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="mailto:irootlee@gmail.com" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">C++性能榨汁机之局部性原理</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Wed Apr 04 2018 22:00:00 GMT+0800">
+        Apr 04, 2018
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-%E6%80%A7%E8%83%BD%E6%A6%A8%E6%B1%81%E6%9C%BA%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0/">C++性能榨汁机系列文章</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>《CSAPP》讲到了局部性原理：一个编写良好的计算机程序常常具有良好的<strong>局部性</strong>（loacality）。也就是说，它们倾向于引用邻近于其他最近引用过的数据项，或者最近引用过的数据项本身。这种倾向性，被称为<strong>局部性原理</strong>（principle of locality），是一个持久的概念，对硬件和软件系统的设计和性能都有着极大的影响。</p>
+<h1 id="局部性原理代码示例"><a href="#局部性原理代码示例" class="headerlink" title="局部性原理代码示例"></a>局部性原理代码示例</h1><p>为了让大家更加直观的感受到局部性原理对我们程序性能的影响，我们先看一段代码：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="comment">//求和函数，行优先</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">sum_row_first</span><span class="params">(<span class="type">const</span> vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; &amp;data)</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1024</span>; i++)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j = <span class="number">0</span>; j &lt; <span class="number">1024</span>; j++)&#123;</span><br><span class="line">            sum += data[i][j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//求和函数，列优先</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">sum_col_first</span><span class="params">(<span class="type">const</span> vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; &amp;data)</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> j = <span class="number">0</span>; j &lt; <span class="number">1024</span>; j++)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1024</span>; i++)&#123;</span><br><span class="line">            sum += data[i][j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">data</span>(<span class="number">1024</span>,<span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(<span class="number">1024</span>,<span class="number">0</span>));</span><br><span class="line">    <span class="comment">//初始化二维数组</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i &lt; <span class="number">1024</span>; i++)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>; j &lt; <span class="number">1024</span>; j++)&#123;</span><br><span class="line">            data[i][j] = <span class="built_in">rand</span>() % <span class="number">10</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    chrono::steady_clock::time_point start_time = chrono::steady_clock::<span class="built_in">now</span>();</span><br><span class="line">    <span class="built_in">sum_row_first</span>(data);  <span class="comment">// 计算行优先求和函数耗时</span></span><br><span class="line">    chrono::steady_clock::time_point stop_time = chrono::steady_clock::<span class="built_in">now</span>();</span><br><span class="line">    chrono::duration&lt;<span class="type">double</span>&gt; time_span = chrono::<span class="built_in">duration_cast</span>&lt;chrono::microseconds&gt;(stop_time - start_time);</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;行优先耗时：&quot;</span>&lt;&lt; time_span.<span class="built_in">count</span>() &lt;&lt; <span class="string">&quot; ms&quot;</span> &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    start_time = chrono::steady_clock::<span class="built_in">now</span>();</span><br><span class="line">    <span class="built_in">sum_col_first</span>(data); <span class="comment">//计算列优先求和函数耗时</span></span><br><span class="line">    stop_time = chrono::steady_clock::<span class="built_in">now</span>();</span><br><span class="line">    time_span = chrono::<span class="built_in">duration_cast</span>&lt;chrono::microseconds&gt;(stop_time - start_time);</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;列优先耗时：&quot;</span>&lt;&lt; time_span.<span class="built_in">count</span>() &lt;&lt; <span class="string">&quot; ms&quot;</span> &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面这段代码我们主要定义了两个二维数组求和函数，其中sum_row_first函数按照二维数组的行求和（先访问第一行的所有元素，然后第二行……直到最后一行），而sum_col_first函数按照二维数组的列求和（先访问第一列的所有元素，然后第二列……直到最后一列）。逻辑上来讲，无论行优先访问还是列优先访问对函数运行的时间应该不会造成影响，毕竟，两个函数都是遍历了整个二维数组，但是实际运行结果如何呢？</p>
+<p><img src="time_count.png" alt="time_count"></p>
+<p>从上图运行结果我们发现，行优先求和函数的总运行时间为0.004661ms，列优先求和函数的总运行时间为0.007287ms，列优先求和函数运行时间几乎是行优先求和函数运行时间的两倍，造成这两个函数运行速度相差巨大的原因就是局部性原理。</p>
+<h1 id="局部性原理"><a href="#局部性原理" class="headerlink" title="局部性原理"></a>局部性原理</h1><p>介绍局部性原理之前，我们需要先了解一下<strong>缓存</strong>的概念：在<a href="http://irootlee.com/juicer_false_sharing">伪共享</a>这篇博客中，我们提到了CPU中的缓存行的概念，CPU使用高速缓存以提高访问数据的速度，每次CPU取数据都首先检查高速缓存中是否已有所取数据，如果没有则从内存中取到数据（包括相邻的数据），缓存到CPU高速缓存中以供下次使用。缓存的概念充斥在现代操作系统的各个层次，从硬件到操作系统、再到用户软件，很多项目架构也使用到了缓存的思想，如使用访问速度快的内存数据库（如Redis）作为访问速度慢的关系型数据库（如Mysql）的缓存，以降低整个系统的访问时间。</p>
+<p>CSAPP中定义了空间局部性：<em>在一个良好空间局部性的程序中，如果一个存储器位置被引用了一次，那么程序很可能在不远的将来引用附近的一个存储器位置。</em></p>
+<p>在C/C++编译系统中，二维数组的数据是按行存放的，所以每一行的数据在内存中是连续的，每一列的数据在内存中是相距较远的，上面代码中的行优先求和函数按行访问数据，当某个数据被缓存的时候，它附近跟它同一行的数据也被同时缓存进了高速缓存，所以当程序继续运行访问下一个数据时，由于该数据已经被缓存了，所以CPU可以很快的从高速缓存获取到该数据，而不用重新从内存中读取。但是列优先求和函数访问某一个数据时，把跟它同行的数据缓存进了高速缓存，但程序下一步却是访问下一行的对应列数据，所以导致缓存不命中，所以程序每一次访问数据都需要重新从内存中访问，所以速度相比于行优先程序有所降低。<strong>所以说行优先求和函数比列优先求和函数有更好的空间局部性。</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>我们已经明白了局部性原理对我们程序性能的影响，在以后的代码编写时应尽量保证程序有较好的局部性，局部性比较好的程序更容易有较高的缓存命中率，而缓存命中率高的程序往往比缓存命中率低的程序运行速度更快。</p>
+<p>最后请大家思考一个问题：为何堆排序平均复杂度和最差复杂度都为O(NlogN)，而快速排序平均复杂度O(NlogN)，最差复杂度会到O(N*N)，但为何快速排序应用反而远比堆排序应用广泛？</p>
+<p>……</p>
+<p>答案：快速排序的每一步访问的数据都是连续的，而堆排序中需要不停比较父子节点，如果父节点时N，则子节点是2N+1，两者在内存中相距较远。快速排序相比堆排序有更好的局部性，所以虽然<strong>两种排序方法的理论平均复杂度相同，但在计算机上运行时往往快速排序的表现大幅优于堆排序。</strong></p>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/C/" rel="tag">C++</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_thundering_herd/"  data-tooltip="C++性能榨汁机之惊群问题">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_KMP/" data-tooltip="日常踩坑：一场C++实现KMP算法引发的&#34;血案&#34;">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_locality/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_locality/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_locality/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_thundering_herd/"  data-tooltip="C++性能榨汁机之惊群问题">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_KMP/" data-tooltip="日常踩坑：一场C++实现KMP算法引发的&#34;血案&#34;">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_locality/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_locality/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_locality/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_locality/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_locality/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_locality/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>

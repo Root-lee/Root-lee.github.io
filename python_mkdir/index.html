@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Root lee">
+    <title>python使用mkdir函数出现错误WindowsError:[Error 3]的解决办法 - Root lee</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="Root lee">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="错误出现背景最近在写python爬虫抓取照片时，需要将抓到的照片按学年、学院、班级建立文件夹并将相应图片存入相应文件夹。程序中使用到了这样一段代码，即先判断即将创建的文件夹是否存在，如果不存在，则创建该文件夹，代码类似如下： 12345# -*- coding: utf-8 -*-  import ospath_of_pic &#x3D; &#x27;1\\2&#x27;  #当前文件夹子文件夹1，子文件夹">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="python使用mkdir函数出现错误WindowsError:[Error 3]的解决办法">
+<meta property="og:url" content="http://irootlee.com/python_mkdir/index.html">
+<meta property="og:site_name" content="Root lee">
+<meta property="og:description" content="错误出现背景最近在写python爬虫抓取照片时，需要将抓到的照片按学年、学院、班级建立文件夹并将相应图片存入相应文件夹。程序中使用到了这样一段代码，即先判断即将创建的文件夹是否存在，如果不存在，则创建该文件夹，代码类似如下： 12345# -*- coding: utf-8 -*-  import ospath_of_pic &#x3D; &#x27;1\\2&#x27;  #当前文件夹子文件夹1，子文件夹">
+<meta property="og:locale" content="zh_CH">
+<meta property="og:image" content="http://irootlee.com/python_mkdir/error3.png">
+<meta property="og:image" content="http://irootlee.com/python_mkdir/path.png">
+<meta property="article:published_time" content="2016-04-12T12:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T13:08:39.901Z">
+<meta property="article:author" content="Root lee">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://irootlee.com/python_mkdir/error3.png">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/mountietocat.png"/>
+    
+    
+        <meta property="og:image" content="/python_mkdir/Python.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/python_mkdir/Python.png" />
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">Root lee</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/%20
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="mailto:irootlee@gmail.com" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">python使用mkdir函数出现错误WindowsError:[Error 3]的解决办法</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Tue Apr 12 2016 20:00:00 GMT+0800">
+        Apr 12, 2016
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Python/">Python</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h1 id="错误出现背景"><a href="#错误出现背景" class="headerlink" title="错误出现背景"></a>错误出现背景</h1><p>最近在写python爬虫抓取照片时，需要将抓到的照片按学年、学院、班级建立文件夹并将相应图片存入相应文件夹。程序中使用到了这样一段代码，即先判断即将创建的文件夹是否存在，如果不存在，则创建该文件夹，代码类似如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-  </span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line">path_of_pic = <span class="string">&#x27;1\\2&#x27;</span>  <span class="comment">#当前文件夹子文件夹1，子文件夹1里又含有子文件夹2</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(path_of_pic):    <span class="comment">#如果文件夹不存在则创建</span></span><br><span class="line">    os.mkdir(path_of_pic)</span><br></pre></td></tr></table></figure>
+<p>但是运行时却出现错误：<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Traceback (most recent <span class="keyword">call</span> <span class="keyword">last</span>):</span><br><span class="line">  File <span class="string">&quot;path.py&quot;</span>, <span class="built_in">line</span> <span class="number">8</span>, in <span class="symbol">&lt;module&gt;</span></span><br><span class="line">    os.<span class="built_in">mkdir</span>(path_of_pic)</span><br><span class="line">WindowsError: [Error <span class="number">3</span>] : <span class="string">&#x27;1\\2&#x27;</span></span><br></pre></td></tr></table></figure><br><img src="error3.png" alt="error3"></p>
+<h1 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h1><p>首先我查阅了WindowsError的错误代码Error 3 的意思，微软的 官方网站对这个错误的解释为：</p>
+<blockquote>
+<p>ERROR_PATH_NOT_FOUND<br>   3 (0x3)<br>   The system cannot find the path specified.</p>
+</blockquote>
+<p>意思就是”系统找不到该路径”。<br>检查代码，发现也许是mkdir不能在不存在的文件夹“1”下面建立另一个文件夹，因为程序调用创建文件夹路径时，找不到文件夹“1”，所以会报错说找不到路径。</p>
+<p>然后去搜索mkdir的相关信息，发现果然和我想得一样：mkdir只能在已存在的文件夹里创建子文件夹。<br>如果想实现程序想要的直接创建多级目录的目标，则需要另外一个函数“makedirs”，这个函数的功能是创建递归的目录树，即可以一次递归创建多级目录，所以我们将原程序修改为如下：<br><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">import</span> os</span><br><span class="line"><span class="attribute">path_of_pic</span> = &#x27;<span class="number">1</span>\\<span class="number">2</span>&#x27;  #当前文件夹子文件夹<span class="number">1</span>，子文件夹<span class="number">1</span>里又含有子文件夹<span class="number">2</span></span><br><span class="line"><span class="attribute">if</span> not os.path.exists(path_of_pic):    #如果文件夹不存在则创建</span><br><span class="line">    <span class="attribute">os</span>.makedirs(path_of_pic)</span><br></pre></td></tr></table></figure><br>运行程序后，<br><img src="path.png" alt="path"><br>发现二级目录已经成功创建，问题解决。</p>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/python/" rel="tag">python</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/python_cookie/"  data-tooltip="Python使用request模块写爬虫中保持Cookies一直有效的方法">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/caisang/" data-tooltip="电视剧《大明宫词》观后感及皮影戏《采桑女》戏词">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/python_mkdir/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/python_mkdir/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/python_mkdir/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/python_cookie/"  data-tooltip="Python使用request模块写爬虫中保持Cookies一直有效的方法">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/caisang/" data-tooltip="电视剧《大明宫词》观后感及皮影戏《采桑女》戏词">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/python_mkdir/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/python_mkdir/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/python_mkdir/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/python_mkdir/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/python_mkdir/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/python_mkdir/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>

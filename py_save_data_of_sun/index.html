@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Root lee">
+    <title>大三暑期实习中用Python自动保存太阳活动数据 - Root lee</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="Root lee">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="大三结束，学校（乌克兰哈尔科夫国立航空航天大学）安排为期一个月的暑期实习，实习地点为与学校相邻的一个航空航天研究所，这次实习收获良多，大体了解了研究所的研究内容，接触了一些专业软件，借这个机会学会了微软Office的Excel，实习前Excel小白一个，连利用数据画图表都不熟练，实习后，我已经会用数据透视图分析数据，几十万数据处理逼迫我使用宏来做一些重复性动作，也大体了解了VBA代码，也可以磕磕碰">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="大三暑期实习中用Python自动保存太阳活动数据">
+<meta property="og:url" content="http://irootlee.com/py_save_data_of_sun/index.html">
+<meta property="og:site_name" content="Root lee">
+<meta property="og:description" content="大三结束，学校（乌克兰哈尔科夫国立航空航天大学）安排为期一个月的暑期实习，实习地点为与学校相邻的一个航空航天研究所，这次实习收获良多，大体了解了研究所的研究内容，接触了一些专业软件，借这个机会学会了微软Office的Excel，实习前Excel小白一个，连利用数据画图表都不熟练，实习后，我已经会用数据透视图分析数据，几十万数据处理逼迫我使用宏来做一些重复性动作，也大体了解了VBA代码，也可以磕磕碰">
+<meta property="og:locale" content="zh_CH">
+<meta property="og:image" content="http://irootlee.com/py_save_data_of_sun/pic1.png">
+<meta property="og:image" content="http://irootlee.com/py_save_data_of_sun/pic2.gif">
+<meta property="og:image" content="http://irootlee.com/py_save_data_of_sun/pic3.png">
+<meta property="article:published_time" content="2015-11-23T12:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T13:08:39.888Z">
+<meta property="article:author" content="Root lee">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://irootlee.com/py_save_data_of_sun/pic1.png">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/mountietocat.png"/>
+    
+    
+        <meta property="og:image" content="/py_save_data_of_sun/pic2.gif"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/py_save_data_of_sun/pic2.gif" />
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">Root lee</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/%20
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="mailto:irootlee@gmail.com" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">大三暑期实习中用Python自动保存太阳活动数据</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Mon Nov 23 2015 20:00:00 GMT+0800">
+        Nov 23, 2015
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Python/">Python</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <p>大三结束，学校（乌克兰哈尔科夫国立航空航天大学）安排为期一个月的暑期实习，实习地点为与学校相邻的一个航空航天研究所，这次实习收获良多，大体了解了研究所的研究内容，接触了一些专业软件，借这个机会学会了微软Office的Excel，实习前Excel小白一个，连利用数据画图表都不熟练，实习后，我已经会用数据透视图分析数据，几十万数据处理逼迫我使用宏来做一些重复性动作，也大体了解了VBA代码，也可以磕磕碰碰写出可以使用的VBA代码。<br>最最最重要的是，这次实习让我接触到了Python这门非常优秀简洁美观的编程语言，从此对Python爱不释手，用它写一些爬虫，一些小工具实在是太方便了。</p>
+<p>事情是这样的，有一次，实习老师布置了一个任务，让我搜集2013年到2015年每天太阳活动的数据，并给了我一个网址，网页部分内容如下：<br><img src="pic1.png" alt="pic1"><br>我需要做的工作就是选择年月日，然后点击后面的查询，然后网页会显示这一天的太阳活动图表，然后我再将图表保存到本地文件夹，并以当天日期命名。<br><img src="pic2.gif" alt="pic2"><br>无疑，这个任务很简单，但是很麻烦，如果不停的查询并保存三年一千多条数据，肯定要头昏脑涨了……<br>突然想起以前在某论坛看过一篇介绍网络“爬虫”的文章，似乎“爬虫”可以帮助我更轻松的完成这个任务。然后去谷歌搜索了一下“爬虫”这个关键词，发现大部分人推荐使用Python来写爬虫，也更确信了“爬虫“可以帮助我完成任务。<br>后面就是装Python，配置环境变量，各种问题的发现与解决……然后参照网上写的爬虫自己尝试写一写类似代码。<br>经过观察需要保存的图像地址，发现，图像地址是有规律的，前面地址都是一样的，后面图像是以年月日命名的gif文件，类似这样：<br><img src="pic3.png" alt="pic3"><br>这样就可以直接循环抓取图像了,程序会以年和月建立文件夹和子文件夹，并将自动图像数据保存到对应文件夹里。<br>代码如下：（这算是我写的第一个python程序了）<br><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> urllib</span><br><span class="line"></span><br><span class="line"><span class="built_in">year</span>=<span class="string">&#x27;2014&#x27;</span>  <span class="comment">//年份</span></span><br><span class="line"><span class="keyword">if</span> not os.<span class="property">path</span>.<span class="property">exists</span>(<span class="built_in">year</span>):   <span class="comment">//如果文件夹不存在就新建文件夹</span></span><br><span class="line">	os.<span class="property">makedirs</span>(<span class="built_in">year</span>)</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">month</span> in <span class="title function_">range</span>(<span class="number">1</span>,<span class="number">13</span>):     <span class="comment">//月份1-12</span></span><br><span class="line">	path=<span class="string">&#x27;%s/%s&#x27;</span> %(<span class="built_in">year</span>,<span class="built_in">month</span>)    <span class="comment">//保存路径</span></span><br><span class="line">	<span class="keyword">if</span> not os.<span class="property">path</span>.<span class="property">exists</span>(path):</span><br><span class="line">		os.<span class="property">makedirs</span>(path)</span><br><span class="line">	<span class="keyword">for</span> <span class="built_in">day</span> in <span class="title function_">range</span>(<span class="number">1</span>,<span class="number">32</span>):    <span class="comment">//日期1-31</span></span><br><span class="line">		urllib.<span class="property">urlretrieve</span>(<span class="string">&#x27;http://212.111.210.10/IONOSPHERE/%s/%s_%s_%s.gif&#x27;</span> %(<span class="built_in">year</span>,<span class="built_in">year</span>,<span class="built_in">month</span>,<span class="built_in">day</span>),<span class="string">&#x27;%s/%s_%s_%s.gif&#x27;</span>% (path,<span class="built_in">year</span>,<span class="built_in">month</span>,<span class="built_in">day</span>))</span><br><span class="line"></span><br></pre></td></tr></table></figure><br>虽然程序并不完善，比如，每月都以31天计算，没有考虑大小月，导致每次抓取图片后还要去文件夹里把没有31号的那天的图像文件手动删除，但这相比于一个个保存图像，已经省力了非常多了。</p>
+<p>也许老老实实一个个保存图像只需要一小时，而我安装学习python和编写代码耗费的时间远远大于一小时，但是，程序写出来后，抓取三年数据所需的时间不到两分钟，而且，我可以轻易的修改代码去抓取任意年月日的图像数据，而不再需要大量的重复劳动。</p>
+<p>后来实习中还有一个任务是每天的固定时间去一个网站保存数据，这个数据是实时更新的，每天都要在那一个时间点附近登录网站去保存数据，但我有时会有事导致不能上网保存数据，所以我将上面的程序稍微修改了一下，让它每天固定时刻去抓取数据，但我电脑不可能一直开机去运行这个爬虫程序，于是我将它运行在了Cloud9云端IDE里面，这样就可以二十四小时运行并在固定时间抓取数据了，我只需要过段时间将云端保存的数据保存到本地即可。</p>
+<p>总之，Python实在是在实习中帮了我大忙。人生苦短，快用Python。</p>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/python/" rel="tag">python</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/review_paris/"  data-tooltip="当美好的事物毁灭在你面前——读《巴黎圣母院》有感">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/doc_replace/" data-tooltip="用Python写的文档批量替换软件">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/py_save_data_of_sun/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/py_save_data_of_sun/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/py_save_data_of_sun/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/review_paris/"  data-tooltip="当美好的事物毁灭在你面前——读《巴黎圣母院》有感">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/doc_replace/" data-tooltip="用Python写的文档批量替换软件">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/py_save_data_of_sun/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/py_save_data_of_sun/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/py_save_data_of_sun/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/py_save_data_of_sun/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/py_save_data_of_sun/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/py_save_data_of_sun/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>

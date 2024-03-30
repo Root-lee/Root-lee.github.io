@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Root lee">
+    <title>C++性能榨汁机之伪共享 - Root lee</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="Root lee">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="前言　　在多核并发编程中，如果将互斥锁的争用比作“性能杀手”的话，那么伪共享则相当于“性能刺客”。“杀手”与“刺客”的区别在于杀手是可见的，遇到杀手时我们可以选择战斗、逃跑、绕路、求饶等多种手段去应付，但“刺客”却不同，“刺客”永远隐藏在暗处，伺机给你致命一击，防不胜防。具体到我们的并发编程中，遇到锁争用影响并发性能情况时，我们可以采取多种措施（如缩短临界区，原子操作等等）去提高程序性能，但是伪共">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="C++性能榨汁机之伪共享">
+<meta property="og:url" content="http://irootlee.com/juicer_false_sharing/index.html">
+<meta property="og:site_name" content="Root lee">
+<meta property="og:description" content="前言　　在多核并发编程中，如果将互斥锁的争用比作“性能杀手”的话，那么伪共享则相当于“性能刺客”。“杀手”与“刺客”的区别在于杀手是可见的，遇到杀手时我们可以选择战斗、逃跑、绕路、求饶等多种手段去应付，但“刺客”却不同，“刺客”永远隐藏在暗处，伺机给你致命一击，防不胜防。具体到我们的并发编程中，遇到锁争用影响并发性能情况时，我们可以采取多种措施（如缩短临界区，原子操作等等）去提高程序性能，但是伪共">
+<meta property="og:locale" content="zh_CH">
+<meta property="og:image" content="http://irootlee.com/juicer_false_sharing/MESI.png">
+<meta property="article:published_time" content="2018-03-27T14:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T13:08:39.850Z">
+<meta property="article:author" content="Root lee">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://irootlee.com/juicer_false_sharing/MESI.png">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/mountietocat.png"/>
+    
+    
+        <meta property="og:image" content="/juicer_false_sharing/false_sharing.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/juicer_false_sharing/false_sharing.png" />
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">Root lee</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/%20
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="mailto:irootlee@gmail.com" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">C++性能榨汁机之伪共享</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Tue Mar 27 2018 22:00:00 GMT+0800">
+        Mar 27, 2018
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-%E6%80%A7%E8%83%BD%E6%A6%A8%E6%B1%81%E6%9C%BA%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0/">C++性能榨汁机系列文章</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>　　在多核并发编程中，如果将互斥锁的争用比作“性能杀手”的话，那么伪共享则相当于“性能刺客”。“杀手”与“刺客”的区别在于杀手是可见的，遇到杀手时我们可以选择战斗、逃跑、绕路、求饶等多种手段去应付，但“刺客”却不同，“刺客”永远隐藏在暗处，伺机给你致命一击，防不胜防。具体到我们的并发编程中，遇到锁争用影响并发性能情况时，我们可以采取多种措施（如缩短临界区，原子操作等等）去提高程序性能，但是伪共享却是我们从所写代码中看不出任何蛛丝马迹的，发现不了问题也就无法解决问题，从而导致伪共享在“暗处”严重拖累程序的并发性能，但我们却束手无策。</p>
+<h1 id="缓存行"><a href="#缓存行" class="headerlink" title="缓存行"></a>缓存行</h1><p>　　为了进行下面的讨论，我们需要首先熟悉缓存行的概念，学过操作系统课程存储结构这部分内容的同学应该对存储器层次结构的金字塔模型印象深刻，金字塔从上往下代表存储介质的成本降低、容量变大，从下往上则代表存取速度的提高。位于金字塔模型最上层的是CPU中的寄存器，其次是CPU缓存（L1，L2，L3），再往下是内存，最底层是磁盘，操作系统采用这种存储层次模型主要是为了解决CPU的高速与内存磁盘低速之间的矛盾，CPU将最近使用的数据预先读取到Cache中，下次再访问同样数据的时候，可以直接从速度比较快的CPU缓存中读取，避免从内存或磁盘读取拖慢整体速度。</p>
+<p>　　CPU缓存的最小单位就是缓存行，缓存行大小依据架构不同有不同大小，最常见的有64Byte和32Byte，CPU缓存从内存取数据时以缓存行为单位进行，每一次都取需要读取数据所在的整个缓存行，即使相邻的数据没有被用到也会被缓存到CPU缓存中（这里又涉及到局部性原理，后面文章会进行介绍）。</p>
+<h1 id="缓存一致性"><a href="#缓存一致性" class="headerlink" title="缓存一致性"></a>缓存一致性</h1><p>　　在单核CPU情况下，上述方法可以正常工作，可以确保缓存到CPU缓存中的数据永远是“干净”的，因为不会有其他CPU去更改内存中的数据，但是在多核CPU下，情况就变得更加复杂一些。多CPU中，每个CPU都有自己的私有缓存（可能共享L3缓存），当一个CPU1对Cache中缓存数据进行操作时，如果CPU2在此之前更改了该数据，则CPU1中的数据就不再是“干净”的，即应该是失效数据，缓存一致性就是为了保证多CPU之间的缓存一致。</p>
+<p>　　Linux系统中采用MESI协议处理缓存一致性，所谓MESI即是指CPU缓存的四种状态：</p>
+<ul>
+<li>M（修改，Modified）：本地处理器已经修改缓存行，即是脏行，它的内容与内存中的内容不一样，并且此 cache 只有本地一个拷贝(专有)；</li>
+<li>E（专有，Exclusive）：缓存行内容和内存中的一样，而且其它处理器都没有这行数据；</li>
+<li>S（共享，Shared）：缓存行内容和内存中的一样, 有可能其它处理器也存在此缓存行的拷贝；</li>
+<li>I（无效，Invalid）：缓存行失效, 不能使用。</li>
+</ul>
+<p><img src="MESI.png" alt="MESI"></p>
+<p>　　每个CPU缓存行都在四个状态之间互相转换，以此决定CPU缓存是否失效，比如CPU1对一个缓存行执行了写入操作，则此操作会导致其他CPU的该缓存行进入Invalid无效状态，CPU需要使用该缓存行的时候需要从内存中重新读取。由此就解决了多CPU之间的缓存一致性问题。</p>
+<h1 id="伪共享"><a href="#伪共享" class="headerlink" title="伪共享"></a>伪共享</h1><p>　　何谓伪共享？上面我们提过CPU的缓存是<strong>以缓存行为单位</strong>进行的，即除了本身所需读写的数据之外还会缓存与该数据在同一缓存行的数据，假设缓存行大小是32字节，内存中有“abcdefgh”八个int型数据，当CPU读取“d”这个数据时，CPU会将“abcdefgh”八个int数据组成一个缓存行加入到CPU缓存中。假设计算机有两个CPU：CPU1和CPU2，CPU1只对“a”这个数据进行频繁读写，CPU2只对“b”这个数据进行频繁读写，按理说这两个CPU读写数据没有任何关联，也就不会产生任何竞争，不会有性能问题，但是由于CPU缓存是以缓存行为单位进行存取的，也是以缓存行为单位失效的，即使CPU1只更改了缓存行中“a”数据，也会导致CPU2中该缓存行完全失效，同理，CPU2对“b”的改动也会导致CPU1中该缓存行失效，由此引发了该缓存行在两个CPU之间“乒乓”，缓存行频繁失效，最终导致程序性能下降，这就是伪共享。</p>
+<h1 id="如何避免伪共享"><a href="#如何避免伪共享" class="headerlink" title="如何避免伪共享"></a>如何避免伪共享</h1><p>　　避免伪共享主要有以下两种方式：</p>
+<ol>
+<li>缓存行填充（Padding）：为了避免伪共享就需要将可能造成伪共享的多个变量处于不同的缓存行中，可以采用在变量后面填充字节的方式达到该目的。</li>
+<li>使用某些语言或编译器中强制变量对齐，将变量都对齐到缓存行大小，避免伪共享发生。</li>
+</ol>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>　　一般伪共享都很隐蔽，很难被发现，当伪共享真正构成性能瓶颈的时候，我们有必要去努力找到并解决它，但是在大部分对性能追求没有那么高的应用中，伪共享的存在对程序的危害很小，有时并不值得耗费精力和额外的内存空间（缓存行填充）去查找系统存在的伪共享。还是那句我一直以来遵循的话“<strong>不要过度优化，不要提前优化。</strong>”。</p>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/C/" rel="tag">C++</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_KMP/"  data-tooltip="日常踩坑：一场C++实现KMP算法引发的&#34;血案&#34;">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_loop_unrolling/" data-tooltip="C++性能榨汁机之循环展开">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_false_sharing/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_false_sharing/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_false_sharing/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_KMP/"  data-tooltip="日常踩坑：一场C++实现KMP算法引发的&#34;血案&#34;">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_loop_unrolling/" data-tooltip="C++性能榨汁机之循环展开">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_false_sharing/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_false_sharing/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_false_sharing/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_false_sharing/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_false_sharing/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_false_sharing/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>

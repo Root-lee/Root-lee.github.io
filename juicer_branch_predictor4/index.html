@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Root lee">
+    <title>C++性能榨汁机之分支预测器(4) - Root lee</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="Root lee">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="前言在上篇文章中，我们通过分析一段典型程序的汇编级代码更加清楚的看到了分支预测对程序性能的影响，当数据对分支预测器预测不友好的时候，我们的程序性能下降巨大。那么，怎么才能避免分支预测频繁出错对我们程序运行的不利影响呢？ 用条件传送替代条件控制转移分支预测对有规律的分支跳转可以实现非常高的预测正确率，比如在循环判断中，在循环终止之前，分支预测都可以基本保证完全的预测正确，预测错误只会出现在最后跳出循">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="C++性能榨汁机之分支预测器(4)">
+<meta property="og:url" content="http://irootlee.com/juicer_branch_predictor4/index.html">
+<meta property="og:site_name" content="Root lee">
+<meta property="og:description" content="前言在上篇文章中，我们通过分析一段典型程序的汇编级代码更加清楚的看到了分支预测对程序性能的影响，当数据对分支预测器预测不友好的时候，我们的程序性能下降巨大。那么，怎么才能避免分支预测频繁出错对我们程序运行的不利影响呢？ 用条件传送替代条件控制转移分支预测对有规律的分支跳转可以实现非常高的预测正确率，比如在循环判断中，在循环终止之前，分支预测都可以基本保证完全的预测正确，预测错误只会出现在最后跳出循">
+<meta property="og:locale" content="zh_CH">
+<meta property="og:image" content="http://irootlee.com/juicer_branch_predictor4/branch_radom_and_norandom.png">
+<meta property="article:published_time" content="2017-12-24T14:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T13:08:39.844Z">
+<meta property="article:author" content="Root lee">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://irootlee.com/juicer_branch_predictor4/branch_radom_and_norandom.png">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/mountietocat.png"/>
+    
+    
+        <meta property="og:image" content="/juicer_branch_predictor4/branch_predictor.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/juicer_branch_predictor4/branch_predictor.png" />
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">Root lee</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/%20
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="mailto:irootlee@gmail.com" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">C++性能榨汁机之分支预测器(4)</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Sun Dec 24 2017 22:00:00 GMT+0800">
+        Dec 24, 2017
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-%E6%80%A7%E8%83%BD%E6%A6%A8%E6%B1%81%E6%9C%BA%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0/">C++性能榨汁机系列文章</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在<a href="http://irootlee.com/juicer_branch_predictor3">上篇文章</a>中，我们通过分析一段典型程序的汇编级代码更加清楚的看到了分支预测对程序性能的影响，当数据对分支预测器预测不友好的时候，我们的程序性能下降巨大。那么，怎么才能避免分支预测频繁出错对我们程序运行的不利影响呢？</p>
+<h1 id="用条件传送替代条件控制转移"><a href="#用条件传送替代条件控制转移" class="headerlink" title="用条件传送替代条件控制转移"></a>用条件传送替代条件控制转移</h1><p>分支预测对有规律的分支跳转可以实现非常高的预测正确率，比如在循环判断中，在循环终止之前，分支预测都可以基本保证完全的预测正确，预测错误只会出现在最后跳出循环的条件满足时。但是，对于每次跳转结果都不确定的分支判断，分支预测率的预测正确率就很低了，可能只有50%左右，基本相当于每次都随机猜测，这样的情况下，流水线会经常被打断，影响程序性能。对于这种严重依赖于数据的分支跳转命令，最好的替代方法就是条件传送指令。</p>
+<p>在使用条件传送的条件下，命令中是没有跳转命令的，也就避免了使用分支预测器去预测一个很难预测的分支。</p>
+<h1 id="如何写条件传送代码？"><a href="#如何写条件传送代码？" class="headerlink" title="如何写条件传送代码？"></a>如何写条件传送代码？</h1><p>对于C和C++这样的高级语言是没有提供控制底层实现到底是使用条件控制转移指令还是条件传送指令的功能的，底层命令实现靠编译器实现。但是，我们可以通过我们写代码的具体方法去间接影响编译器生成的汇编代码，从而达到使用条件传送命令替代条件控制转移命令的目的。</p>
+<p>下面的C++代码经过编译器编译后生成的汇编代码是通过条件控制转移命令实现分支跳转的（我们在上一篇文章中已经就此代码进行了分析）：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">unsigned</span> c = <span class="number">0</span>; c &lt; arraySize; ++c)&#123;</span><br><span class="line">     <span class="keyword">if</span>(data[c] &gt;= <span class="number">128</span>)&#123;</span><br><span class="line">         sum += data[c];</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码的汇编代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">.L8:</span><br><span class="line">    movl    $0, -131104(%rbp)</span><br><span class="line">.L7:</span><br><span class="line">    cmpl    $32767, -131104(%rbp)</span><br><span class="line">    ja  .L5</span><br><span class="line">    movl    -131104(%rbp), %eax</span><br><span class="line">    movl    -131088(%rbp,%rax,4), %eax</span><br><span class="line">    cmpl    $127, %eax</span><br><span class="line">    jle .L6</span><br><span class="line">    movl    -131104(%rbp), %eax</span><br><span class="line">    movl    -131088(%rbp,%rax,4), %eax</span><br><span class="line">    cltq</span><br><span class="line">    addq    %rax, -131096(%rbp)</span><br><span class="line">.L6:</span><br><span class="line">    addl    $1, -131104(%rbp)</span><br><span class="line">    jmp .L7</span><br></pre></td></tr></table></figure>
+<p>其中<code>jle .L6</code>就是条件控制转移指令，当数据随机的时候，此命令的整体效率会极大降低。</p>
+<p>　　但如果我们使用下面C++代码实现上面程序同样的功能的话，就可以避免产生条件控制转移指令：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">unsigned</span> c = <span class="number">0</span>; c &lt; arraySize; ++c)&#123;</span><br><span class="line">	<span class="type">int</span> t = (data[c] - <span class="number">128</span>) &gt;&gt; <span class="number">31</span>;</span><br><span class="line">	sum += ~t &amp; data[c];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述C++代码首先使用一个减法和移位获取data[c]与128比较的结果，如果data[c] &gt;= 128，则t的所有位均为0，否则t的所有位均为1，然后将t取非操作并于data[c]做与操作，以决定累加到sum上的数据是0还是data[c]。产生的汇编代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">.L6:</span><br><span class="line">    cmpl    $32767, -131108(%rbp)</span><br><span class="line">    ja  .L5</span><br><span class="line">    movl    -131108(%rbp), %eax</span><br><span class="line">    movl    -131088(%rbp,%rax,4), %eax</span><br><span class="line">    addl    $-128, %eax</span><br><span class="line">    sarl    $31, %eax</span><br><span class="line">    movl    %eax, -131100(%rbp)</span><br><span class="line">    movl    -131100(%rbp), %eax</span><br><span class="line">    notl    %eax</span><br><span class="line">    movl    %eax, %edx</span><br><span class="line">    movl    -131108(%rbp), %eax</span><br><span class="line">    movl    -131088(%rbp,%rax,4), %eax</span><br><span class="line">    andl    %edx, %eax</span><br><span class="line">    cltq</span><br><span class="line">    addq    %rax, -131096(%rbp)</span><br><span class="line">    addl    $1, -131108(%rbp)</span><br><span class="line">    jmp .L6</span><br></pre></td></tr></table></figure>
+<p>可以看到，上述汇编代码完整实现了我们C++代码的思路，而且没有产生分支控制跳转命令，我们通过一些hack技巧实现了条件传送命令替代条件控制跳转命令，这样的代码对于任何数据表现都是一样的，即程序的性能不会因为输入数据的随机与否而变化。</p>
+<p>经过测试，修改过后的程序比随机数据＋条件控制跳转程序提高了３倍，而且性能表现对于可预测数据和随机数据均一致。</p>
+<p><img src="branch_radom_and_norandom.png" alt="branch_radom_and_norandom.png"></p>
+<p>第一个花费时间7.42568秒是程序在随机数据上的表现结果，第二个花费时间7.4234秒是程序在排序后数据上的表现结果，可以看多两者表现相差可以忽略不计，可以说更改后的程序达到了性能与输入数据无关的目的。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>上面代码将条件控制转移指令转换成了条件传送代码，但是，代码的可读性急剧下降，<code>int t = (data[c] - 128) &gt;&gt; 31; sum += ~t &amp; data[c];</code>这句代码很难让人一眼看出代码的目的，这种代码会对整个项目的维护带来巨大麻烦。</p>
+<p>所以，在现代处理器和现代编译器的帮助下，<strong>千万不要过度关心分支预测带来的影响</strong>，对于程序中大部分分支命令，分支预测器都可以有很高的预测正确率，而对于那些分支预测器很难预测的分支，现代编译器可以对其进行自动优化，比如gcc中开启-O3优化的时候，编译器会自动把条件跳转转为条件传送以提高程序运行效率。</p>
+<p>大部分情况下，请<strong>相信处理器、相信编译器！</strong>有在完全确定了程序的性能瓶颈所在的时候再去针对这部分代码做特殊优化，避免提前优化和过度优化。</p>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/C/" rel="tag">C++</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_memset/"  data-tooltip="日常踩坑：C++程序中如何正确使用memset()内存初始化函数？">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_branch_predictor3/" data-tooltip="C++性能榨汁机之分支预测器(3)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_branch_predictor4/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_branch_predictor4/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_branch_predictor4/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_memset/"  data-tooltip="日常踩坑：C++程序中如何正确使用memset()内存初始化函数？">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_branch_predictor3/" data-tooltip="C++性能榨汁机之分支预测器(3)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_branch_predictor4/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_branch_predictor4/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_branch_predictor4/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_branch_predictor4/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_branch_predictor4/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_branch_predictor4/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>

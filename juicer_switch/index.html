@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Root lee">
+    <title>C++性能榨汁机之switch语句的背后 - Root lee</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="Root lee">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="前言几乎每本面向初学者的C语言或C++书籍在前面两章都会提到分支控制语句if……else和switch……case，在某些情况下这两种分支控制语句可以互相替换，但却很少有人去深究在if……else和switch……case语句的背后到底有什么异同？应该选择哪一个语句才能使得效率最高？要回答这些问题，只能走到switch语句的背后，看看这些语句到底是怎么实现的。 if语句与switch语句相信学过C">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="C++性能榨汁机之switch语句的背后">
+<meta property="og:url" content="http://irootlee.com/juicer_switch/index.html">
+<meta property="og:site_name" content="Root lee">
+<meta property="og:description" content="前言几乎每本面向初学者的C语言或C++书籍在前面两章都会提到分支控制语句if……else和switch……case，在某些情况下这两种分支控制语句可以互相替换，但却很少有人去深究在if……else和switch……case语句的背后到底有什么异同？应该选择哪一个语句才能使得效率最高？要回答这些问题，只能走到switch语句的背后，看看这些语句到底是怎么实现的。 if语句与switch语句相信学过C">
+<meta property="og:locale" content="zh_CH">
+<meta property="article:published_time" content="2018-05-15T14:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T13:08:39.864Z">
+<meta property="article:author" content="Root lee">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/mountietocat.png"/>
+    
+    
+        <meta property="og:image" content="/juicer_switch/switch.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/juicer_switch/switch.png" />
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">Root lee</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/%20
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="mailto:irootlee@gmail.com" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">C++性能榨汁机之switch语句的背后</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Tue May 15 2018 22:00:00 GMT+0800">
+        May 15, 2018
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-%E6%80%A7%E8%83%BD%E6%A6%A8%E6%B1%81%E6%9C%BA%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0/">C++性能榨汁机系列文章</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>几乎每本面向初学者的C语言或C++书籍在前面两章都会提到分支控制语句if……else和switch……case，在某些情况下这两种分支控制语句可以互相替换，但却很少有人去深究在if……else和switch……case语句的背后到底有什么异同？应该选择哪一个语句才能使得效率最高？要回答这些问题，只能走到switch语句的背后，看看这些语句到底是怎么实现的。</p>
+<h1 id="if语句与switch语句"><a href="#if语句与switch语句" class="headerlink" title="if语句与switch语句"></a>if语句与switch语句</h1><p>相信学过C/C++的同学对这两个语句的异同早就了如指掌，if语句作为条件判断，满足条件进入if语句块，不满足条件则进入else语句块，而且if和else语句块又可以继续嵌套if语句。switch则是通过判断一个<strong>整型</strong>表达式的值来决定进入到哪一个case语句中，如果所有case条件都不满足则进入到default语句块。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//简单的if语句</span></span><br><span class="line"><span class="keyword">if</span> (a == <span class="number">1</span>)</span><br><span class="line">    i = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (a == <span class="number">2</span>)</span><br><span class="line">    i = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    i = <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//简单的switch语句</span></span><br><span class="line"><span class="keyword">switch</span> (a)&#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">1</span>: i = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">2</span>: i = <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">default</span>: i = <span class="number">3</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="编译器如何实现switch语句？"><a href="#编译器如何实现switch语句？" class="headerlink" title="编译器如何实现switch语句？"></a>编译器如何实现switch语句？</h1><p>现在编译器已经足够智能和强大，经过测试，g++实现switch语句的方式就至少有三种，编译器会根据代码的实际情况，权衡时间效率和空间效率，去选择一个对当前代码而言综合效率最高的一种。</p>
+<p>编译器实现switch语句的三种方式：</p>
+<ul>
+<li>逐条件判断</li>
+<li>跳转表</li>
+<li>二分查找法</li>
+</ul>
+<p>后面我们将就这三种实现方法适用的代码场景进行测试和分析。</p>
+<h4 id="1-逐条件判断法"><a href="#1-逐条件判断法" class="headerlink" title="1. 逐条件判断法"></a>1. 逐条件判断法</h4><p>逐条件判断法其实就是和if……else语句的汇编实现相同，编译器把switch语句中各个case条件逐个进行判断，直到找到正确的case语句块。这种方法适用于switch语句中case条件很少的情况，即使逐个条件判断也不会导致大量时间和空间的浪费，比如下面这段代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">test_switch</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> i ;</span><br><span class="line">    <span class="type">int</span> a = std::<span class="built_in">rand</span>();</span><br><span class="line">    <span class="keyword">switch</span>(a)&#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>: i = <span class="number">0</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>: i = <span class="number">1</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2</span>: i = <span class="number">2</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>: i = <span class="number">3</span>;<span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该代码对应的汇编代码如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">	movl	-4(%rbp), %eax</span><br><span class="line">	cmpl	$1, %eax</span><br><span class="line">	je	.L3</span><br><span class="line">	cmpl	$2, %eax</span><br><span class="line">	je	.L4</span><br><span class="line">	testl	%eax, %eax</span><br><span class="line">	jne	.L8</span><br><span class="line">	movl	$0, -8(%rbp)</span><br><span class="line">	jmp	.L6</span><br><span class="line">.L3:</span><br><span class="line">	movl	$1, -8(%rbp)</span><br><span class="line">	jmp	.L6</span><br><span class="line">.L4:</span><br><span class="line">	movl	$2, -8(%rbp)</span><br><span class="line">	jmp	.L6</span><br><span class="line">.L8:</span><br><span class="line">	movl	$3, -8(%rbp)</span><br><span class="line">	nop</span><br></pre></td></tr></table></figure>
+<p>eax寄存器存储的是判断条件值（对应于C++代码中的a值），首先判断a是否等于1，如果等于1则跳转到.L3执行a==1对应的代码段，然后判断a是否等于2，如果等于2则跳转到.L4执行a==2对应的代码段……可能难理解的是第6行代码<code>testl    %eax, %eax</code>，其实这只是编译器提高判断一个寄存器是否为0效率的一个小技巧，如果eax不等于0则跳转到.L8代码段，执行default代码段对应的代码，如果eax等于0则执行a==0对应的代码段。</p>
+<p>由上面对编译器生成汇编代码的分析，我们可以发现：编译器在这种情况下使用逐个条件判断来实现switch语句。</p>
+<h4 id="2-跳转表实现法"><a href="#2-跳转表实现法" class="headerlink" title="2. 跳转表实现法"></a>2. 跳转表实现法</h4><p>在编译器采用这种switch语句实现方式的时候，会在程序中生成一个跳转表，跳转表存放各个case语句指令块的地址，程序运行时，首先判断switch条件的值，然后把该条件值作为跳转表的偏移量去找到对应case语句的指令地址，然后执行。这种方法适用于case条件较多，但是case的值比较连续的情况，使用这种方法可以提高时间效率且不会显著降低空间效率，比如下面这段代码编译器就会采用跳转表这种实现方式：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">test_switch</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> i ;</span><br><span class="line">    <span class="type">int</span> a = std::<span class="built_in">rand</span>();</span><br><span class="line">    <span class="keyword">switch</span>(a)&#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>: i = <span class="number">0</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>: i = <span class="number">1</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2</span>: i = <span class="number">2</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">3</span>: i = <span class="number">3</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">4</span>: i = <span class="number">4</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">5</span>: i = <span class="number">5</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">6</span>: i = <span class="number">6</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">7</span>: i = <span class="number">7</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">8</span>: i = <span class="number">8</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">9</span>: i = <span class="number">9</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>: i = <span class="number">10</span>;<span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该代码对应的汇编代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">	movl	-4(%rbp), %eax</span><br><span class="line">	movq	.L4(,%rax,8), %rax</span><br><span class="line">	jmp	*%rax</span><br><span class="line">.L4:</span><br><span class="line">	.quad	.L3</span><br><span class="line">	.quad	.L5</span><br><span class="line">	.quad	.L6</span><br><span class="line">	.quad	.L7</span><br><span class="line">	.quad	.L8</span><br><span class="line">	.quad	.L9</span><br><span class="line">	.quad	.L10</span><br><span class="line">	.quad	.L11</span><br><span class="line">	.quad	.L12</span><br><span class="line">	.quad	.L13</span><br><span class="line">	.text</span><br><span class="line">.L3:</span><br><span class="line">	movl	$0, -8(%rbp)</span><br><span class="line">	jmp	.L14</span><br><span class="line">.L5:</span><br><span class="line">	movl	$1, -8(%rbp)</span><br><span class="line">	jmp	.L14</span><br><span class="line">#后面省略……</span><br></pre></td></tr></table></figure>
+<p>在x64架构中，eax寄存器是rax寄存器的低32位，此处我们可以认为两者值相等，代码第一行是把判断条件（对应于C++代码中的a值）复制到eax寄存器中，第二行代码是把.L4段偏移rax寄存器值大小的地址赋值给rax寄存器，第三行代码则是取出rax中存放的地址并且跳转到该地址处。我们可以清楚的看到.L4代码段就是编译器为switch语句生成的存放于.text段的跳转表，每种case均对应于跳转表中一个地址值，我们通过判断条件的值即可计算出来其对应代码段地址存放的地址相对于.L4的偏移，从而实现高效的跳转。</p>
+<h4 id="3-二分查找法"><a href="#3-二分查找法" class="headerlink" title="3. 二分查找法"></a>3. 二分查找法</h4><p>如果case值较多且分布极其离散的话，如果采用逐条件判断的话，时间效率会很低，如果采用跳转表方法的话，跳转表占用的空间就会很大，前两种方法均会导致程序效率低。在这种情况下，编译器就会采用二分查找法实现switch语句，程序编译时，编译器先将所有case值排序后按照二分查找顺序写入汇编代码，在程序执行时则采二分查找的方法在各个case值中查找条件值，如果查找到则执行对应的case语句，如果最终没有查找到则执行default语句。对于如下C++代码编译器就会采用这种二分查找法实现switch语句：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">test_switch</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> i ;</span><br><span class="line">    <span class="type">int</span> a = std::<span class="built_in">rand</span>();</span><br><span class="line">    <span class="keyword">switch</span>(a)&#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">4</span>: i = <span class="number">4</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">10</span>: i = <span class="number">10</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">50</span>: i = <span class="number">50</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">100</span>: i = <span class="number">100</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">200</span>: i = <span class="number">200</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">500</span>: i = <span class="number">500</span>;<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>: i = <span class="number">0</span>;<span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>改代码段对应的汇编代码为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">	movl	-4(%rbp), %eax</span><br><span class="line">	cmpl	$50, %eax</span><br><span class="line">	je	.L3</span><br><span class="line">	cmpl	$50, %eax</span><br><span class="line">	jg	.L4</span><br><span class="line">	cmpl	$4, %eax</span><br><span class="line">	je	.L5</span><br><span class="line">	cmpl	$10, %eax</span><br><span class="line">	je	.L6</span><br><span class="line">	jmp	.L2</span><br><span class="line">.L4:</span><br><span class="line">	cmpl	$200, %eax</span><br><span class="line">	je	.L7</span><br><span class="line">	cmpl	$500, %eax</span><br><span class="line">	je	.L8</span><br><span class="line">	cmpl	$100, %eax</span><br><span class="line">	je	.L9</span><br><span class="line">	jmp	.L2</span><br></pre></td></tr></table></figure>
+<p>代码第二行条件值首先与50比较，为什么是50而不是放在最前面的4？这是因为二分查找首先查找的是处于中间的值，所以这里先与50进行比较，如果eax等于50，则执行case 50对应代码，如果eax值大于50则跳转到.L4代码段，如果eax小于50则继续跟4比较……直至找到条件值或者查找完毕条件值不存在。可以看出二分查找法在保持了较高的查询效率的同时又节省了空间占用。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>何时应该使用if……else语句，何时应该使用switch……case语句？</p>
+<p>通过上面的分析我们可以得出结论，在可能条件比较少的时候使用if……else和switch……case所对应的汇编代码是相同的，所以两者在性能上是没有区别的，使用哪一种取决于个人习惯。如果条件较多的话，显而易见switch……case的效率更高，无论是跳转表还是二分查找都比if……else的顺序查找效率更高，所以在这种情况下尽量选用switch语句来实现分支语句。当然如果我们知道哪种条件出现的概率最高，我们可以将这个条件放在if判断的第一个，使顺序查找提前结束，这时使用if……else语句也可以达到较高的运行效率。</p>
+<p>switch语句也有他本身的局限性，即switch语句的值只能为整型，比如当我们需要对一个double型数据进行判断时，便无法使用switch语句，这时只能使用if……else语句来实现。</p>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/C/" rel="tag">C++</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_pointer_reference/"  data-tooltip="C++性能榨汁机之指针与引用">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_my_first_deadlock/" data-tooltip="日常踩坑：一把亲手写出的死锁">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_switch/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_switch/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_switch/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_pointer_reference/"  data-tooltip="C++性能榨汁机之指针与引用">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_my_first_deadlock/" data-tooltip="日常踩坑：一把亲手写出的死锁">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_switch/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_switch/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_switch/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_switch/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_switch/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_switch/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>

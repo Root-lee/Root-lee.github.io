@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Root lee">
+    <title>C++性能榨汁机之CPU亲和性 - Root lee</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="Root lee">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="前言CPU领域中最广为人知的一条定律——摩尔定律：预计18个月会将芯片的性能提高一倍。过去几十年，各大公司致力于提高CPU晶体管密度和提高CPU工作频率，使得CPU的性能提升基本符合摩尔定律。但随着工艺不断发展，晶体管密度提升已经接近物理极限，CPU工作频率也由于功耗和发热的制约而无法继续提升。在基础物理领域没有大的突破的前提下，单核CPU的性能提升日益困难，于是，各大公司将目光投向了通过增加CP">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="C++性能榨汁机之CPU亲和性">
+<meta property="og:url" content="http://irootlee.com/juicer_cpu_affinity/index.html">
+<meta property="og:site_name" content="Root lee">
+<meta property="og:description" content="前言CPU领域中最广为人知的一条定律——摩尔定律：预计18个月会将芯片的性能提高一倍。过去几十年，各大公司致力于提高CPU晶体管密度和提高CPU工作频率，使得CPU的性能提升基本符合摩尔定律。但随着工艺不断发展，晶体管密度提升已经接近物理极限，CPU工作频率也由于功耗和发热的制约而无法继续提升。在基础物理领域没有大的突破的前提下，单核CPU的性能提升日益困难，于是，各大公司将目光投向了通过增加CP">
+<meta property="og:locale" content="zh_CH">
+<meta property="og:image" content="http://irootlee.com/juicer_cpu_affinity/result.png">
+<meta property="og:image" content="http://irootlee.com/juicer_cpu_affinity/result2.png">
+<meta property="article:published_time" content="2019-02-21T06:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T13:08:39.847Z">
+<meta property="article:author" content="Root lee">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://irootlee.com/juicer_cpu_affinity/result.png">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/mountietocat.png"/>
+    
+    
+        <meta property="og:image" content="/juicer_cpu_affinity/affinity.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/juicer_cpu_affinity/affinity.png" />
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">Root lee</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/%20
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="mailto:irootlee@gmail.com" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">C++性能榨汁机之CPU亲和性</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Thu Feb 21 2019 14:00:00 GMT+0800">
+        Feb 21, 2019
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-%E6%80%A7%E8%83%BD%E6%A6%A8%E6%B1%81%E6%9C%BA%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0/">C++性能榨汁机系列文章</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>CPU领域中最广为人知的一条定律——摩尔定律：预计18个月会将芯片的性能提高一倍。过去几十年，各大公司致力于提高CPU晶体管密度和提高CPU工作频率，使得CPU的性能提升基本符合摩尔定律。但随着工艺不断发展，晶体管密度提升已经接近物理极限，CPU工作频率也由于功耗和发热的制约而无法继续提升。在基础物理领域没有大的突破的前提下，单核CPU的性能提升日益困难，于是，各大公司将目光投向了通过增加CPU核心数提高性能领域，双核、4核、8核、16核等一系列多核CPU相继问世。</p>
+<p>怎样合理调度多个CPU核心运行应用程序从而充分利用多核CPU的优势成为热门的研究问题，本文介绍的CPU亲和性便是解决该问题的方法之一。</p>
+<h1 id="什么是CPU亲和性？"><a href="#什么是CPU亲和性？" class="headerlink" title="什么是CPU亲和性？"></a>什么是CPU亲和性？</h1><p>引用一下维基百科的说法，CPU亲和性就是绑定某一进程（或线程）到特定的CPU（或CPU集合），从而使得该进程（或线程）只能运行在绑定的CPU（或CPU集合）上。CPU亲和性利用了这样一个事实：进程上一次运行后的残余信息会保留在CPU的状态中（也就是指CPU的缓存）。如果下一次仍然将该进程调度到同一个CPU上，就能避免缓存未命中等对CPU处理性能不利的情况，从而使得进程的运行更加高效。</p>
+<p>CPU亲和性分为两种：软亲和性和硬亲和性。软亲和性主要由操作系统来实现，Linux操作系统的调度器会倾向于保持一个进程不会频繁的在多个CPU之间迁移，通常情况下调度器都会根据各个CPU的负载情况合理地调度运行中的进程，以减轻繁忙CPU的压力，提高所有进程的整体性能。除此以外，Linux系统还提供了硬亲和性功能，即用户可以通过调用系统API实现自定义进程运行在哪个CPU上，从而满足特定进程的特殊性能需求。</p>
+<h1 id="如何将CPU亲和性应用到程序中？"><a href="#如何将CPU亲和性应用到程序中？" class="headerlink" title="如何将CPU亲和性应用到程序中？"></a>如何将CPU亲和性应用到程序中？</h1><p>Linux系统中每个进程的<code>task_struct</code>结构中有一个<code>cpus_allowed</code> 位掩码，该掩码的位数与系统CPU核数相同（若CPU启用了超线程则为核数乘以2），通过修改该位掩码可以控制进程可运行在哪些特定CPU上。Linux系统为我们提供了CPU亲和性相关的调用函数和一些操作的宏定义，函数主要是下面两个：</p>
+<ul>
+<li><p><code>sched_set_affinity()</code> （修改位掩码）</p>
+</li>
+<li><p><code>sched_get_affinity()</code> （查看当前的位掩码）</p>
+</li>
+</ul>
+<p>除此之外还提供了一些宏定义来修改掩码，如<code>CPU_ZERO()</code>(将位掩码全部设置为0)和<code>CPU_SET()</code>(设置特定掩码位为1)。</p>
+<p>下面采用一个以@Eli Dow提供的程序为基础修改的程序介绍CPU亲和性的使用方法，该程序使用CPU亲和性API将N（CPU数量）个进程分别绑定到N个CPU上，代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;sys/sysinfo.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __USE_GNU</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;sched.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;ctype.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* This method will create processes, then bind each to its own cpu. */</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">do_cpu_stress</span><span class="params">(<span class="type">int</span> num_of_process)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> created_process = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">/* We need a process for each cpu we have... */</span></span><br><span class="line">    <span class="keyword">while</span> ( created_process &lt; num_of_process - <span class="number">1</span> )</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">int</span> mypid = fork();</span><br><span class="line">        <span class="keyword">if</span> (mypid == <span class="number">0</span>) <span class="comment">/* Child process */</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="comment">/* Only parent executes this */</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">/* Continue looping until we spawned enough processes! */</span> ;</span><br><span class="line">            created_process++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* <span class="doctag">NOTE:</span> All processes execute code from here down! */</span></span><br><span class="line">    <span class="type">cpu_set_t</span> mask;</span><br><span class="line">    <span class="comment">/* CPU_ZERO initializes all the bits in the mask to zero. */</span></span><br><span class="line">    <span class="built_in">CPU_ZERO</span>( &amp;mask );</span><br><span class="line">    <span class="comment">/* CPU_SET sets only the bit corresponding to cpu. */</span></span><br><span class="line">    <span class="built_in">CPU_SET</span>(created_process, &amp;mask );</span><br><span class="line">    <span class="comment">/* sched_setaffinity returns 0 in success */</span></span><br><span class="line">    <span class="keyword">if</span>( <span class="built_in">sched_setaffinity</span>( <span class="number">0</span>, <span class="built_in">sizeof</span>(mask), &amp;mask ) == <span class="number">-1</span> )&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;WARNING: Could not set CPU Affinity, continuing...&quot;</span> &lt;&lt; endl; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Bind process #&quot;</span> &lt;&lt; created_process &lt;&lt; <span class="string">&quot; to CPU #&quot;</span> &lt;&lt; created_process &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//do some cpu expensive operation</span></span><br><span class="line">    <span class="type">int</span> cnt = <span class="number">100000000</span>;</span><br><span class="line">    <span class="keyword">while</span>(cnt--)&#123;</span><br><span class="line">        <span class="type">int</span> cnt2 = <span class="number">10000000</span>;</span><br><span class="line">        <span class="keyword">while</span>(cnt2--)&#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> num_of_cpu = thread::<span class="built_in">hardware_concurrency</span>();</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;This PC has &quot;</span> &lt;&lt; num_of_cpu &lt;&lt; <span class="string">&quot; cpu.&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="built_in">do_cpu_stress</span>(num_of_cpu);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码编译运行结果如下：</p>
+<p><img src="result.png" alt="result"></p>
+<p>通过<code>ps -eo pid,args,psr</code>命令查看CPU与进程是否绑定成功：</p>
+<p><img src="result2.png" alt="result2"></p>
+<p>可以看出，进程号6644的进程为父进程，该进程运行在CPU3上，6645、6646、6647三个子进程分别运行在CPU1、CPU2、CPU3上，可知进程与CPU绑定成功，进程只会运行在绑定的CPU上而不会被操作系统调度到其他CPU上。</p>
+<h1 id="CPU亲和性的应用场景"><a href="#CPU亲和性的应用场景" class="headerlink" title="CPU亲和性的应用场景"></a>CPU亲和性的应用场景</h1><ul>
+<li>假如某些进程需要高密度的计算，不希望被频繁调度，则可以使用CPU亲和性将该进程绑定到一个CPU上；</li>
+<li>在股票期货高频交易场景中，交易策略线程的运行时间关系到交易延迟的大小，而交易延迟1ms的差距可能就是赚钱与亏钱的差距，所以交易策略线程的优先级非常高，这时便可以为其分配一个专门用于策略计算的CPU，以避免线程被调度产生性能损失；</li>
+<li>高性能的Nginx采用多线程模型，并且提供了worker进程绑定固定CPU的功能，降低worker进程被调度的损耗，提高了服务器工作性能；</li>
+<li>一些文献中还提到了应用CPU亲和性优化KVM虚拟化技术的性能，在不减少吞吐量的情况下，可以将KVM的网络延迟性能降低20%；</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>一般情况下，Linux系统的进程调度器已经做得足够好，不需要我们干预进程的调度，但是系统的进程调度是面向所有应用程序的，势必会为了通用性而牺牲掉一部分性能，但对于特定应用程序而言，我们可以通过CPU亲和性去优化程序的性能表现。</p>
+<p>我们相对于计算机的优势就是我们知道我们的程序的功能、每个进程的重要程度，所以可以根据进程的重要程度更合理的分配计算机的CPU资源。</p>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/C/" rel="tag">C++</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_vtable/" data-tooltip="C++性能榨汁机之虚函数的开销">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_cpu_affinity/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_cpu_affinity/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_cpu_affinity/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_vtable/" data-tooltip="C++性能榨汁机之虚函数的开销">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_cpu_affinity/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_cpu_affinity/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_cpu_affinity/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_cpu_affinity/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_cpu_affinity/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_cpu_affinity/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>

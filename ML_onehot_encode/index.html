@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Root lee">
+    <title>sklearn中调用OneHot编码出现ValueError:X needs to contain only non-negative integers.解决办法 - Root lee</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="Root lee">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="独热码独热码，在英文文献中称做 one-hot code,直观来说就是有多少个状态就有多少比特，而且只有一个比特为1，其他全为0的一种码制。例如，有6个状态的独热码状态编码为：000001，000010，000100，001000，010000，100000。 问题最近在做一个根据一个人的信息预测此人人品的机器学习项目：https:&#x2F;&#x2F;github.com&#x2F;Root-lee&#x2F;ML_micro_lo">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="sklearn中调用OneHot编码出现ValueError:X needs to contain only non-negative integers.解决办法">
+<meta property="og:url" content="http://irootlee.com/ML_onehot_encode/index.html">
+<meta property="og:site_name" content="Root lee">
+<meta property="og:description" content="独热码独热码，在英文文献中称做 one-hot code,直观来说就是有多少个状态就有多少比特，而且只有一个比特为1，其他全为0的一种码制。例如，有6个状态的独热码状态编码为：000001，000010，000100，001000，010000，100000。 问题最近在做一个根据一个人的信息预测此人人品的机器学习项目：https:&#x2F;&#x2F;github.com&#x2F;Root-lee&#x2F;ML_micro_lo">
+<meta property="og:locale" content="zh_CH">
+<meta property="og:image" content="http://irootlee.com/ML_onehot_encode/error_info.png">
+<meta property="article:published_time" content="2016-12-06T15:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T13:08:39.796Z">
+<meta property="article:author" content="Root lee">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://irootlee.com/ML_onehot_encode/error_info.png">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/mountietocat.png"/>
+    
+    
+        <meta property="og:image" content="/ML_onehot_encode/../ML_good_weakness/machine_learning.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/ML_onehot_encode/../ML_good_weakness/machine_learning.png" />
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">Root lee</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/%20
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="mailto:irootlee@gmail.com" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">sklearn中调用OneHot编码出现ValueError:X needs to contain only non-negative integers.解决办法</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Tue Dec 06 2016 23:00:00 GMT+0800">
+        Dec 06, 2016
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h1 id="独热码"><a href="#独热码" class="headerlink" title="独热码"></a>独热码</h1><p>独热码，在英文文献中称做 one-hot code,直观来说就是有多少个状态就有多少比特，而且只有一个比特为1，其他全为0的一种码制。例如，有6个状态的独热码状态编码为：000001，000010，000100，001000，010000，100000。</p>
+<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>最近在做一个根据一个人的信息预测此人人品的机器学习项目：<br><a href="https://github.com/Root-lee/ML_micro_loan">https://github.com/Root-lee/ML_micro_loan</a><br>在项目中，数据中有上千维的特征，大部分是数值型特征，但是也有93个分类特征，在训练模型时需要将这些分类特征用OneHot编码，使得模型能正确理解这些分类特征。<br>所幸，著名机器学习包已经提供了独热码的编码器：preprocessing.OneHotEncoder()<br>我们只需要直接调用就可以了，于是我写了如下代码编码分类特征：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="comment">#对分类类型的数据进行ONEHOT编码</span></span><br><span class="line">feature_type = pd.read_csv(<span class="string">&#x27;G:/Redhat_share/ML_micro/features_type.csv&#x27;</span>)</span><br><span class="line">category_feature = <span class="built_in">list</span>(feature_type[feature_type.<span class="built_in">type</span>==<span class="string">&#x27;category&#x27;</span>].feature)</span><br><span class="line">test = pd.read_csv(<span class="string">&#x27;G:/Redhat_share/ML_micro/test_x.csv&#x27;</span>)</span><br><span class="line">test = test[[<span class="string">&#x27;uid&#x27;</span>]+category_feature]</span><br><span class="line">train = pd.read_csv(<span class="string">&#x27;G:/Redhat_share/ML_micro/train_x.csv&#x27;</span>)</span><br><span class="line">train = train[[<span class="string">&#x27;uid&#x27;</span>]+category_feature]</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> preprocessing</span><br><span class="line">enc = preprocessing.OneHotEncoder()</span><br><span class="line">enc.fit(train)</span><br><span class="line">train= enc.transform(train).toarray()</span><br><span class="line">train_after_oh = pd.DataFrame(train)</span><br><span class="line">train_after_oh[<span class="string">&#x27;uid&#x27;</span>]=uid</span><br></pre></td></tr></table></figure>
+<p>但是运行程序时却出现了错误：<br><img src="error_info.png" alt="error_info"><br>OneHot编码出现ValueError: X needs to contain only non-negative integers.<br>错误出现在 enc.fit(train) 这一句代码上，根据报错信息，原来scikit-learn库中的onehot编码器要求分类特征是非负整数，但是我们的数据train中的分类特征的值中含有负数，所以会出现错误。</p>
+<h1 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h1><p>在调用onehot编码器之前我们需要先对分类特征数据进行一点处理，将所有的值都变为非负数，可以使用如下代码实现目的：</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#OneHot编码要求特征是非负整数</span><br><span class="line">#先把训练数据特征的值变为非负数</span><br><span class="line">uid = train.uid</span><br><span class="line">train = train.drop(&#x27;uid&#x27;,axis=<span class="number">1</span>)</span><br><span class="line"><span class="built_in">features</span> = list(train.<span class="built_in">columns</span>)</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">feature</span> <span class="keyword">in</span> <span class="built_in">features</span>:</span><br><span class="line">    max_ = train[<span class="built_in">feature</span>].<span class="built_in">max</span>()</span><br><span class="line">    train[<span class="built_in">feature</span>] = (train[<span class="built_in">feature</span>] - max_) * (-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>把上面这段代码放在onehot编码之前，再次运行程序错误即可消失。</p>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/python_CRLF/"  data-tooltip="python中遇到的Windows系统中换行符的一个坑">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/review_solitude/" data-tooltip="孤独不是孤单而是自由——读《百年孤独》后感">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/ML_onehot_encode/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/ML_onehot_encode/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/ML_onehot_encode/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/python_CRLF/"  data-tooltip="python中遇到的Windows系统中换行符的一个坑">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/review_solitude/" data-tooltip="孤独不是孤单而是自由——读《百年孤独》后感">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/ML_onehot_encode/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/ML_onehot_encode/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/ML_onehot_encode/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/ML_onehot_encode/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/ML_onehot_encode/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/ML_onehot_encode/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>

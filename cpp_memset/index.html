@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Root lee">
+    <title>日常踩坑：C++程序中如何正确使用memset()内存初始化函数？ - Root lee</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="Root lee">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="背景　　事情是这样的：在股票的自动化交易软件开发过程中，我们使用了万得的一套股票行情获取API，伴随着API还提供了一个示例程序，我们在开发过程中借用了部分示例程序中的代码，其中就包括一个配置读取类：ConfigSettings，这个类负责从配置文件中读入软件配置参数，并把参数的值保存在成员变量中，以供后面程序进行参数读取。 　　但是除了原来支持的参数之外，我们又在配置文件中增加了新的配置参数，是">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="日常踩坑：C++程序中如何正确使用memset()内存初始化函数？">
+<meta property="og:url" content="http://irootlee.com/cpp_memset/index.html">
+<meta property="og:site_name" content="Root lee">
+<meta property="og:description" content="背景　　事情是这样的：在股票的自动化交易软件开发过程中，我们使用了万得的一套股票行情获取API，伴随着API还提供了一个示例程序，我们在开发过程中借用了部分示例程序中的代码，其中就包括一个配置读取类：ConfigSettings，这个类负责从配置文件中读入软件配置参数，并把参数的值保存在成员变量中，以供后面程序进行参数读取。 　　但是除了原来支持的参数之外，我们又在配置文件中增加了新的配置参数，是">
+<meta property="og:locale" content="zh_CH">
+<meta property="article:published_time" content="2018-01-02T15:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T13:08:39.821Z">
+<meta property="article:author" content="Root lee">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/mountietocat.png"/>
+    
+    
+        <meta property="og:image" content="/cpp_memset/cpp_memset.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/cpp_memset/cpp_memset.png" />
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">Root lee</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/%20
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="mailto:irootlee@gmail.com" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">日常踩坑：C++程序中如何正确使用memset()内存初始化函数？</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Tue Jan 02 2018 23:00:00 GMT+0800">
+        Jan 02, 2018
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-%E6%97%A5%E5%B8%B8%E8%B8%A9%E5%9D%91/">C++日常踩坑</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>　　事情是这样的：在股票的自动化交易软件开发过程中，我们使用了万得的一套股票行情获取API，伴随着API还提供了一个示例程序，我们在开发过程中借用了部分示例程序中的代码，其中就包括一个配置读取类：ConfigSettings，这个类负责从配置文件中读入软件配置参数，并把参数的值保存在成员变量中，以供后面程序进行参数读取。</p>
+<p>　　但是除了原来支持的参数之外，我们又在配置文件中增加了新的配置参数，是股票代码和其初始持仓，我们需要从配置文件中读取股票代码和其初始持仓，于是我们便想到了在原来的配置读取类（ConfigSettings）基础上进行拓展，拓展思路也很简单，在原来的类中增加一个成员变量用于保存股票代码和其对应持仓，我们采用了标准库里的unordered_map（hash table），键就是string类型的股票代码，值就是该股票代码对应的初始持仓，后续程序想要获取持仓信息只需要读取该map即可。</p>
+<p>　　添加上读取股票代码和对应持仓部分的代码后，测试运行时程序却出现了崩溃现象（runtime error），使用断点调试，发现错误出现在向map中添加新的键值对的代码处：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::istringstream <span class="title">record</span><span class="params">(line)</span></span>;</span><br><span class="line">record &gt;&gt; stockcode;                      <span class="comment">//读取股票代码</span></span><br><span class="line">record &gt;&gt; position;                   <span class="comment">//读取股票对应持仓量</span></span><br><span class="line">mapStockInitialPosition[stockcode] = position; <span class="comment">//atoi(position.c_str());     //初始化持仓量</span></span><br></pre></td></tr></table></figure>
+<p>　　运行完第4行代码后，程序就会崩溃退出，经过反复检查，都没有发现代码有什么逻辑问题，一个很让人摸不着头脑的BUG。</p>
+<h1 id="查找问题"><a href="#查找问题" class="headerlink" title="查找问题"></a>查找问题</h1><p>　　为了确定问题出现在哪里，我们将类的成员mapStockInitialPosition变为static类型并在类外进行初始化，程序编译后运行正常。类的static成员变量与普通成员变量的区别就是存储区域不一样，static成员存储在程序的全局数据区，是类的所有对象共用的变量。既然将普通成员变量换成了static成员变量错误就消失了，说明map作为普通成员变量时遭到了破坏，所以导致了后面对map进行操作时出现了错误。我们检查ConfigSettings类的构造函数，发现了如下代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//配置读取类的构造函数</span></span><br><span class="line">ConfigSettings::<span class="built_in">ConfigSettings</span>()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">memset</span>(<span class="keyword">this</span>, <span class="number">0</span>, <span class="built_in">sizeof</span>(*<span class="keyword">this</span>));</span><br><span class="line">	<span class="built_in">RestoreStatus</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　从代码中我们看出，ConfigSettings的构造函数使用了C语言中常用的memset()函数进行类成员的初始化，memset()函数将对象的所有内存都初始化为0，这在ConfigSettings类是一个POD类型（Plain Old Data）时是没有问题的，因为POD类型的二进制内容可以随便复制、移动、重置而不会改变POD类型对象的值。ConfigSettings成员都是POD类型(int,char,float…)，而且ConfigSettings类既不存在虚继承也不存在虚函数，所以可以对ConfigSettings使用memset()函数进行初始化。<em>更多C++ POD类型的相关信息请参考这篇博客：<a href="https://www.cppfans.org/1431.html">C++ POD(Plain Old Data)类型</a></em></p>
+<p>　　但是后面我们对ConfigSettings类进行拓展时加入了unordered_map类型的成员变量，但是unordered_map这种标准库容器不是POD类型，这就导致ConfigSettings也不是一个POD类型，所以当使用memset()函数进行初始化时会对对象造成破坏，unordered_map底层是哈希表，其中必然包括各种指针，当使用memeset将对象所有内存初始化为0的时候，unordered_map中的各种指针必然就变成了null_ptr，整个结构已经被完全破坏了，所以会后面对unordered_map进行操作的时候出现崩溃的现象也就不难理解了。</p>
+<h1 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h1><ol>
+<li>重新写ConfigSettings的构造函数，避免使用memset()函数初始化对象。</li>
+<li>将成员变量mapStockInitialPosition设置为static类型，可以避免在memset()时被破坏。</li>
+</ol>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>　　每次踩坑都要反思和总结，才能避免以后再次掉进同一个坑里，这次这个问题虽然看似不复杂，但是依然耗费了一两个小时去解决它。虽然花费了时间，但是收获也是有的，为了解决这个问题，我对POD类型的理解更深了，也对C语言与C++之间的区别更加了解。为了避免这种错误再次出现，在以后的编程中需要遵循下面的原则：</p>
+<ul>
+<li>在以后自己写C++程序时，初始化对象使用C++语言支持的构造函数进行初始化，避免使用从C语言继承而来的memset()等类似函数进行初始化。</li>
+<li>在修改或者拓展一段别人写的代码时，一定要仔细查看整段代码并大体理解代码运行过程，避免盲目修改源代码，导致后续程序运行错误。</li>
+</ul>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/C/" rel="tag">C++</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_32bit_big_memory/"  data-tooltip="日常踩坑：C++32位程序申请大内存出现std:bad_alloc">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_branch_predictor4/" data-tooltip="C++性能榨汁机之分支预测器(4)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/cpp_memset/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/cpp_memset/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/cpp_memset/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_32bit_big_memory/"  data-tooltip="日常踩坑：C++32位程序申请大内存出现std:bad_alloc">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_branch_predictor4/" data-tooltip="C++性能榨汁机之分支预测器(4)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/cpp_memset/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/cpp_memset/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/cpp_memset/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/cpp_memset/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/cpp_memset/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/cpp_memset/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>

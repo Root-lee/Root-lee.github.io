@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Root lee">
+    <title>C++性能榨汁机之分支预测器(2) - Root lee</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="Root lee">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="前言在上篇文章中，我们介绍了分支预测器在提高CPU流水线效率上的重要作用，上篇文章最后还提到，分支预测器的预测准确率对CPU执行命令效率有巨大影响，当预测错误时必须将流水线冲刷，然后重新从正确的地址取指，分支预测错误将会产生很大的代价，而且这种代价随着流水线的深度的增加而快速增长。 过去几十年，国内外科研界及工业界提出了多种分支预测模型以提高分支预测的准确率，本篇文章，我们主要挑选部分典型的分支预">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="C++性能榨汁机之分支预测器(2)">
+<meta property="og:url" content="http://irootlee.com/juicer_branch_predictor2/index.html">
+<meta property="og:site_name" content="Root lee">
+<meta property="og:description" content="前言在上篇文章中，我们介绍了分支预测器在提高CPU流水线效率上的重要作用，上篇文章最后还提到，分支预测器的预测准确率对CPU执行命令效率有巨大影响，当预测错误时必须将流水线冲刷，然后重新从正确的地址取指，分支预测错误将会产生很大的代价，而且这种代价随着流水线的深度的增加而快速增长。 过去几十年，国内外科研界及工业界提出了多种分支预测模型以提高分支预测的准确率，本篇文章，我们主要挑选部分典型的分支预">
+<meta property="og:locale" content="zh_CH">
+<meta property="og:image" content="http://irootlee.com/juicer_branch_predictor2/bimodal.png">
+<meta property="og:image" content="http://irootlee.com/juicer_branch_predictor2/bimodal_student.png">
+<meta property="article:published_time" content="2017-12-14T04:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T13:08:39.837Z">
+<meta property="article:author" content="Root lee">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://irootlee.com/juicer_branch_predictor2/bimodal.png">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/mountietocat.png"/>
+    
+    
+        <meta property="og:image" content="/juicer_branch_predictor2/branch_predictor.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/juicer_branch_predictor2/branch_predictor.png" />
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">Root lee</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/%20
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="mailto:irootlee@gmail.com" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">C++性能榨汁机之分支预测器(2)</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Thu Dec 14 2017 12:00:00 GMT+0800">
+        Dec 14, 2017
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-%E6%80%A7%E8%83%BD%E6%A6%A8%E6%B1%81%E6%9C%BA%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0/">C++性能榨汁机系列文章</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在上篇文章中，我们介绍了分支预测器在提高CPU流水线效率上的重要作用，上篇文章最后还提到，分支预测器的预测准确率对CPU执行命令效率有巨大影响，当预测错误时必须将流水线冲刷，然后重新从正确的地址取指，分支预测错误将会产生很大的代价，而且这种代价随着流水线的深度的增加而快速增长。</p>
+<p>过去几十年，国内外科研界及工业界提出了多种分支预测模型以提高分支预测的准确率，本篇文章，我们主要挑选部分典型的分支预测模型，探究其分支预测算法。</p>
+<p>根据分支预测器利用的信息可以将分支预测器分为静态分支预测器和动态分支预测器。静态分支预测器主要利用静态分支的信息或编译器提供的信息对分支方向进行预测，而动态分支预测器除了利用上述信息外，还会在程序执行过程中动态收集分支历史跳转等信息进行预测。</p>
+<h1 id="静态预测"><a href="#静态预测" class="headerlink" title="静态预测"></a>静态预测</h1><p>静态分支预测器一般实现比较简单，在类似于嵌入式处理器这种资源较少的处理器中应用比较多，但是因为静态预测器实现逻辑比较简单，所以预测准确率相应一半也不高。</p>
+<p>静态分支预测器的实现算法主要有下面这几种：</p>
+<ol>
+<li><p>所有的分支指令都不跳转，每次CPU都顺序取出下一条命令放入流水线。</p>
+</li>
+<li><p>所有的分支指令都跳转，每次CPU遇到分支判断指令都默认会发生跳转，并从跳转地址取指。</p>
+</li>
+<li><p>某些指令一律跳转，某些指令一律不跳转，此方法是方法1和方法2的结合。</p>
+</li>
+<li><p>与上次跳转结果保持一致，比如，上次该指令发生了跳转，那么本次依旧跳转，如果上次该指令没有跳转，则本次也不跳转。</p>
+</li>
+<li><p>向前的分支会跳转，向后的分支不跳转。该方法主要针对程序中的循环进行的优化。</p>
+</li>
+</ol>
+<p>虽然看似在概率上，这些静态方法的预测正确率只有50%，但是由于一般程序中都有大量循环存在，针对循环优化的静态方法一般都有高于70%的正确率。</p>
+<p>对于哪些对于预测准确率要求不算太高，且本身资源有限制或者对功耗要求高的场景，静态分支预测器是一个很好的选择。</p>
+<h1 id="动态预测"><a href="#动态预测" class="headerlink" title="动态预测"></a>动态预测</h1><p>静态预测70%的准确率虽然看似不低，但是对于拥有非常深流水线的现代处理器，30%的错误率会导致流水线被频繁冲刷（flush），对CPU效率的影响是巨大的。因此，为了进一步提高分支预测器的预测准确度，人们开始研究更为复杂的动态分支预测器。</p>
+<p>动态分支预测中最简单的方法就是<strong>双模态预测器</strong>（bimodal predictor），该预测器采用4个状态的状态机对分支跳转进行预测，分支指令执行完毕后根据实际跳转结果更新状态机，用于下次预测，状态机大体流程如下：</p>
+<p><img src="bimodal.png" alt="bimodal predictor"></p>
+<p>看状态机机的状态跳转可能不太好理解互相之间的关系，那我们用通俗一点的话来解释一下。想象这么一个场景：在遥远的地方有这么一个班级，为了区分学生优差，按照学习成绩将学生分为了4类：</p>
+<ol>
+<li>优等生（强跳转）</li>
+<li>中等偏上（弱跳转）</li>
+<li>中等偏下（弱不跳转）</li>
+<li>差生（强不跳转）</li>
+</ol>
+<p>学生的等级就靠每次考试成绩区分，考试成绩分为两类：考得好（跳转）、考得差（不跳转），等级按如下规则变化：</p>
+<ol>
+<li>优等生考的好还是优等生，考的差变为中等偏上。</li>
+<li>中等偏上考得好变成优等生，考得差变为中等偏下。</li>
+<li>中等偏下考得好变为中等偏上，考得差变为差生。</li>
+<li>差生考得差还是差生，考得好变为中等偏下。</li>
+</ol>
+<p>其中，我们优等生和中等偏上学生我们认为是好学生（预测他下次会考得好），差生和中等偏下学生我们认为是坏学生（预测他下次会考得差）。</p>
+<p>这个班级学生状态变化如下图所示：</p>
+<p><img src="bimodal_student.png" alt="student"></p>
+<p>当然上面这个班级的例子只是想象出来解释双模态预测器的，我们反对这种将学生只按学习成绩划分三六九等的方法。但上述例子基本原理与双模态预测器的原理是相同的，不知道有没有让读者对双模态预测器了解更透彻一点。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>上述双模态预测器的预测准确度相对于静态预测器已经有了极大的提高，预测准确度基本可以达到90%以上。但是人们追求分支预测器准确度的脚步是不会停的，后面发展出了两级自适应预测器、局部/全局分支预测器、融合分支预测器、神经分支预测器等等动态分支预测器，将预测准确度进一步提高，此处限于篇幅就不再详细解释了。</p>
+<p>这两篇文章解释了分支预测器的意义及常见的简单实现方法，下一篇文章，我将会就分支预测器对我们写程序的指导意义做一些简单的测试与阐述。</p>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/C/" rel="tag">C++</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_branch_predictor3/"  data-tooltip="C++性能榨汁机之分支预测器(3)">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_branch_predictor1/" data-tooltip="C++性能榨汁机之分支预测器(1)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_branch_predictor2/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_branch_predictor2/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_branch_predictor2/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_branch_predictor3/"  data-tooltip="C++性能榨汁机之分支预测器(3)">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_branch_predictor1/" data-tooltip="C++性能榨汁机之分支预测器(1)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_branch_predictor2/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_branch_predictor2/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_branch_predictor2/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_branch_predictor2/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_branch_predictor2/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_branch_predictor2/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>

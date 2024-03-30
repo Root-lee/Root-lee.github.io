@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Root lee">
+    <title>C++性能榨汁机之虚函数的开销 - Root lee</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="Root lee">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="虚函数的实现虽然C++标准并没有规定编译器实现虚函数的方式，但是大部分编译器均是采用了虚函数表来实现虚函数，即对于每一个包含虚成员函数的类生成一个虚函数表，一个指向虚函数表的指针被放在对象的首地址（不考虑多继承等复杂情况），虚函数表中存储该类所有的虚函数地址。当使用引用或者指针调用虚函数时，首先通过虚函数表指针找到虚函数表，然后通过偏移量找到虚函数地址并调用。关于虚函数表的更多细节，建议阅读《深度">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="C++性能榨汁机之虚函数的开销">
+<meta property="og:url" content="http://irootlee.com/juicer_vtable/index.html">
+<meta property="og:site_name" content="Root lee">
+<meta property="og:description" content="虚函数的实现虽然C++标准并没有规定编译器实现虚函数的方式，但是大部分编译器均是采用了虚函数表来实现虚函数，即对于每一个包含虚成员函数的类生成一个虚函数表，一个指向虚函数表的指针被放在对象的首地址（不考虑多继承等复杂情况），虚函数表中存储该类所有的虚函数地址。当使用引用或者指针调用虚函数时，首先通过虚函数表指针找到虚函数表，然后通过偏移量找到虚函数地址并调用。关于虚函数表的更多细节，建议阅读《深度">
+<meta property="og:locale" content="zh_CH">
+<meta property="article:published_time" content="2018-07-24T15:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T13:08:39.872Z">
+<meta property="article:author" content="Root lee">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/mountietocat.png"/>
+    
+    
+        <meta property="og:image" content="/juicer_vtable/vtable.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/juicer_vtable/vtable.png" />
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">Root lee</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/%20
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="mailto:irootlee@gmail.com" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">C++性能榨汁机之虚函数的开销</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Tue Jul 24 2018 23:00:00 GMT+0800">
+        Jul 24, 2018
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-%E6%80%A7%E8%83%BD%E6%A6%A8%E6%B1%81%E6%9C%BA%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0/">C++性能榨汁机系列文章</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h1 id="虚函数的实现"><a href="#虚函数的实现" class="headerlink" title="虚函数的实现"></a>虚函数的实现</h1><p>虽然C++标准并没有规定编译器实现虚函数的方式，但是大部分编译器均是采用了<strong>虚函数表</strong>来实现虚函数，即对于每一个包含虚成员函数的类生成一个虚函数表，一个指向虚函数表的指针被放在对象的首地址（不考虑多继承等复杂情况），虚函数表中存储该类所有的虚函数地址。当使用引用或者指针调用虚函数时，首先通过虚函数表指针找到虚函数表，然后通过偏移量找到虚函数地址并调用。关于虚函数表的更多细节，建议阅读《深度探索C++对象模型》这本书。</p>
+<h1 id="虚函数表面上的开销"><a href="#虚函数表面上的开销" class="headerlink" title="虚函数表面上的开销"></a>虚函数表面上的开销</h1><ol>
+<li><p>空间开销</p>
+<p>首先，由于需要为每一个包含虚函数的类生成一个虚函数表，所以程序的二进制文件大小会相应的增大；其次，对于包含虚函数的类的实例来说，每个实例都包含一个虚函数表指针用于指向对应的虚函数表，所以每个实例的空间占用都增加一个指针大小（32位系统4字节，64位系统8字节）。这些空间开销可能会造成缓存的不友好，在一定程度上影响程序性能。</p>
+</li>
+<li><p>时间开销</p>
+<p>虚函数的时间开销主要是增加了一次内存寻址，通过虚函数表指针找到虚函数表，虽对程序性能有一些影响，但是影响并不大。</p>
+</li>
+</ol>
+<h1 id="虚函数隐藏在背后的开销"><a href="#虚函数隐藏在背后的开销" class="headerlink" title="虚函数隐藏在背后的开销"></a>虚函数隐藏在背后的开销</h1><p>上述虚函数表面上的开销其实是微不足道的，真正影响虚函数性能的是隐藏在背后的，不被人轻易察觉的，只有对计算机体系结构有一定理解才能探寻出藏在背后的“性能杀手”。</p>
+<p>首先我们先看调用虚函数时，在汇编层生成了什么代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">movq	(%rax), %rax</span><br><span class="line">movq	(%rax), %rax</span><br><span class="line">movq	-24(%rbp), %rdx</span><br><span class="line">movq	%rdx, %rdi</span><br><span class="line">call	*%rax</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>上述汇编代码最重要的就是第6行，在AT&amp;T格式汇编中，这是一个间接调用，意义是从%rax指明的地址处读取跳转的目标位置。这也是虚函数调用与普通成员函数的区别所在，普通函数调用是一个直接调用。直接调用与间接调用的区别就是跳转地址是否确定，直接调用的跳转地址是编译器确定的，而间接调用是运行到该指令时从寄存器中取出地址然后跳转。</p>
+<p>有了上面的基本认识，我们就可以分析虚函数的性能开销所在了，其实说到底，这个隐藏在背后的关键点就是<strong>分支预测器</strong>，如果看过我之前的博客，相信对分支预测器已经很熟悉了，如果感觉分支预测器还是很陌生，推荐阅读我以前的分支预测器的四篇文章：</p>
+<p><a href="http://irootlee.com/juicer_branch_predictor1/">C++性能榨汁机之分支预测器1</a></p>
+<p><a href="http://irootlee.com/juicer_branch_predictor2/">C++性能榨汁机之分支预测器2</a></p>
+<p><a href="http://irootlee.com/juicer_branch_predictor3/">C++性能榨汁机之分支预测器3</a></p>
+<p><a href="http://irootlee.com/juicer_branch_predictor4/">C++性能榨汁机之分支预测器4</a></p>
+<p>有了分支预测器和CPU指令流水线的基本知识，我们可以发现对于直接调用而言，是不存在分支跳转的，因为跳转地址是编译器确定的，CPU直接去跳转地址取后面的指令即可，不存在分支预测，这样可以保证CPU流水线不被打断。而对于间接寻址，由于跳转地址不确定，所以此处会有多个分支可能，这个时候需要分支预测器进行预测，如果分支预测失败，则会导致流水线冲刷，重新进行取指、译码等操作，对程序性能有很大的影响。</p>
+<p>网上有部分文章中说对于虚函数这种间接跳转会直接导致流水线冲刷，这种说法明显是自相矛盾的，如果间接跳转必定会导致流水线冲刷，那把这些指令放进流水线的意义何在呢？其实查阅资料就可以知道，Intel和AMD的CPU中存在两级自适应预测器用于预测间接跳转，此预测器可以预测多分支跳转。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本文探究出影响到虚函数调用性能的背后原因是流水线和分支预测，由于虚函数调用需要间接跳转，所以会导致虚函数调用比普通函数调用多了分支预测的过程，产生性能差距的原因主要是分支预测失败导致的流水线冲刷性能开销。</p>
+<p>本文的目的并不是为了说明虚函数调用有额外开销而让大家避免使用虚函数，使用不使用虚函数应该由自己程序的需要而定，如果程序逻辑需要使用动态绑定，如果不使用虚函数而是自己实现相应逻辑的话产生的性能损耗一般会比使用虚函数的性能损耗大得多。但对于一些性能敏感的程序，在虚函数可用可不用的时候，可以考虑不使用虚函数以提高性能。</p>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/C/" rel="tag">C++</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_cpu_affinity/"  data-tooltip="C++性能榨汁机之CPU亲和性">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_pointer_reference/" data-tooltip="C++性能榨汁机之指针与引用">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_vtable/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_vtable/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_vtable/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_cpu_affinity/"  data-tooltip="C++性能榨汁机之CPU亲和性">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_pointer_reference/" data-tooltip="C++性能榨汁机之指针与引用">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_vtable/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_vtable/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_vtable/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_vtable/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_vtable/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_vtable/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>

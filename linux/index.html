@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Root lee">
+    <title>【转载】Linux操作系统基础 - Root lee</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="Root lee">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="Linux操作系统概述 什么是GNU？Linux与GNU有什么关系？  GNU是GNU is Not Unix的递归缩写，是自由软件基金会(Free Software Foundation，FSF)的一个项目，该项目已经开发了许多高质量的编程工具，包括emacs编辑器、著名的GNU C和C++编译器(gcc和g++)； Linux的开发使用了许多GNU工具，Linux系统上用于实现POSIX.2标">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="【转载】Linux操作系统基础">
+<meta property="og:url" content="http://irootlee.com/linux/index.html">
+<meta property="og:site_name" content="Root lee">
+<meta property="og:description" content="Linux操作系统概述 什么是GNU？Linux与GNU有什么关系？  GNU是GNU is Not Unix的递归缩写，是自由软件基金会(Free Software Foundation，FSF)的一个项目，该项目已经开发了许多高质量的编程工具，包括emacs编辑器、著名的GNU C和C++编译器(gcc和g++)； Linux的开发使用了许多GNU工具，Linux系统上用于实现POSIX.2标">
+<meta property="og:locale" content="zh_CH">
+<meta property="article:published_time" content="2015-10-24T12:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T13:08:39.878Z">
+<meta property="article:author" content="Root lee">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/mountietocat.png"/>
+    
+    
+        <meta property="og:image" content="/linux/linux.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/linux/linux.png" />
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">Root lee</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/%20
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="mailto:irootlee@gmail.com" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">【转载】Linux操作系统基础</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Sat Oct 24 2015 20:00:00 GMT+0800">
+        Oct 24, 2015
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h2 id="Linux操作系统概述"><a href="#Linux操作系统概述" class="headerlink" title="Linux操作系统概述"></a>Linux操作系统概述</h2><ol>
+<li><p>什么是GNU？Linux与GNU有什么关系？</p>
+<ul>
+<li>GNU是GNU is Not Unix的递归缩写，是自由软件基金会(Free Software Foundation，FSF)的一个项目，该项目已经开发了许多高质量的编程工具，包括emacs编辑器、著名的GNU C和C++编译器(gcc和g++)；</li>
+<li>Linux的开发使用了许多GNU工具，Linux系统上用于实现POSIX.2标准的工具几乎都是由GNU项目开发的；Linux内核、GNU工具以及其它一些自由软件组成了人们常说的Linux系统或Linux发布版。</li>
+</ul>
+</li>
+<li><p>Linux系统由哪几部分组成？Linux内核处于什么位置？</p>
+<ul>
+<li>Linux系统由四个部分组成：用户进程，系统调用接口、Linux内核子系统和硬件；</li>
+<li>Linux内核处于用户进程和硬件之间，包括系统调用接口和Linux内核子系统</li>
+</ul>
+</li>
+<li><p>Linux内核由哪几部分组成？各个子系统的主要功能是什么？</p>
+<ul>
+<li>Linux内核除系统调用外，由五个主要的子系统组成：进程调度、内存管理、虚拟文件系统、网络和进程间通信(IPC)；</li>
+<li>各个子系统的主要功能为:</li>
+</ul>
+<ol>
+<li>进程调度：它控制着进程对CPU的访问，当需要选择一个进程开始运行时，由调度程序选择最应该运行的进程；</li>
+<li>内存管理：它允许多个进程安全地共享主内存区域，支持虚拟内存；从逻辑上可以分为硬件无关的部分和硬件相关的部分；</li>
+<li>虚拟文件系统(VFS)：它隐藏了各种不同硬件的具体细节，为所有设备提供统一的接口，支持多达数十种不同的文件系统，分为逻辑文件系统和设备驱动程序；</li>
+<li>网络：它提供了对各种网络标准协议的存取和各种网络硬件的支持，分为网络协议和网络驱动程序两部分；</li>
+<li>进程间通信：支持进程间各种通信机制，包括共享内存、消息队列和管道等。</li>
+</ol>
+</li>
+</ol>
+<h2 id="内存寻址"><a href="#内存寻址" class="headerlink" title="内存寻址"></a>内存寻址</h2><ol>
+<li><p>什么是物理地址？什么是虚地址？什么是线性地址？</p>
+<ul>
+<li>将主板上的物理内存条所提供的内存空间定义为物理内存空间，其中每个内存单元的实际地址就是物理地址；</li>
+<li>将应用程序员看到的内存空间定义为虚拟地址空间(或地址空间)，其中的地址就叫做虚拟地址(或虚地址)，一般用“段:偏移量”的形式来描述，如A815:CF2D；</li>
+<li>线性地址空间是指一段连续的、不分段的、范围为0~4GB的地址空间，一个线性地址就是线性地址空间的一个绝对地址</li>
+</ul>
+</li>
+<li><p>在保护模式下，MMU如何把一个虚地址转换为物理地址？</p>
+<ul>
+<li>在保护模式下，内存管理单元(MMU)由一个或一组芯片组成，其功能是指虚拟地址映射为物理地址，即进行地址转换；MMU是一种硬件电路，它包含分段部件和分页部件两个部件，分别叫做分段机制和分页机制，分段机制是把一个虚拟地址转换为线性地址，分页机制是把一个线性地址转换为物理地址。</li>
+</ul>
+</li>
+<li><p>为什么对32位线性地址空间要采用两级页表？</p>
+<ul>
+<li>页表是把线性地址映射到物理地址的一种数据结构，4GB的线性空间可以被划分为1M个4KB大小的页，每个页表项占4字节，则1M个页表项的页表就需要占用4MB空间，而且还要求是连续的，于是采用两级页表来实现；两级页表就是对页表再进行分页，第一级称为页目录，其中存放关于页表的信息；4MB的页表再次分页，可以分为1K个4KB大小的页。</li>
+</ul>
+</li>
+<li><p>页面高速缓存的作用是什么？Linux为什么主要采用分页机制来实现虚拟存储管理？它为什么采用三级分页模式而不是两级？</p>
+<ul>
+<li>页面高速缓存自动保留处理器最近使用的32项页表项，因此可以覆盖128KB范围的内存；</li>
+<li>Linux主要采用分页机制来实现虚拟存储器管理，原因为：</li>
+</ul>
+<ul>
+<li>Linux的分段机制使得所有的进程都使用相同的段寄存器，这使得内存管理变得简单；</li>
+<li>Linux的设计目标之一就是能够被移植到绝大多数流行的处理平台上，但许多RISC处理器支持的分段功能非常有限；为了保证可移植性，Linux采用三级分页模式，因为许多处理器都采用64位结构；Linux定义了三种类型的页表：页目录(PGD)、中间目录(PMD)和页表(PT)。</li>
+</ul>
+</li>
+</ol>
+<h2 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h2><ol>
+<li><p>程序与进程的概念分别是什么？为什么要引入“进程”的概念？</p>
+<ul>
+<li>程序是一个普通文件，是机器代码指令和数据的集合，这些指令和数据存储在磁盘上的一个可执行映像中，可执行映像(executable image)就是一个可执行文件的内容；</li>
+<li>进程代表程序的执行过程，它是一个动态的实体，随着程序中指令的执行而不断地变化，在某个时刻进程的内容被称为进程映像(process image)；</li>
+<li>程序的执行过程可以说是一个执行环境的总和，这个执行环境除了包括程序中各种指令和数据外，还有一些额外数据；而执行环境的动态变化体现了程序的运行，为了对动态变化的过程进行描述，就引入了“进程”概念。</li>
+</ul>
+</li>
+<li><p>什么是进程控制块？它包含哪些基本信息？</p>
+<ul>
+<li>Linux中把对进程的描述结构叫做task_struct，将这样的数据结构称作进程控制块(PCB)；</li>
+<li>PCB是一个其域多达80多项的相当庞大的数据结构，按其功能将所有域划分为：状态信息，链接信息、各种标识符、进程间通信信息、时间和定时器信息、调度信息、文件系统信息、虚拟内存信息和处理器环境信息。</li>
+</ul>
+</li>
+<li><p>Linux内核的状态有哪些？</p>
+<ul>
+<li>Linux最基本的进程状态有三种：运行态、就绪态和阻塞态(或等待态)；这三种状态之间有四种可能的转换关系：运行态-&gt;阻塞态、运行态-&gt;就绪态、就绪态-&gt;运行态和阻塞态-&gt;就绪态；</li>
+<li>为了管理上的方便，将就绪态和运行态合并为一个状态—可运行态，再包括其它方面的一些改变，将进程状态划分为：可运行态、睡眠(或等待)态(分为深度睡眠态和浅度睡眠态)、暂停状态和僵死状态。</li>
+</ul>
+</li>
+<li><p>PCB的组织方式有哪几种？ </p>
+<ul>
+<li>进程链表</li>
+<li>散列表</li>
+<li>可运行队列</li>
+<li>等待队列</li>
+</ul>
+</li>
+<li><p>主要的调度算法包括哪些？一个好的调度算法要考虑哪些方面？</p>
+<ul>
+<li>主要的调度算法包括：</li>
+</ul>
+<ul>
+<li>时间片轮转调度算法</li>
+<li>优先级调度算法(非抢占式优先级算法和抢占式优先级算法)</li>
+<li>多级反馈队列调度算法</li>
+<li>实时调度算法；</li>
+</ul>
+<ul>
+<li>一个好的调度算法应该考虑五个方面：公平、高效、响应时间、周转时间和吞吐量</li>
+</ul>
+</li>
+</ol>
+<h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><ol>
+<li>为什么把进程的地址空间划分为“内核空间”和“用户空间”？<ul>
+<li>Linux的虚拟地址空间的大小为4GB，内核将这4GB的空间分为两部分，较高的1GB(虚地址0xC0000000到0xFFFFFFFF)供内核使用，称为“内核空间”；<br>而较低的3GB(虚地址0x00000000到0xBFFFFFFF)供各个进程使用，称为“用户空间”；<br>因为每个进程可以通过系统调用进入内核，因此，内核空间由系统内的所有进程共享；<br>于是，从具体进程的角度来看，每个进程都可以拥有4GB的虚拟地址空间(也叫做虚拟内存)。</li>
+</ul>
+</li>
+<li>Linux是如何实现“请求调页”的？<ul>
+<li>如果被访问的页不在内存，也就是说，这个页还没有被存放在任何一个物理页面中，那么，内核分配一个新的页面并将其适当地初始化，这种技术称为“请求调页”；</li>
+<li>“请求调页”是一种动态内存分配技术，它将页面的分配推迟到不能再推迟为止，也就是说，一直推迟到进程要访问的页不在物理内存时为止，由此引起一个缺页异常；该技术的引入主要是因为进程开始运行时并不访问其地址空间中的全部地址。</li>
+</ul>
+</li>
+</ol>
+<h2 id="中断和异常"><a href="#中断和异常" class="headerlink" title="中断和异常"></a>中断和异常</h2><ol>
+<li><p>什么是中断？什么是异常？二者有何不同？</p>
+<ul>
+<li>中断控制是为克服对I/O接口采用程序查询控制服务方式所带来的处理器低效率而产生的，它的主要优点是只有在I/O接口需要服务时才能得到处理器的响应，而不需要处理器不断地进行查询；因此，最初的中断全部是对外部设备而言的，称为外部中断(或硬件中断)；</li>
+<li>异常也叫做内部中断，它是为解决机器运行时所出现的某些随机事件及编程的方便而出现的；</li>
+<li>256种中断分为外部可屏蔽中断(INTR)和外部非屏蔽中断(NMI)，所有I/O设备产生的中断请求(IRQ)均引起可屏蔽中断，而紧急事件(如硬件故障)引起的故障则产生非屏蔽中断；</li>
+<li>异常又分为故障(fault)和陷阱(trap)，它们的共同特点是既不使用中断控制器，又不能被屏蔽(异常其实是CPU发出的终端信号)。</li>
+</ul>
+</li>
+<li><p>什么是中断向量？Linux是如何分配中断向量的？</p>
+<ul>
+<li>为使处理器可以容易地识别每种中断源，将256种向量中断从0到255进行编号，即赋以一个中断类型码n，把这个8位的无符号整数叫做向量，即中断向量；</li>
+<li>Linux对256个中断向量的分配如下：</li>
+</ul>
+<ul>
+<li>编号为0~31的向量对应于异常和非屏蔽中断；</li>
+<li>编号为32~47的向量(即由I/O设备引起的中断)分配给可屏蔽中断；</li>
+<li>剩余的、编号为48~255的向量用来标识软中断；Linux只用其中的一个(即128或0x80向量)来实现系统调用。</li>
+</ul>
+</li>
+<li><p>什么是中断描述符表？什么是门描述符？</p>
+<ul>
+<li>在实地址模式下，CPU将内存中从0开始的1KB空间作为一个中断向量表，表中每个表项占4个字节；但在保护模式，由4个字节的表项构成的中断向量表满足不了要求；因此在保护模式下，中断向量表中的表项由8个字节组成，中断向量表也改称为中断描述符表(IDT)；</li>
+<li>IDT中的每个表项叫做一个门描述符(gate descriptor)。</li>
+</ul>
+</li>
+<li><p>门描述符有哪些类型？它们有什么不同？<br>门描述符中类型码占3位，表示门描述符的类型，主要分为以下几类：</p>
+<ul>
+<li>中断门(interrupt gate)：其类型码为110，包含了一个中断或异常处理程序所在段的选择符和段内偏移量；</li>
+<li>陷阱门(trap gate)：其类型码为111；</li>
+<li>系统门(system gate)：是Linux内核特别设置的，用来让用户态的进程访问陷阱门。</li>
+</ul>
+</li>
+</ol>
+<h2 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h2><ol>
+<li>什么是系统调用？为什么要引入系统调用？<ul>
+<li>操作系统为用户态的进程与硬件设备(如CPU、磁盘和打印机等)之间的交互提供了一组接口，这些接口使得程序更具有可移植性，因为不同的操作系统只要所提供的一组接口相同，那么在这些操作系统之上就可以正确地编译和执行相同的程序，这组接口就是所谓的“系统调用”；</li>
+<li>引入系统调用的原因有：</li>
+</ul>
+<ul>
+<li>这使得编程更加容易；</li>
+<li>这极大地提高了系统的安全性；</li>
+<li>最重要的一点，这些接口使得操作系统更具有可移植性。</li>
+</ul>
+</li>
+</ol>
+<h2 id="内核中的同步"><a href="#内核中的同步" class="headerlink" title="内核中的同步"></a>内核中的同步</h2><ol>
+<li><p>什么是临界区？什么是竞争状态？什么是同步？</p>
+<ul>
+<li>临界区(critical regions)就是访问和操作共享数据的代码段，多个内核任务并发访问同一个资源通常是不安全的；</li>
+<li>如果两个内核任务可能处于同一个临界区，就是一种错误现象；如果确实发生了这种情况，就称它为竞争状态；</li>
+<li>避免并发和防止竞争状态称为同步(synchronization)</li>
+</ul>
+</li>
+<li><p>简要介绍一下死锁及避免死锁的方法<br>死锁包括自死锁和ABBA死锁，</p>
+<ul>
+<li>产生死锁有四个原因：互斥使用、不可抢占、请求和保持，以及循环等待；</li>
+<li>避免死锁的方法有：破坏“不可剥夺”条件、破坏“请求和保持”条件、破坏“循环等待”条件。</li>
+</ul>
+</li>
+<li><p>内核中造成并发执行的原因是什么？<br>“并发”分为“伪并发”和“真并发”两种，内核中造成并发执行的原因有以下几种：</p>
+<ul>
+<li>中断：它可能随时打断当前正在执行的代码；</li>
+<li>内核抢占：内核中的任务可能会被另一个任务抢占；</li>
+<li>睡眠及其与用户空间的同步：在内核执行的进程可能会睡眠，这就会唤醒调度程序，调度一个新的用户进程执行；</li>
+<li>对称多处理：两个或多个处理器可以同时执行代码。</li>
+</ul>
+</li>
+<li><p>给出信号量的定义，并说明down()和up()的含义</p>
+<ul>
+<li>Linux中的信号量是一种睡眠锁，它是1968年由Dijkstra提出的，如果一个任务试图获得一个已被持有的信号量，信号量会将其推入等待队列，然后让其睡眠；当持有信号量的进程将信号量释放后，在等待队列中的一个任务将被唤醒，从而可以获得这个信号量；</li>
+<li>信号量支持两个原子操作P()和V()，前者叫做测试操作，后者叫做增加操作；后来的系统把这两种操作分别叫做down()和up()；</li>
+<li>down()操作通过对信号量计数减1来请求获得一个信号量；up()操作用来释放信号量，该操作也被称作“提升”(upping)信号量，因为它会增加信号量的计数值。</li>
+</ul>
+</li>
+</ol>
+<h2 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h2><ol>
+<li><p>Linux目录树结构是怎样的？它与Windows的目录树结构有什么区别？为什么Linux的文件系统采用固定的目录形式？<br>文件是一个抽象的概念，它是存放一切数据或信息的仓库；</p>
+<ul>
+<li>Linux的目录树结构为：根目录(/)在上，其它的平行在下；</li>
+<li>Windows操作系统也是采用树型结构，但其树型结构的根是磁盘分区的盘符，有几个分区就有几个树型结构，它们之间的关系式并列的；而在Linux中，无论操作系统管理几个磁盘分区，这样的目录树只有一个；</li>
+<li>这样做的原因是：Linux是一个多用户系统，制定这样一个固定的目录规划有助于对系统文件和不同的用户文件进行统一管理；</li>
+<li>Linux中的文件类型包括：常规文件、目录文件、设备文件、管道文件和链接文件。</li>
+</ul>
+</li>
+<li><p>什么是虚拟文件系统？什么是虚拟文件系统界面？</p>
+<ul>
+<li>将各种不同文件系统的操作和管理纳入到一个统一的框架中，使得用户程序可以通过同一个文件系统界面，也就是同一组系统调用，对各种不同的文件系统以及文件进行操作；用户程序可以不关心不同文件系统的实现细节，而使用系统提供的统一、抽象、虚拟的文件系统界面；这种统一的框架就是所谓的虚拟文件系统转换，一般简称虚拟文件系统(VFS)；</li>
+<li>VFS的对象类型包括：超级块(superblock)对象、索引节点(inode)对象、目录项(dentry)对象和文件(file)对象；</li>
+<li>虚拟文件系统界面是虚拟文件系统所提供的抽象界面，它主要由一组标准的、抽象的操作构成，这些函数(操作)以系统调用的形式供用户调用。</li>
+</ul>
+</li>
+</ol>
+<h2 id="设备驱动"><a href="#设备驱动" class="headerlink" title="设备驱动"></a>设备驱动</h2><ol>
+<li><p>为什么把设备分为“块设备”和“字符设备”两大类？ </p>
+<ul>
+<li>Linux将设备看成文件，具有三方面的含义：第一，每个设备都对应一个文件名，在内核中也就对应一个索引节点；第二，对文件操作的系统调用大都适用于设备文件；第三，从应用程序的角度看，设备文件的逻辑空间是一个线性空间；对于同一个具体的设备而言，文件操作和设备驱动是同一个事物的不同层次，概念上可以将一个系统划分为应用、文件系统和设备驱动三个层次；</li>
+<li>Linux将设备分为两大类，一类是像磁盘那样的以块或扇区为单位、成块进行输入/输出的设备，称为块设备；另一类是像键盘那样以字符(字节)为单位，逐个字符进行输入/输出的设备，称为字符设备；文件系统通常都建立在块设备上。</li>
+</ul>
+</li>
+<li><p>什么是设备驱动程序？</p>
+<ul>
+<li>inux中处理和管理硬件控制器的软件就是设备驱动程序 </li>
+</ul>
+</li>
+<li><p>I/O端口一般包括哪些寄存器？各自功能是什么？</p>
+<ul>
+<li>I/O端口包括控制寄存器、状态寄存器和数据寄存器三大类；</li>
+<li>根据访问外设寄存器的不同方式，将CPU分为两大类：一类是“内存映射”(memory-mapped)方式，另一类是“I/O映射”(I/O- mapped)方式</li>
+</ul>
+</li>
+</ol>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/Linux/" rel="tag">Linux</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/review_design/"  data-tooltip="人人都有追求美的心--读《写给大家看的设计书》有感">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/Py2exe/" data-tooltip="用py2exe打包python程序成windows程序（打包成单一文件）">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/linux/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/linux/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/linux/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/review_design/"  data-tooltip="人人都有追求美的心--读《写给大家看的设计书》有感">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/Py2exe/" data-tooltip="用py2exe打包python程序成windows程序（打包成单一文件）">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/linux/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/linux/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/linux/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/linux/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/linux/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/linux/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>

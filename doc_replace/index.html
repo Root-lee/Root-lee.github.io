@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Root lee">
+    <title>用Python写的文档批量替换软件 - Root lee</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="Root lee">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="软件介绍本软件受本院潘老师所托所写，经过多次版本迭代，最后写成此软件。现将源码分享出来，欢迎大家一起优化修改。软件使用Python2.7版本写成，用户界面使用pyQt4.5版本写成，在Python中导入了win32模块，使用该模块可以调用Office接口，从而实现文档内容替换的功能。  这里是软件下载地址  软件功能本软件可以批量替换文档中的特定词句，支持文件类型：.doc .docx .xls">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="用Python写的文档批量替换软件">
+<meta property="og:url" content="http://irootlee.com/doc_replace/index.html">
+<meta property="og:site_name" content="Root lee">
+<meta property="og:description" content="软件介绍本软件受本院潘老师所托所写，经过多次版本迭代，最后写成此软件。现将源码分享出来，欢迎大家一起优化修改。软件使用Python2.7版本写成，用户界面使用pyQt4.5版本写成，在Python中导入了win32模块，使用该模块可以调用Office接口，从而实现文档内容替换的功能。  这里是软件下载地址  软件功能本软件可以批量替换文档中的特定词句，支持文件类型：.doc .docx .xls">
+<meta property="og:locale" content="zh_CH">
+<meta property="og:image" content="http://irootlee.com/doc_replace/docreplace.png">
+<meta property="article:published_time" content="2015-11-22T12:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T13:08:39.825Z">
+<meta property="article:author" content="Root lee">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="pyQt">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://irootlee.com/doc_replace/docreplace.png">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/mountietocat.png"/>
+    
+    
+        <meta property="og:image" content="/doc_replace/docreplace.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/doc_replace/docreplace.png" />
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">Root lee</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/%20
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="mailto:irootlee@gmail.com" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">用Python写的文档批量替换软件</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Sun Nov 22 2015 20:00:00 GMT+0800">
+        Nov 22, 2015
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Python/">Python</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h1 id="软件介绍"><a href="#软件介绍" class="headerlink" title="软件介绍"></a>软件介绍</h1><p>本软件受本院潘老师所托所写，经过多次版本迭代，最后写成此软件。现将源码分享出来，欢迎大家一起优化修改。<br>软件使用Python2.7版本写成，用户界面使用pyQt4.5版本写成，在Python中导入了win32模块，使用该模块可以调用Office接口，从而实现文档内容替换的功能。</p>
+<blockquote>
+<p><a href="https://onedrive.live.com/redir?resid=867E559822576758!10098&amp;authkey=!AH7E-IDd1WC3zgg&amp;ithint=file%2crar">这里是软件下载地址</a></p>
+</blockquote>
+<h1 id="软件功能"><a href="#软件功能" class="headerlink" title="软件功能"></a>软件功能</h1><p>本软件可以批量替换文档中的特定词句，支持文件类型：.doc .docx .xls .xlsx .txt<br>以下为软件运行截图：<br><img src="docreplace.png" alt="docreplace"></p>
+<h1 id="软件使用"><a href="#软件使用" class="headerlink" title="软件使用"></a>软件使用</h1><ol>
+<li>用户选择需要操作的文档类型</li>
+<li>选择文档所在文件夹</li>
+<li>填写需要替换的词和替换后的词</li>
+<li>点击“确定”按钮</li>
+<li>软件发出提示，用户确定文件夹路径没有错误</li>
+<li>软件遍历文件夹里（包括子文件夹）所有的用户选择的格式的文件，并显示文件个数。</li>
+<li>软件后台调用微软Office软件对文件逐一进行替换</li>
+<li>替换完成</li>
+</ol>
+<h1 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h1><ol>
+<li>本软件直接修改原文件并保存，请用户务必做好文件备份，因使用本软件产生数据丢失或损坏，作者概不负责。</li>
+<li>如果文件夹里某文件打开失败，软件会跳过该文件，并将错误文件路径显示出来，且将文件路径写入“logfile.txt”文件，用户可以自行查看。 </li>
+<li>本软件需要调用本机的Office软件接口，作者Office版本为2013专业版，软件使用无问题，如果本软件在你计算机上无法使用，请尝试更新您的Office软件。</li>
+</ol>
+<h1 id="修改记录"><a href="#修改记录" class="headerlink" title="修改记录"></a>修改记录</h1><ul>
+<li>加入图形界面, 以及对打开错误的文件跳过,而不是程序报错.且不用在把程序与文件放入同一文件夹</li>
+<li>跳过失败文件  统计文件个数  输出失败文件列表</li>
+<li>版本1.0：修复选择目录没有文件会报错BUG</li>
+<li>版本1.1：软件不再产生NewDocFiles文件夹   而是直接修改原文件并保存</li>
+<li>版本2.0：加入对Excel文档xls和xlsx格式的支持   加入对纯文本文档txt格式的支持</li>
+<li>更新：将错误文件信息保存至 logfile.txt文件 </li>
+<li>更新：按下确认按钮时,程序会弹出确认窗口</li>
+<li>更新：可以在替换完成基础上继续替换而不必每次关闭程序再重新打开</li>
+<li>更新：禁止窗口缩放 </li>
+</ul>
+<h1 id="作者信息"><a href="#作者信息" class="headerlink" title="作者信息"></a>作者信息</h1><p>本软件由 Root lee 制作<br>欢迎大家访问我的个人博客：<a href="http://RootLee.Eu">http://RootLee.Eu</a><br>这里是这个项目的Github项目地址：<a href="https://github.com/Root-lee/DocReplace">https://github.com/Root-lee/DocReplace</a><br>欢迎大家提供改进建议。<br>软件使用如有问题请发邮箱反馈给我，谢谢！<br>邮箱：<a href="mailto:Root_lee@163.com">Root_lee@163.com</a>  或者  <a href="mailto:54rootlee@gmail.com">54rootlee@gmail.com</a></p>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/pyQt/" rel="tag">pyQt</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/python/" rel="tag">python</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/py_save_data_of_sun/"  data-tooltip="大三暑期实习中用Python自动保存太阳活动数据">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/git/" data-tooltip="版本控制系统Git的基本指令">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/doc_replace/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/doc_replace/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/doc_replace/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/py_save_data_of_sun/"  data-tooltip="大三暑期实习中用Python自动保存太阳活动数据">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/git/" data-tooltip="版本控制系统Git的基本指令">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/doc_replace/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/doc_replace/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/doc_replace/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/doc_replace/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/doc_replace/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/doc_replace/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>

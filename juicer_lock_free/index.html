@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Root lee">
+    <title>C++性能榨汁机之无锁编程 - Root lee</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="Root lee">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="前言私以为个人的技术水平应该是一个螺旋式上升的过程：先从书本去了解一个大概，然后在实践中加深对相关知识的理解，遇到问题后再次回到书本，然后继续实践……接触C++并发编程已经一年多，从慢慢啃《C++并发编程实战》这本书开始，不停在期货高频交易软件的开发实践中去理解、运用、优化多线程相关技术。多线程知识的学习也是先从最基本的线程建立、互斥锁、条件变量到更高级的线程安全数据结构、线程池等等技术，当然在项">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="C++性能榨汁机之无锁编程">
+<meta property="og:url" content="http://irootlee.com/juicer_lock_free/index.html">
+<meta property="og:site_name" content="Root lee">
+<meta property="og:description" content="前言私以为个人的技术水平应该是一个螺旋式上升的过程：先从书本去了解一个大概，然后在实践中加深对相关知识的理解，遇到问题后再次回到书本，然后继续实践……接触C++并发编程已经一年多，从慢慢啃《C++并发编程实战》这本书开始，不停在期货高频交易软件的开发实践中去理解、运用、优化多线程相关技术。多线程知识的学习也是先从最基本的线程建立、互斥锁、条件变量到更高级的线程安全数据结构、线程池等等技术，当然在项">
+<meta property="og:locale" content="zh_CH">
+<meta property="og:image" content="http://irootlee.com/juicer_lock_free/iplusplus1.png">
+<meta property="og:image" content="http://irootlee.com/juicer_lock_free/iplusplus2.png">
+<meta property="og:image" content="http://irootlee.com/juicer_lock_free/iplusplus3.png">
+<meta property="article:published_time" content="2018-04-22T08:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T13:08:39.857Z">
+<meta property="article:author" content="Root lee">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://irootlee.com/juicer_lock_free/iplusplus1.png">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/mountietocat.png"/>
+    
+    
+        <meta property="og:image" content="/juicer_lock_free/lock_free.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/juicer_lock_free/lock_free.png" />
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">Root lee</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/%20
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="mailto:irootlee@gmail.com" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">C++性能榨汁机之无锁编程</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Sun Apr 22 2018 16:00:00 GMT+0800">
+        Apr 22, 2018
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-%E6%80%A7%E8%83%BD%E6%A6%A8%E6%B1%81%E6%9C%BA%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0/">C++性能榨汁机系列文章</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>私以为个人的技术水平应该是一个螺旋式上升的过程：先从书本去了解一个大概，然后在实践中加深对相关知识的理解，遇到问题后再次回到书本，然后继续实践……接触C++并发编程已经一年多，从慢慢啃《C++并发编程实战》这本书开始，不停在期货高频交易软件的开发实践中去理解、运用、优化多线程相关技术。多线程知识的学习也是先从最基本的线程建立、互斥锁、条件变量到更高级的线程安全数据结构、线程池等等技术，当然在项目中也用到了简单的无锁编程相关知识，今天把一些体会心得跟大家分享一下，如有错误，还望大家批评指正。</p>
+<h1 id="多线程并发读写"><a href="#多线程并发读写" class="headerlink" title="多线程并发读写"></a>多线程并发读写</h1><p>在编写多线程程序时，最重要的问题就是多线程间共享数据的保护。多个线程之间共享地址空间，所以多个线程共享进程中的全局变量和堆，都可以对全局变量和堆上的数据进行读写，但是如果两个线程同时修改同一个数据，可能造成某线程的修改丢失；如果一个线程写的同时，另一个线程去读该数据时可能会读到写了一半的数据。这些行为都是线程不安全的行为，会造成程序运行逻辑出现错误。举个最简单的例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span>  i = <span class="number">0</span>;</span><br><span class="line">mutex mut;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">iplusplus</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> c = <span class="number">10000000</span>;  <span class="comment">//循环次数</span></span><br><span class="line">    <span class="keyword">while</span> (c--) &#123;</span><br><span class="line">        i++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">thread <span class="title">thread1</span><span class="params">(iplusplus)</span></span>;  <span class="comment">//建立并运行线程1</span></span><br><span class="line">    <span class="function">thread <span class="title">thread2</span><span class="params">(iplusplus)</span></span>;  <span class="comment">//建立并运行线程2</span></span><br><span class="line">    thread1.<span class="built_in">join</span>();  <span class="comment">// 等待线程1运行完毕</span></span><br><span class="line">    thread2.<span class="built_in">join</span>();  <span class="comment">// 等待线程2运行完毕</span></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;i = &quot;</span> &lt;&lt; i &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码main函数中建立了两个线程thread1和thread2，两个线程都是运行iplusplus函数，该函数功能就是运行i++语句10000000次，按照常识，两个线程各对i自增10000000次，最后i的结果应该是20000000，但是运行后结果却是如下：</p>
+<p><img src="iplusplus1.png" alt="iplusplus1"></p>
+<p>i并不等于20000000，这是在多线程读写情况下没有对线程间共享的变量i进行保护所导致的问题。</p>
+<h1 id="有锁编程"><a href="#有锁编程" class="headerlink" title="有锁编程"></a>有锁编程</h1><p>对于保护多线程共享数据，最常用也是最基本的方法就是使用C++11线程标准库提供的互斥锁mutex保护临界区，保证同一时间只能有一个线程可以获取锁，持有锁的线程可以对共享变量进行修改，修改完毕后释放锁，而不持有锁的线程阻塞等待直到获取到锁，然后才能对共享变量进行修改，这种方法几乎是并发编程中的标准做法。大体流程如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;atomic&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">int</span>  i = <span class="number">0</span>;</span><br><span class="line">mutex mut; <span class="comment">//互斥锁</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">iplusplus</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> c = <span class="number">10000000</span>;  <span class="comment">//循环次数</span></span><br><span class="line">    <span class="keyword">while</span> (c--) &#123;</span><br><span class="line">        mut.<span class="built_in">lock</span>();  <span class="comment">//互斥锁加锁</span></span><br><span class="line">        i++;</span><br><span class="line">        mut.<span class="built_in">unlock</span>(); <span class="comment">//互斥锁解锁</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    chrono::steady_clock::time_point start_time = chrono::steady_clock::<span class="built_in">now</span>();<span class="comment">//开始时间</span></span><br><span class="line">    <span class="function">thread <span class="title">thread1</span><span class="params">(iplusplus)</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">thread2</span><span class="params">(iplusplus)</span></span>;</span><br><span class="line">    thread1.<span class="built_in">join</span>();  <span class="comment">// 等待线程1运行完毕</span></span><br><span class="line">    thread2.<span class="built_in">join</span>();  <span class="comment">// 等待线程2运行完毕</span></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;i = &quot;</span> &lt;&lt; i &lt;&lt; endl;</span><br><span class="line">    chrono::steady_clock::time_point stop_time = chrono::steady_clock::<span class="built_in">now</span>();<span class="comment">//结束时间</span></span><br><span class="line">    chrono::duration&lt;<span class="type">double</span>&gt; time_span = chrono::<span class="built_in">duration_cast</span>&lt;chrono::microseconds&gt;(stop_time - start_time);</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;共耗时：&quot;</span> &lt;&lt; time_span.<span class="built_in">count</span>() &lt;&lt; <span class="string">&quot; ms&quot;</span> &lt;&lt; endl; <span class="comment">// 耗时</span></span><br><span class="line">    <span class="built_in">system</span>(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码14行和16行分别为互斥锁加锁和解锁代码，29行我们打印程序运行耗时，代码运行结果如下：</p>
+<p><img src="iplusplus2.png" alt="iplusplus2"></p>
+<p>可以看到，通过加互斥锁，i的运行结果是正确的，由此解决了多线程同时写一个数据产生的线程安全问题，代码总耗时3.37328ms。</p>
+<h1 id="无锁编程"><a href="#无锁编程" class="headerlink" title="无锁编程"></a>无锁编程</h1><p>原子操作是无锁编程的基石，原子操作是不可分隔的操作，一般通过CAS(Compare and Swap)操作实现，CAS操作需要输入两个数值，一个旧值（期望操作前的值）和一个新值，在操作期间先比较下旧值有没有发生变化，如果没有发生变化，才交换成新值，发生了变化则不交换。C++11的线程库为我们提供了一系列原子类型，同时提供了相对应的原子操作，我们通过使用这些原子类型即可摆脱每次对共享变量进行操作都进行的加锁解锁动作，节省了系统开销，同时避免了线程因阻塞而频繁的切换。原子类型的基本使用方法如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;atomic&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line">atomic&lt;<span class="type">int</span>&gt; i = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">iplusplus</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> c = <span class="number">10000000</span>;  <span class="comment">//循环次数</span></span><br><span class="line">    <span class="keyword">while</span> (c--) &#123;</span><br><span class="line">        i++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    chrono::steady_clock::time_point start_time = chrono::steady_clock::<span class="built_in">now</span>();<span class="comment">//开始时间</span></span><br><span class="line">    <span class="function">thread <span class="title">thread1</span><span class="params">(iplusplus)</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">thread2</span><span class="params">(iplusplus)</span></span>;</span><br><span class="line">    thread1.<span class="built_in">join</span>();  <span class="comment">// 等待线程1运行完毕</span></span><br><span class="line">    thread2.<span class="built_in">join</span>();  <span class="comment">// 等待线程2运行完毕</span></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;i = &quot;</span> &lt;&lt; i &lt;&lt; endl;</span><br><span class="line">    chrono::steady_clock::time_point stop_time = chrono::steady_clock::<span class="built_in">now</span>();<span class="comment">//结束时间</span></span><br><span class="line">    chrono::duration&lt;<span class="type">double</span>&gt; time_span = chrono::<span class="built_in">duration_cast</span>&lt;chrono::microseconds&gt;(stop_time - start_time);</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;共耗时：&quot;</span> &lt;&lt; time_span.<span class="built_in">count</span>() &lt;&lt; <span class="string">&quot; ms&quot;</span> &lt;&lt; endl; <span class="comment">// 耗时</span></span><br><span class="line">    <span class="built_in">system</span>(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码的第8行定义了一个原子类型（int）变量i，在第13行多线程修改i的时候即可免去加锁和解锁的步骤，同时又能保证变量i的线程安全性。代码运行结果如下：</p>
+<p><img src="iplusplus3.png" alt="iplusplus3"></p>
+<p>可以看到i的值是符合预期的，代码运行总耗时1.12731ms，仅为有锁编程的耗时3.37328ms的1/3，由此可以看出无锁编程由于避免了加锁而相对于有锁编程提高了一定的性能。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>无锁编程最大的优势是什么？是性能提高吗？其实并不是，我们的测试代码中临界区非常短，只有一个语句，所以显得加锁解锁操作对程序性能影响很大，但在实际应用中，我们的临界区一般不会这么短，临界区越长，加锁和解锁操作的性能损耗越微小，无锁编程和有锁编程之间的性能差距也就越微小。</p>
+<p>我认为无锁编程最大的优势在于两点：</p>
+<ol>
+<li>避免了死锁的产生。由于无锁编程避免了使用锁，所以也就不会出现并发编程中最让人头疼的死锁问题，对于提高程序健壮性有很大积极意义</li>
+<li>代码更加清晰与简洁。对于一个多线程共享的变量，保证其安全性我们只需在声明时将其声明为原子类型即可，在代码中使用的时候和使用一个普通变量一样，而不用每次使用都要在前面写个加锁操作，在后面写一个解锁操作。我写的C++期货高频交易软件中，有一个全局变量fund，存储的是当前资金量，程序采用线程池运行交易策略，交易策略中频繁使用到fund变量，如果采用加锁的方式，使用起来极其繁琐，为了保护一个fund变量需要非常频繁的加锁解锁，后来将fund变量改为原子类型，后面使用就不用再考虑加锁问题，整个程序阅读起来清晰很多。</li>
+</ol>
+<p>如果是为了提高性能将程序大幅改写成无锁编程，一般来说结果可能会让我们失望，而且无锁编程里面需要注意的地方也非常多，比如ABA问题，内存顺序问题，正确实现无锁编程比实现有锁编程要困难很多，除非有必要（确定了性能瓶颈）才去考虑使用无锁编程，否则还是使用互斥锁更好，毕竟程序的高性能是建立在程序正确性的基础上，如果程序不正确，一切性能提升都是徒劳无功。</p>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/C/" rel="tag">C++</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_my_first_deadlock/"  data-tooltip="日常踩坑：一把亲手写出的死锁">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_thundering_herd/" data-tooltip="C++性能榨汁机之惊群问题">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_lock_free/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_lock_free/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_lock_free/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_my_first_deadlock/"  data-tooltip="日常踩坑：一把亲手写出的死锁">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_thundering_herd/" data-tooltip="C++性能榨汁机之惊群问题">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_lock_free/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_lock_free/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_lock_free/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/juicer_lock_free/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/juicer_lock_free/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/juicer_lock_free/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>

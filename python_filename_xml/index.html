@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Root lee">
+    <title>用python将文件夹里所有文件路径写入xml文件 - Root lee</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="Root lee">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="项目实现功能本项目主要是为简化更新包的数据打包。程序可以批量提取文件夹中的文件名及扩展名，并将结果存储为xml格式，根目录不需要提取。支持所有文件类型。例如：文件：bin&#x2F;assets&#x2F;car&#x2F;granLavida1.swf提取到xml文件为：&lt; file path&#x3D;”assets&#x2F;car&#x2F;granLavida1.swf”  filename&#x3D;”assets&#x2F;car&#x2F;granLavida1.">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="用python将文件夹里所有文件路径写入xml文件">
+<meta property="og:url" content="http://irootlee.com/python_filename_xml/index.html">
+<meta property="og:site_name" content="Root lee">
+<meta property="og:description" content="项目实现功能本项目主要是为简化更新包的数据打包。程序可以批量提取文件夹中的文件名及扩展名，并将结果存储为xml格式，根目录不需要提取。支持所有文件类型。例如：文件：bin&#x2F;assets&#x2F;car&#x2F;granLavida1.swf提取到xml文件为：&lt; file path&#x3D;”assets&#x2F;car&#x2F;granLavida1.swf”  filename&#x3D;”assets&#x2F;car&#x2F;granLavida1.">
+<meta property="og:locale" content="zh_CH">
+<meta property="og:image" content="http://irootlee.com/python_filename_xml/filename_xml.png">
+<meta property="article:published_time" content="2016-06-22T18:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T13:08:39.897Z">
+<meta property="article:author" content="Root lee">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="xml">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://irootlee.com/python_filename_xml/filename_xml.png">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/mountietocat.png"/>
+    
+    
+        <meta property="og:image" content="/python_filename_xml/Python.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/python_filename_xml/Python.png" />
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">Root lee</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/%20
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="mailto:irootlee@gmail.com" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">用python将文件夹里所有文件路径写入xml文件</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Thu Jun 23 2016 02:00:00 GMT+0800">
+        Jun 23, 2016
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Python/">Python</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h1 id="项目实现功能"><a href="#项目实现功能" class="headerlink" title="项目实现功能"></a>项目实现功能</h1><p>本项目主要是为简化更新包的数据打包。<br>程序可以批量提取文件夹中的文件名及扩展名，并将结果存储为xml格式，根目录不需要提取。支持所有文件类型。<br>例如：文件：bin/assets/car/granLavida1.swf<br>提取到xml文件为：&lt; file path=”assets/car/granLavida1.swf”  filename=”assets/car/granLavida1.swf” &gt;<br>项目预期生成的xml文件如下图：<br><img src="filename_xml.png" alt="filename_xml"></p>
+<h1 id="项目代码"><a href="#项目代码" class="headerlink" title="项目代码"></a>项目代码</h1><p>本项目由github上<a href="https://github.com/Root-Jane">Root_Jane</a>组织成员远程协作完成。<br>代码贡献者：</p>
+<ul>
+<li><strong>wantings</strong>: <a href="https://github.com/wantings">https://github.com/wantings</a></li>
+<li><strong>Root-lee</strong>: <a href="https://github.com/Root-lee">https://github.com/Root-lee</a></li>
+</ul>
+<p>项目地址：<a href="https://github.com/Root-Jane/filename_xml">https://github.com/Root-Jane/filename_xml</a></p>
+<p>项目代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> os.path</span><br><span class="line"></span><br><span class="line">path = <span class="string">r&quot;L:\bin&quot;</span>  <span class="comment">#根目录路径</span></span><br><span class="line">xml_path = <span class="string">r&quot;L:\Python\test.xml&quot;</span>   <span class="comment">#生成的xml文件储存路径</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(xml_path,<span class="string">&quot;w&quot;</span>,encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f:  <span class="comment">#创建xml文件 </span></span><br><span class="line">    <span class="keyword">for</span> root, dirs, files <span class="keyword">in</span> os.walk(path):       <span class="comment">#os.walk遍历根目录所有文件</span></span><br><span class="line">        <span class="keyword">for</span> filename <span class="keyword">in</span> files:                    <span class="comment">#打印出所有文件路径和名称</span></span><br><span class="line">            filepath=root + <span class="string">&#x27;\\&#x27;</span> + filename</span><br><span class="line">            filepath=filepath.strip(path).replace(<span class="string">&quot;\\&quot;</span>,<span class="string">&quot;/&quot;</span>)</span><br><span class="line">            filename_xml=<span class="string">&quot;&lt;file path=\&quot;&quot;</span> + filepath + <span class="string">&quot;\&quot;&quot;</span> + <span class="string">&quot; filename=\&quot;&quot;</span> + filepath +<span class="string">&quot;\&quot;&quot;</span>+<span class="string">&quot;/&gt;&quot;</span> +<span class="string">&quot;\n&quot;</span>   <span class="comment">#生成xml格式文本</span></span><br><span class="line">f.write(filename_xml)</span><br></pre></td></tr></table></figure>
+<h1 id="项目分析"><a href="#项目分析" class="headerlink" title="项目分析"></a>项目分析</h1><p>本项目主要用到了python自带模块os中的函数os.walk进行文件夹所有文件的遍历，os.walk返回root、dirs、files三个值，其中：</p>
+<ul>
+<li>root变量类型是字符串，代表当前根目录的路径。</li>
+<li>dirs类型为list，是当前目录含有的所有子目录的合集。</li>
+<li>files类型也为list，是当前目录含有的所有文件的合集。</li>
+</ul>
+<p>去除根目录路径用到strip函数，strip可以将一个字符串里某个特定的字符串删除，这里我们需要删除path变量代表的值。<br>为保持与linux的文件管理系统相兼容，我们使用replace函数将路径中的“\”替换成“/”。<br>最终结果写入xml文件。</p>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/Python/" rel="tag">Python</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/xml/" rel="tag">xml</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/kharkiv/"  data-tooltip="再会，我的哈村">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/review_hollow_crown/" data-tooltip="我的身份地位是不是真正的我？——观《空王冠》后感">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/python_filename_xml/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/python_filename_xml/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/python_filename_xml/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/kharkiv/"  data-tooltip="再会，我的哈村">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/review_hollow_crown/" data-tooltip="我的身份地位是不是真正的我？——观《空王冠》后感">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/python_filename_xml/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/python_filename_xml/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/python_filename_xml/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/python_filename_xml/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/python_filename_xml/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/python_filename_xml/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>

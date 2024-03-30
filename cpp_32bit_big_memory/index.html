@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-ch">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Root lee">
+    <title>日常踩坑：C++32位程序申请大内存出现std:bad_alloc - Root lee</title>
+    <meta name="author" content="Root lee">
+    <meta name="description" content="Root lee">
+    
+        <link rel="icon" href="/assets/images/favicon.ico">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="问题背景：　　在开发股票自动化交易软件过程中，我们需要将股票的tick数据（每3s一笔）存储下来，供我们的股票交易策略部分使用。这种情况下首先想到使用MySql这种关系型数据库进行存储，但是我们的股票自动化交易软件对速度的要求极高，可能相差几十毫秒就是赚钱与亏钱的区别，而MySql这种传统数据库的插入与查询是很慢的，无法满足我们的要求。当然我们也可以选择既满足存储数据的要求又能达到我们需要的速度要">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="日常踩坑：C++32位程序申请大内存出现std:bad_alloc">
+<meta property="og:url" content="http://irootlee.com/cpp_32bit_big_memory/index.html">
+<meta property="og:site_name" content="Root lee">
+<meta property="og:description" content="问题背景：　　在开发股票自动化交易软件过程中，我们需要将股票的tick数据（每3s一笔）存储下来，供我们的股票交易策略部分使用。这种情况下首先想到使用MySql这种关系型数据库进行存储，但是我们的股票自动化交易软件对速度的要求极高，可能相差几十毫秒就是赚钱与亏钱的区别，而MySql这种传统数据库的插入与查询是很慢的，无法满足我们的要求。当然我们也可以选择既满足存储数据的要求又能达到我们需要的速度要">
+<meta property="og:locale" content="zh_CH">
+<meta property="og:image" content="http://irootlee.com/cpp_32bit_big_memory/bad_alloc.png">
+<meta property="article:published_time" content="2018-03-01T15:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T13:08:39.816Z">
+<meta property="article:author" content="Root lee">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://irootlee.com/cpp_32bit_big_memory/bad_alloc.png">
+<meta name="twitter:creator" content="@54rootlee">
+    
+        <meta rel="publisher" content="https://plus.google.com/54rootlee"/>
+    
+    
+    
+        <meta property="og:image" content="/assets/images/mountietocat.png"/>
+    
+    
+        <meta property="og:image" content="/cpp_32bit_big_memory/cpp.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://irootlee.com/cpp_32bit_big_memory/cpp.png" />
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-69285109-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">Root lee</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    <div class="sidebar-profile">
+        <a href="/#about">
+            
+            <img class="sidebar-profile-picture" src="/assets/images/mountietocat.png"/>
+            
+        </a>
+        <span class="sidebar-profile-name">Root lee</span>
+    </div>
+    
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/%20
+                    ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">Home</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-categories
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">Categories</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-tags
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">Tags</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/all-archives
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">Archives</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link st-search-show-outputs"
+                    href="#search
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">Search</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="#about
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">About me</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="https://github.com/Root-lee" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link " href="mailto:irootlee@gmail.com" target="_blank">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+    <ul class="sidebar-buttons">
+        
+        <li class="sidebar-button">
+            
+                <a  class="sidebar-button-link "
+                    href="/atom.xml
+                            ">
+            
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+            <div id="main" data-behavior="1">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+        <div class="post-header main-content-wrap">
+    
+        <h1 class="post-title" itemprop="headline">日常踩坑：C++32位程序申请大内存出现std:bad_alloc</h1>
+    
+    <div class="post-meta">
+    <time  itemprop="datePublished" content="Thu Mar 01 2018 23:00:00 GMT+0800">
+        Mar 01, 2018
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-%E6%97%A5%E5%B8%B8%E8%B8%A9%E5%9D%91/">C++日常踩坑</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown main-content-wrap" itemprop="articleBody">
+        
+            <h1 id="问题背景："><a href="#问题背景：" class="headerlink" title="问题背景："></a>问题背景：</h1><p>　　在开发股票自动化交易软件过程中，我们需要将股票的tick数据（每3s一笔）存储下来，供我们的股票交易策略部分使用。这种情况下首先想到使用MySql这种关系型数据库进行存储，但是我们的股票自动化交易软件对速度的要求极高，可能相差几十毫秒就是赚钱与亏钱的区别，而MySql这种传统数据库的插入与查询是很慢的，无法满足我们的要求。当然我们也可以选择既满足存储数据的要求又能达到我们需要的速度要求的Redis这种内存数据库，但考虑到我们交易软件是日内交易，不需要股票数据持久化到硬盘上，而且经过大概估算，我们服务器的内存远大于股票每日的数据量，所以考虑将股票数据直接保存在内存中，软件运行时直接对内存中的股票数据进行使用即可。</p>
+<h1 id="问题描述："><a href="#问题描述：" class="headerlink" title="问题描述："></a>问题描述：</h1><p>　　我们使用map保存股票的数据，map的key是股票代码（string类型），value是该股票的行情数据（vector类型），然后建立行情类MarketData（单例模式）将map封装起来，并实现线程安全的插入数据和取数据的方法，这样就实现了一个极其简单的“内存数据库”。在MarketData建立后需要初始化股票数据，使用vector的reserve方法为每支股票预先分配足够存储一天数据的内存空间。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">///初始化mapStockData，初始化后该map节点位置不会再变化，避免多线程安全问题</span></span><br><span class="line"><span class="comment">///为vector预先分配内存，避免在程序运行中迭代器失效</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">MarketData::InitStockList</span><span class="params">(<span class="type">const</span> std::set&lt;std::string&gt; stockcodes)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (stockcodes.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">		cerr &lt;&lt; <span class="string">&quot;未订阅任何股票，请查看ini配置文件！&quot;</span> &lt;&lt; endl;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//为vector预先分配内存，避免在程序运行中迭代器失效</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">auto</span> stockcode : stockcodes) &#123;</span><br><span class="line">		mapStockData_[stockcode].market.<span class="built_in">reserve</span>(<span class="number">6000</span>);      <span class="comment">//Market数据，每3秒一个数据</span></span><br><span class="line">		mapStockData_[stockcode].transaction.<span class="built_in">reserve</span>(<span class="number">200000</span>);       <span class="comment">//transaction数据</span></span><br><span class="line">		mapStockData_[stockcode].orderqueue.<span class="built_in">reserve</span>(<span class="number">12000</span>);       <span class="comment">//orderqueue数据</span></span><br><span class="line">		mapStockData_[stockcode].order.<span class="built_in">reserve</span>(<span class="number">200000</span>);       <span class="comment">//order数据</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　上述代码在订阅股票数量较少（小于10支）的时候一直工作都很正常，昨天我们添加新的股票交易策略，新的策略需要订阅更多的股票（大概100支股票），这时候这段代码就出现了std::bad_alloc错误，即内存申请失败。</p>
+<p><img src="bad_alloc.png" alt="std::bad_alloc"></p>
+<h1 id="问题分析："><a href="#问题分析：" class="headerlink" title="问题分析："></a>问题分析：</h1><p>　　既然是内存分配错误，那我们就计算一下内存占用，经过计算，每支股票每天的数据量大约48M，一百支股票的占用就是4800M，总的数据量不到5个G，但我们服务器是64G内存，应该不存在内存不够用的情况。后来又推测是不是vector需要申请连续的内存，而恰好服务器内存不存在这么多连续的内存，细想一下这种可能性也不大。</p>
+<p>　　没啥头绪就先把这个问题放下去吃饭了，在去食堂的路上，突然想到我们项目中使用的是x86模式，即我们的程序是32位的程序，虽然服务器是64位，但是32位的程序的寻址空间最大只有4G，所以程序是不会寻址大于4G的内存地址的，所以对我们程序而言，服务器64G的物理内存能用的只有4G，而且这4G也不是进程独占的，对于Linux系统而言，内核空间占用1G，32位程序最大的可利用内存只有3G，对于Windows系统而言，系统空间占用2G，32位程序最大可利用内存只有2G（堆内存1.6G左右）。2G内存只能存储大约40支股票，如果再考虑到内存碎片对vector请求连续内存的影响，可能只能存储20多支股票的数据，所以在我们订阅了100支股票的时候，就会出现内存分配失败的错误。</p>
+<h1 id="问题解决："><a href="#问题解决：" class="headerlink" title="问题解决："></a>问题解决：</h1><p>　　查阅资料得知：Windows操作系统有一个 boot.ini 开关，可以为应用程序提供访问3GB的进程地址空间的权限，从而将内核模式地址空间限定为 1 GB，从而用户模式地址空间可用3GB。这种方法虽然可以将可用内存增加1GB，但对我们上百支股票数据而言仍旧是杯水车薪。</p>
+<p>　　最好的办法就是将应用程序按照x64模式重新编译，编译出来的程序便是64位程序，地址空间远远大于32位程序，此时，对程序分配内存的限制就只有物理内存大小，但我们的物理内存是完全足够的，更改了编译参数之后，上述内存申请失败的错误便不再出现。</p>
+<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><p>　　当前，64位CPU和64位操作系统已经完全普及了，基于这些平台开发应用程序的时候，如果没有兼容32位系统的需求，应该优先考虑开发64位的应用程序，对于需要大量内存的程序尤为重要。</p>
+
+        
+        
+            
+        
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/C/" rel="tag">C++</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_loop_unrolling/"  data-tooltip="C++性能榨汁机之循环展开">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_memset/" data-tooltip="日常踩坑：C++程序中如何正确使用memset()内存初始化函数？">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/cpp_32bit_big_memory/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/cpp_32bit_big_memory/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/cpp_32bit_big_memory/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 Root lee. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/juicer_loop_unrolling/"  data-tooltip="C++性能榨汁机之循环展开">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/cpp_memset/" data-tooltip="日常踩坑：C++程序中如何正确使用memset()内存初始化函数？">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://irootlee.com/cpp_32bit_big_memory/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/cpp_32bit_big_memory/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/cpp_32bit_big_memory/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://irootlee.com/cpp_32bit_big_memory/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://irootlee.com/cpp_32bit_big_memory/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://irootlee.com/cpp_32bit_big_memory/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/mountietocat.png"/>
+        
+            <h4 id="about-card-name">Root lee</h4>
+        
+            <h5 id="about-card-bio"><p>沉默是金</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Programmer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                HangZhou
+            </h5>
+        
+    </div>
+</div>
+        <div id="cover" style="background-image:url('/assets/images/cover_origin.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/script.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>
